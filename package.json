@@ -1,19 +1,48 @@
 {
+  "_from": "git://github.com/PBGUX/bower-designsystem.git#ng-ds-alpha",
+  "_id": "pb-design-system@3.0.2",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/pb-design-system",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "git",
+    "raw": "pb-design-system@git://github.com/PBGUX/bower-designsystem.git#ng-ds-alpha",
+    "name": "pb-design-system",
+    "escapedName": "pb-design-system",
+    "rawSpec": "git://github.com/PBGUX/bower-designsystem.git#ng-ds-alpha",
+    "saveSpec": "git://github.com/PBGUX/bower-designsystem.git#ng-ds-alpha",
+    "fetchSpec": "git://github.com/PBGUX/bower-designsystem.git",
+    "gitCommittish": "ng-ds-alpha"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "git://github.com/PBGUX/bower-designsystem.git#689d23f38851d3a00ed5166f6f10a52bf76bde0f",
+  "_spec": "pb-design-system@git://github.com/PBGUX/bower-designsystem.git#ng-ds-alpha",
+  "_where": "/Users/AN081RO/Documents/GIT/v3/embark3-ui",
+  "author": {
+    "name": "Daniel Collette"
+  },
+  "bugs": {
+    "url": "https://github.com/PBGUX/bower-designsystem/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "bootstrap": "~3.3.6"
+  },
+  "deprecated": false,
+  "description": "Design System NPM",
+  "homepage": "https://github.com/PBGUX/bower-designsystem#readme",
+  "license": "",
+  "main": "dist/css/design_system.css",
   "name": "pb-design-system",
-  "version": "5.0.1",
-  "description": "PB Design System",
-  "main": "dist/css/designsystem.css",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PBGUX/designsystem.git"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/PBGUX/pb-design-system.git"
-  },
-  "author": "Pitney Bowes",
-  "license": "",
-  "bugs": {
-    "url": "https://github.com/PBGUX/pb-design-system/issues"
-  },
-  "homepage": "https://github.com/PBGUX/pb-design-system"
+  "version": "3.0.2"
 }
