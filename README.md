@@ -1,4 +1,4 @@
-# PB Design System 5 Beta
+# PB Design System 5.1 Beta
 
 This repo is for distribution of the Design System on `npm` using Bootstrap 4 and Angular.
 
