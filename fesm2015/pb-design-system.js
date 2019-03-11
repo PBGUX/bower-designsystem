@@ -4,7 +4,7 @@ import { ViewportScroller, CommonModule } from '@angular/common';
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class PbdsDatavizService {
     constructor() {
@@ -25,10 +25,19 @@ class PbdsDatavizService {
                 '#aad88f'
             ]
         };
-        this.getColors = mono => {
+        this.getColors = (/**
+         * @param {?} mono
+         * @return {?}
+         */
+        mono => {
             return mono ? this.colors.mono : this.colors.theme;
-        };
-        this.createGradientDefs = (svg, mono) => {
+        });
+        this.createGradientDefs = (/**
+         * @param {?} svg
+         * @param {?} mono
+         * @return {?}
+         */
+        (svg, mono) => {
             /** @type {?} */
             const colors = mono ? [this.colors.mono[2]] : this.colors.theme;
             for (let i = 0; i < colors.length; i++) {
@@ -56,8 +65,12 @@ class PbdsDatavizService {
                     .attr('stop-opacity', '.3'); // bottom of bar will be .3 opacity
             }
             return colors;
-        };
-        this.createGlowFilter = svg => {
+        });
+        this.createGlowFilter = (/**
+         * @param {?} svg
+         * @return {?}
+         */
+        svg => {
             // add a new definition
             /** @type {?} */
             const glow = svg
@@ -104,7 +117,7 @@ class PbdsDatavizService {
             for (let x = 0; x < feOffsets.length; x++) {
                 merge.append('feMergeNode').attr('in', 'coloredBlur' + x);
             }
-        };
+        });
     }
 }
 PbdsDatavizService.decorators = [
@@ -118,7 +131,7 @@ PbdsDatavizService.ctorParameters = () => [];
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class PbdsDatavizPieComponent {
     /**
@@ -139,66 +152,147 @@ class PbdsDatavizPieComponent {
         this.legendFormatString = '';
         this.hovered = new EventEmitter();
         this.clicked = new EventEmitter();
-        this.legendMouseOverFocus = (data, index, nodes) => {
+        this.legendMouseOverFocus = (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => {
             this.chart
                 .selectAll('.legend-item')
-                .filter((d, i) => i !== index)
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i !== index))
                 .classed('inactive', true);
-        };
-        this.legendMouseOutBlur = (data, index, nodes) => {
+        });
+        this.legendMouseOutBlur = (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => {
             this.chart.selectAll('.legend-item').classed('inactive', false);
-        };
-        this.pathMouseOver = (data, index, nodes) => {
+        });
+        this.pathMouseOver = (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => {
             /** @type {?} */
             let slices = this.chart.selectAll('.slice');
             /** @type {?} */
-            let slice = slices.filter((d, i) => i === index);
+            let slice = slices.filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i === index));
             this.chart
                 .selectAll('.legend-item')
-                .filter((d, i) => i !== index)
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i !== index))
                 .classed('inactive', true);
-            slices.filter((d, i) => i !== index).classed('inactive', true);
+            slices.filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i !== index)).classed('inactive', true);
             slice
                 .transition()
                 .duration(300)
                 .delay(0)
-                .attrTween('d', (d) => {
+                .attrTween('d', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            (d) => {
                 /** @type {?} */
                 let i = interpolate(d.outerRadius, this.outerRadius + this.arcZoom);
-                return t => {
+                return (/**
+                 * @param {?} t
+                 * @return {?}
+                 */
+                t => {
                     d.outerRadius = i(t);
                     return this.arc(d);
-                };
-            });
+                });
+            }));
             this.hovered.emit(data.data ? data.data : data); // legend hover data is different than slice hover data
-        };
-        this.pathMouseOut = (data, index, value) => {
+        });
+        this.pathMouseOut = (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} value
+         * @return {?}
+         */
+        (data, index, value) => {
             /** @type {?} */
             let slices = this.chart.selectAll('.slice');
             /** @type {?} */
-            let slice = slices.filter((d, i) => i === index);
+            let slice = slices.filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i === index));
             this.chart
                 .selectAll('.legend-item')
-                .filter((d, i) => i !== index)
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i !== index))
                 .classed('inactive', false);
             slices.classed('inactive', false);
             slice
                 .transition()
                 .duration(300)
                 .delay(0)
-                .attrTween('d', (d) => {
+                .attrTween('d', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            (d) => {
                 /** @type {?} */
                 let i = interpolate(d.outerRadius, this.outerRadius);
-                return t => {
+                return (/**
+                 * @param {?} t
+                 * @return {?}
+                 */
+                t => {
                     d.outerRadius = i(t);
                     return this.arc(d);
-                };
-            });
-        };
-        this.pathClick = (data, index, nodes) => {
+                });
+            }));
+        });
+        this.pathClick = (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => {
             this.clicked.emit(data.data);
-        };
-        this.tooltipShow = (node, data) => {
+        });
+        this.tooltipShow = (/**
+         * @param {?} node
+         * @param {?} data
+         * @return {?}
+         */
+        (node, data) => {
             this.tooltipSetPosition(node);
             /** @type {?} */
             let percentage = (data.endAngle - data.startAngle) / (2 * Math.PI);
@@ -207,19 +301,30 @@ class PbdsDatavizPieComponent {
         <div class="tooltip-value">${this.tooltipFormat(percentage)}</div>
       `);
             this.tooltip.style('opacity', 1);
-        };
-        this.tooltipMove = node => {
+        });
+        this.tooltipMove = (/**
+         * @param {?} node
+         * @return {?}
+         */
+        node => {
             this.tooltipSetPosition(node);
-        };
-        this.tooltipHide = () => {
+        });
+        this.tooltipHide = (/**
+         * @return {?}
+         */
+        () => {
             this.tooltip.style('opacity', 0);
-        };
-        this.tooltipSetPosition = node => {
+        });
+        this.tooltipSetPosition = (/**
+         * @param {?} node
+         * @return {?}
+         */
+        node => {
             /** @type {?} */
             let coordinates = mouse(node);
             this.tooltip.style('left', `${coordinates[0] + 16}px`);
             this.tooltip.style('top', `${coordinates[1] + 16}px`);
-        };
+        });
     }
     /**
      * @return {?}
@@ -237,7 +342,11 @@ class PbdsDatavizPieComponent {
         this.tooltipFormat = format(this.tooltipFormatString);
         this.colorRange = scaleOrdinal()
             .range(this.colors)
-            .domain(this.data.map(c => c.label));
+            .domain(this.data.map((/**
+         * @param {?} c
+         * @return {?}
+         */
+        c => c.label)));
         if (this.type === 'pie') {
             this.innerRadius = 0;
             this.anglePad = 0;
@@ -254,7 +363,11 @@ class PbdsDatavizPieComponent {
             this.margin.right} ${this.height + this.margin.top + this.margin.bottom}`);
         this.pie = pie()
             .padAngle(this.anglePad)
-            .value((d) => d.value);
+            .value((/**
+         * @param {?} d
+         * @return {?}
+         */
+        (d) => d.value));
         this.arc = arc()
             .padRadius(this.outerRadius)
             .innerRadius(this.innerRadius);
@@ -263,9 +376,17 @@ class PbdsDatavizPieComponent {
             .data(this.pie(this.data))
             .enter()
             .append('path')
-            .each((d) => (d.outerRadius = this.outerRadius))
+            .each((/**
+         * @param {?} d
+         * @return {?}
+         */
+        (d) => (d.outerRadius = this.outerRadius)))
             .attr('d', this.arc)
-            .attr('fill', (d) => this.colorRange(d.data.label))
+            .attr('fill', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        (d) => this.colorRange(d.data.label)))
             .attr('class', 'slice');
         if (this.type === 'pie') {
             this.paths
@@ -285,44 +406,98 @@ class PbdsDatavizPieComponent {
         this.legend
             .append('span')
             .attr('class', 'legend-key')
-            .style('background-color', (d) => this.colorRange(d.label));
+            .style('background-color', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        (d) => this.colorRange(d.label)));
         /** @type {?} */
         let legendDescription = this.legend.append('span').attr('class', 'legend-description');
         legendDescription
             .append('span')
             .attr('class', 'legend-label')
-            .html((d) => d.label);
+            .html((/**
+         * @param {?} d
+         * @return {?}
+         */
+        (d) => d.label));
         legendDescription
             .append('span')
             .attr('class', 'legend-value')
-            .html((d) => this.legendFormat(d.value));
+            .html((/**
+         * @param {?} d
+         * @return {?}
+         */
+        (d) => this.legendFormat(d.value)));
         this.legend
-            .on('mouseover focus', (data, index, nodes) => {
+            .on('mouseover focus', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => {
             this.legendMouseOverFocus(data, index, nodes);
             this.pathMouseOver(data, index, nodes);
-        })
-            .on('mouseout blur', (data, index, nodes) => {
+        }))
+            .on('mouseout blur', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => {
             this.legendMouseOutBlur(data, index, nodes);
             this.pathMouseOut(data, index, nodes);
-        })
-            .on('click', (data, index, nodes) => {
+        }))
+            .on('click', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => {
             this.clicked.emit(data);
-        });
+        }));
         this.paths
-            .on('mouseover', (data, index, nodes) => {
+            .on('mouseover', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => {
             this.pathMouseOver(data, index, nodes);
             this.tooltipShow(this.chart.node(), data);
-        })
-            .on('mousemove', (data, index, nodes) => {
+        }))
+            .on('mousemove', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => {
             this.tooltipMove(this.chart.node());
-        })
-            .on('mouseout', (data, index, nodes) => {
+        }))
+            .on('mouseout', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => {
             this.pathMouseOut(data, index, nodes);
             this.tooltipHide();
-        })
-            .on('click', (data, index, nodes) => {
+        }))
+            .on('click', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => {
             this.pathClick(data, index, nodes);
-        });
+        }));
         this.tooltip = this.chart
             .append('div')
             .style('opacity', 0)
@@ -369,7 +544,7 @@ PbdsDatavizPieComponent.propDecorators = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class PbdsDatavizBarComponent {
     /**
@@ -416,12 +591,27 @@ class PbdsDatavizBarComponent {
         this.average = null;
         this.hovered = new EventEmitter();
         this.clicked = new EventEmitter();
-        this.updateChart = () => {
+        this.updateChart = (/**
+         * @return {?}
+         */
+        () => {
             // update the xScale
-            this.xAxisScale.domain(this.data.map(d => d.label));
+            this.xAxisScale.domain(this.data.map((/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => d.label)));
             // update the yScale
             this.yAxisScale
-                .domain([min(this.data, d => d.value), max(this.data, d => d.value + d.value * +this.yAxisBuffer)])
+                .domain([min(this.data, (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => d.value)), max(this.data, (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => d.value + d.value * +this.yAxisBuffer))])
                 .rangeRound([this.height, 0])
                 .nice();
             this.xAxis
@@ -456,17 +646,33 @@ class PbdsDatavizBarComponent {
                     .select('.gray-bar')
                     .transition()
                     .duration(1000)
-                    .attr('x', d => this.xAxisScale(d.label))
+                    .attr('x', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.xAxisScale(d.label)))
                     .attr('width', this.xAxisScale.bandwidth());
                 // update the existing bars
                 group
                     .select('.bar')
                     .transition()
                     .duration(1000)
-                    .attr('x', d => this.xAxisScale(d.label) + this.xAxisScale.bandwidth() / 4)
+                    .attr('x', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.xAxisScale(d.label) + this.xAxisScale.bandwidth() / 4))
                     .attr('width', this.xAxisScale.bandwidth() / 2)
-                    .attr('height', d => this.height - this.yAxisScale(d.value))
-                    .attr('y', d => this.yAxisScale(d.value));
+                    .attr('height', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.height - this.yAxisScale(d.value)))
+                    .attr('y', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.yAxisScale(d.value)));
                 // add group on enter
                 /** @type {?} */
                 const groupEnter = group
@@ -479,7 +685,11 @@ class PbdsDatavizBarComponent {
                     .attr('class', 'gray-bar')
                     .attr('rx', 0)
                     .attr('height', 0)
-                    .attr('x', d => this.xAxisScale(d.label))
+                    .attr('x', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.xAxisScale(d.label)))
                     .attr('width', this.xAxisScale.bandwidth())
                     .transition()
                     // .delay(1000)
@@ -490,22 +700,60 @@ class PbdsDatavizBarComponent {
                     .append('rect')
                     .attr('class', 'bar')
                     .attr('rx', 2)
-                    .attr('fill', d => `url(#gradient-${this.colorRange(d.value).substr(1)})`) // removes hash to prevent safari bug;
-                    .attr('x', d => this.xAxisScale(d.label) + this.xAxisScale.bandwidth() / 4)
+                    .attr('fill', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => `url(#gradient-${this.colorRange(d.value).substr(1)})`)) // removes hash to prevent safari bug;
+                    .attr('x', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.xAxisScale(d.label) + this.xAxisScale.bandwidth() / 4))
                     .attr('width', this.xAxisScale.bandwidth() / 2)
                     .attr('y', this.height)
                     .attr('height', 0)
                     .transition()
                     .duration(1000)
                     // .delay(1000)
-                    .attr('y', d => this.yAxisScale(d.value))
-                    .attr('height', d => this.height - this.yAxisScale(d.value))
-                    .attr('data-color', d => this.colorRange(d.value));
+                    .attr('y', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.yAxisScale(d.value)))
+                    .attr('height', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.height - this.yAxisScale(d.value)))
+                    .attr('data-color', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.colorRange(d.value)));
                 groupEnter
                     .select('.bar')
-                    .on('mouseover focus', (data, index, nodes) => this.barMouseOverFocus(event$1, data, index, nodes))
-                    .on('mouseout blur', (data, index, nodes) => this.barMouseOutBlur())
-                    .on('click', (data, index, nodes) => this.barMouseClick(event$1, data, index, nodes));
+                    .on('mouseover focus', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                (data, index, nodes) => this.barMouseOverFocus(event$1, data, index, nodes)))
+                    .on('mouseout blur', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                (data, index, nodes) => this.barMouseOutBlur()))
+                    .on('click', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                (data, index, nodes) => this.barMouseClick(event$1, data, index, nodes)));
             }
             else {
                 // rebind data to groups
@@ -516,12 +764,24 @@ class PbdsDatavizBarComponent {
                 // update the existing bars
                 group
                     .select('.bar')
-                    .attr('x', d => this.xAxisScale(d.label) + this.xAxisScale.bandwidth() / 5.5)
+                    .attr('x', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.xAxisScale(d.label) + this.xAxisScale.bandwidth() / 5.5))
                     .attr('width', this.xAxisScale.bandwidth() / 1.5)
                     .transition()
                     .duration(1000)
-                    .attr('y', d => this.yAxisScale(d.value))
-                    .attr('height', d => this.height - this.yAxisScale(d.value));
+                    .attr('y', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.yAxisScale(d.value)))
+                    .attr('height', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.height - this.yAxisScale(d.value)));
                 // add group on enter
                 /** @type {?} */
                 const groupEnter = group
@@ -533,21 +793,56 @@ class PbdsDatavizBarComponent {
                     .append('rect')
                     .attr('class', 'bar')
                     .attr('rx', 2)
-                    .attr('fill', d => `url(#gradient-${this.colorRange(d.value).substr(1)})`) // removes hash to prevent safari bug;
-                    .attr('x', d => this.xAxisScale(d.label) + this.xAxisScale.bandwidth() / 5.5)
+                    .attr('fill', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => `url(#gradient-${this.colorRange(d.value).substr(1)})`)) // removes hash to prevent safari bug;
+                    .attr('x', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.xAxisScale(d.label) + this.xAxisScale.bandwidth() / 5.5))
                     .attr('width', this.xAxisScale.bandwidth() / 1.5)
                     .attr('y', this.height)
                     .attr('height', 0)
                     .transition()
                     .duration(1000)
-                    .attr('y', d => this.yAxisScale(d.value))
-                    .attr('height', d => this.height - this.yAxisScale(d.value))
-                    .attr('data-color', d => this.colorRange(d.value));
+                    .attr('y', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.yAxisScale(d.value)))
+                    .attr('height', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.height - this.yAxisScale(d.value)))
+                    .attr('data-color', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.colorRange(d.value)));
                 groupEnter
                     .select('.bar')
-                    .on('mouseover focus', (data, index, nodes) => this.barMouseOverFocus(event$1, data, index, nodes))
-                    .on('mouseout blur', () => this.barMouseOutBlur())
-                    .on('click', (data, index, nodes) => this.barMouseClick(event$1, data, index, nodes));
+                    .on('mouseover focus', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                (data, index, nodes) => this.barMouseOverFocus(event$1, data, index, nodes)))
+                    .on('mouseout blur', (/**
+                 * @return {?}
+                 */
+                () => this.barMouseOutBlur()))
+                    .on('click', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                (data, index, nodes) => this.barMouseClick(event$1, data, index, nodes)));
             }
             if (!this.hideLegend) {
                 /** @type {?} */
@@ -557,7 +852,11 @@ class PbdsDatavizBarComponent {
                     .data(this.data);
                 legendItem.exit().remove();
                 // update existing items
-                legendItem.select('.legend-label').html(d => {
+                legendItem.select('.legend-label').html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => {
                     // return this.legendLabelFormat === null ? d.label : this.legendLabelFormat(d.label);
                     switch (this.legendLabelFormatType) {
                         case 'number':
@@ -569,7 +868,7 @@ class PbdsDatavizBarComponent {
                         default:
                             return d.label;
                     }
-                });
+                }));
                 // legend items on enter
                 /** @type {?} */
                 let enterLegendItem = legendItem
@@ -579,11 +878,19 @@ class PbdsDatavizBarComponent {
                 enterLegendItem
                     .append('span')
                     .attr('class', 'legend-key')
-                    .style('background-color', d => this.colorRange(d.value));
+                    .style('background-color', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.colorRange(d.value)));
                 enterLegendItem
                     .append('span')
                     .attr('class', 'legend-label')
-                    .html(d => {
+                    .html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => {
                     // return this.legendLabelFormat === null ? d.label : this.legendLabelFormat(d.label);
                     switch (this.legendLabelFormatType) {
                         case 'number':
@@ -595,11 +902,26 @@ class PbdsDatavizBarComponent {
                         default:
                             return d.label;
                     }
-                });
+                }));
                 enterLegendItem
-                    .on('mouseover', (data, index, nodes) => this.legendMouseOver(event$1, data, index, nodes))
-                    .on('mouseout', () => this.legendMouseOut())
-                    .on('click', (data, index, nodes) => this.legendMouseClick(event$1, data, index, nodes));
+                    .on('mouseover', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                (data, index, nodes) => this.legendMouseOver(event$1, data, index, nodes)))
+                    .on('mouseout', (/**
+                 * @return {?}
+                 */
+                () => this.legendMouseOut()))
+                    .on('click', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                (data, index, nodes) => this.legendMouseClick(event$1, data, index, nodes)));
             }
             if (this.threshold) {
                 this.yThreshold
@@ -615,28 +937,61 @@ class PbdsDatavizBarComponent {
                     .duration(1000)
                     .attr('transform', `translate(0,  ${this.yAxisScale(+this.average)})`);
             }
-        };
-        this.barMouseOverFocus = (event, data, index, nodes) => {
+        });
+        this.barMouseOverFocus = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, data, index, nodes) => {
             this.chart
                 .selectAll('.bar-group')
-                .filter((d, i) => i !== index)
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i !== index))
                 .classed('inactive', true);
             /** @type {?} */
             const bar = this.chart
                 .selectAll('.bar-group')
-                .filter((d, i) => i === index)
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i === index))
                 .select('.bar');
             /** @type {?} */
             const barColor = bar.attr('data-color');
-            bar.style('fill', () => barColor);
+            bar.style('fill', (/**
+             * @return {?}
+             */
+            () => barColor));
             this.chart
                 .selectAll('.legend-item')
-                .filter((d, i) => i !== index)
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i !== index))
                 .classed('inactive', true);
-            this.tooltipShow(data, nodes.filter((d, i) => i === index));
+            this.tooltipShow(data, nodes.filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i === index)));
             this.hovered.emit({ event, data });
-        };
-        this.barMouseOutBlur = () => {
+        });
+        this.barMouseOutBlur = (/**
+         * @return {?}
+         */
+        () => {
             this.chart
                 .selectAll('.bar-group')
                 .classed('inactive', false)
@@ -644,31 +999,71 @@ class PbdsDatavizBarComponent {
                 .style('fill', null);
             this.chart.selectAll('.legend-item').classed('inactive', false);
             this.tooltipHide();
-        };
-        this.barMouseClick = (event, data, index, nodes) => {
+        });
+        this.barMouseClick = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, data, index, nodes) => {
             this.clicked.emit({ event, data });
-        };
-        this.legendMouseOver = (event, data, index, nodes) => {
+        });
+        this.legendMouseOver = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, data, index, nodes) => {
             this.chart
                 .selectAll('.legend-item')
-                .filter((d, i) => i !== index)
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i !== index))
                 .classed('inactive', true);
             this.chart
                 .selectAll('.bar-group')
-                .filter((d, i) => i !== index)
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i !== index))
                 .classed('inactive', true);
             /** @type {?} */
             const bar = this.chart
                 .selectAll('.bar-group')
-                .filter((d, i) => i === index)
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i === index))
                 .select('.bar');
             /** @type {?} */
             const barColor = bar.attr('data-color');
-            bar.style('fill', () => barColor);
-            this.tooltipShow(data, this.chart.selectAll('.bar').filter((d, i) => i === index)._groups[0]); // TODO: find better way than using _groups
+            bar.style('fill', (/**
+             * @return {?}
+             */
+            () => barColor));
+            this.tooltipShow(data, this.chart.selectAll('.bar').filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i === index))._groups[0]); // TODO: find better way than using _groups
             this.hovered.emit({ event, data });
-        };
-        this.legendMouseOut = () => {
+        });
+        this.legendMouseOut = (/**
+         * @return {?}
+         */
+        () => {
             this.chart.selectAll('.legend-item').classed('inactive', false);
             this.chart
                 .selectAll('.bar-group')
@@ -676,11 +1071,23 @@ class PbdsDatavizBarComponent {
                 .select('.bar')
                 .style('fill', null);
             this.tooltipHide();
-        };
-        this.legendMouseClick = (event, data, index, nodes) => {
+        });
+        this.legendMouseClick = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, data, index, nodes) => {
             this.clicked.emit({ event, data });
-        };
-        this.tooltipShow = (data, node) => {
+        });
+        this.tooltipShow = (/**
+         * @param {?} data
+         * @param {?} node
+         * @return {?}
+         */
+        (data, node) => {
             /** @type {?} */
             let dimensions = node[0].getBoundingClientRect();
             /** @type {?} */
@@ -714,11 +1121,18 @@ class PbdsDatavizBarComponent {
             this.tooltip.style('top', `${+scroll[1] + +dimensions.top - tooltipOffsetHeight}px`); //
             this.tooltip.style('left', `${+scroll[0] + +dimensions.left - tooltipOffsetWidth + +dimensions.width / 2}px`);
             this.tooltip.style('opacity', 1);
-        };
-        this.tooltipHide = () => {
+        });
+        this.tooltipHide = (/**
+         * @return {?}
+         */
+        () => {
             this.tooltip.style('opacity', 0);
-        };
-        this.xAxisFormatter = item => {
+        });
+        this.xAxisFormatter = (/**
+         * @param {?} item
+         * @return {?}
+         */
+        item => {
             switch (this.xAxisFormatType) {
                 case 'number':
                     return this.xAxisFormat(item);
@@ -729,8 +1143,12 @@ class PbdsDatavizBarComponent {
                 default:
                     return item;
             }
-        };
-        this.yAxisFormatter = item => {
+        });
+        this.yAxisFormatter = (/**
+         * @param {?} item
+         * @return {?}
+         */
+        item => {
             switch (this.yAxisFormatType) {
                 case 'number':
                     return this.yAxisFormat(item);
@@ -741,7 +1159,7 @@ class PbdsDatavizBarComponent {
                 default:
                     return item;
             }
-        };
+        });
     }
     /**
      * @return {?}
@@ -881,7 +1299,11 @@ class PbdsDatavizBarComponent {
         this.colorRange = scaleOrdinal().range(this._dataviz.createGradientDefs(this.svg, this.singleSeries));
         // X AXIS
         this.xAxisScale = scaleBand()
-            .domain(this.data.map(d => d.label))
+            .domain(this.data.map((/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => d.label)))
             .rangeRound([0, this.width - this.margin.left])
             .align(0);
         // add padding to the scale for gray bars
@@ -913,7 +1335,15 @@ class PbdsDatavizBarComponent {
         }
         // Y AXIS
         this.yAxisScale = scaleLinear()
-            .domain([min(this.data, d => d.value), max(this.data, d => d.value + d.value * +this.yAxisBuffer)])
+            .domain([min(this.data, (/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => d.value)), max(this.data, (/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => d.value + d.value * +this.yAxisBuffer))])
             .nice()
             .rangeRound([this.height, 0]);
         this.yAxisCall = axisLeft(this.yAxisScale)
@@ -1037,7 +1467,7 @@ PbdsDatavizBarComponent.propDecorators = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class PbdsDatavizLineComponent {
     /**
@@ -1083,21 +1513,39 @@ class PbdsDatavizLineComponent {
         this.clicked = new EventEmitter();
         this.tooltipHovered = new EventEmitter();
         this.tooltipClicked = new EventEmitter();
-        this.updateChart = () => {
+        this.updateChart = (/**
+         * @return {?}
+         */
+        () => {
             this.mouserect.data(this.data);
             // update the xScale
-            this.xAxisScale.domain(extent(this.data.dates, (d, i) => {
+            this.xAxisScale.domain(extent(this.data.dates, (/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => {
                 return isoParse(d);
-            }));
+            })));
             // update the yScale
             this.yAxisScale
                 .domain([
-                min(this.data.series, (d, i) => {
+                min(this.data.series, (/**
+                 * @param {?} d
+                 * @param {?} i
+                 * @return {?}
+                 */
+                (d, i) => {
                     return +min(d.values);
-                }),
-                max(this.data.series, (d, i) => {
+                })),
+                max(this.data.series, (/**
+                 * @param {?} d
+                 * @param {?} i
+                 * @return {?}
+                 */
+                (d, i) => {
                     return +max(d.values);
-                })
+                }))
             ])
                 .nice();
             this.xAxis
@@ -1130,21 +1578,42 @@ class PbdsDatavizLineComponent {
                 .select('path.line')
                 .transition()
                 .duration(1000)
-                .attr('d', d => this.d3line(d.values));
+                .attr('d', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => this.d3line(d.values)));
             if (this.area) {
                 group
                     .select('path.area')
                     .transition()
                     .duration(1000)
-                    .attr('d', d => this.d3area(d.values));
+                    .attr('d', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.d3area(d.values)));
             }
             group
                 .selectAll('circle')
-                .data(d => d.values)
+                .data((/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => d.values))
                 .transition()
                 .duration(1000)
-                .attr('cx', (d, i) => this.xAxisScale(isoParse(this.data.dates[i])))
-                .attr('cy', d => this.yAxisScale(d));
+                .attr('cx', (/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => this.xAxisScale(isoParse(this.data.dates[i]))))
+                .attr('cy', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => this.yAxisScale(d)));
             // add group on enter
             /** @type {?} */
             const groupEnter = group
@@ -1156,17 +1625,33 @@ class PbdsDatavizLineComponent {
             const line$$1 = groupEnter
                 .append('path')
                 .attr('class', 'line')
-                .style('color', d => this.colorRange(d.label))
+                .style('color', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => this.colorRange(d.label)))
                 .style('stroke-width', this.lineWidth)
                 .transition()
                 .duration(1000)
-                .attr('d', data => this.d3line(data.values));
+                .attr('d', (/**
+             * @param {?} data
+             * @return {?}
+             */
+            data => this.d3line(data.values)));
             if (this.area) {
                 groupEnter
                     .append('path')
                     .attr('class', 'area')
-                    .attr('d', data => this.d3area(data.values))
-                    .style('color', d => this.colorRange(d.label));
+                    .attr('d', (/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                data => this.d3area(data.values)))
+                    .style('color', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.colorRange(d.label)));
             }
             // add points
             if (this.linePoints) {
@@ -1174,14 +1659,31 @@ class PbdsDatavizLineComponent {
                 const points = groupEnter
                     .append('g')
                     .attr('class', 'points')
-                    .style('color', d => this.colorRange(d.label));
+                    .style('color', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.colorRange(d.label)));
                 /** @type {?} */
-                const circles = points.selectAll('circle').data(d => d.values);
+                const circles = points.selectAll('circle').data((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => d.values));
                 circles
                     .enter()
                     .append('circle')
-                    .attr('cx', (d, i) => this.xAxisScale(isoParse(this.data.dates[i])))
-                    .attr('cy', d => this.yAxisScale(d))
+                    .attr('cx', (/**
+                 * @param {?} d
+                 * @param {?} i
+                 * @return {?}
+                 */
+                (d, i) => this.xAxisScale(isoParse(this.data.dates[i]))))
+                    .attr('cy', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.yAxisScale(d)))
                     .attr('r', this.lineWidth * 2)
                     .style('stroke-width', this.lineWidth);
             }
@@ -1196,7 +1698,11 @@ class PbdsDatavizLineComponent {
                     .data(this.data.series);
                 legendItem.exit().remove();
                 // update existing items
-                legendItem.select('.legend-label').html(d => {
+                legendItem.select('.legend-label').html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => {
                     switch (this.legendLabelFormatType) {
                         case 'number':
                             return this.legendLabelFormat(d.label);
@@ -1207,7 +1713,7 @@ class PbdsDatavizLineComponent {
                         default:
                             return d.label;
                     }
-                });
+                }));
                 // legend items on enter
                 /** @type {?} */
                 let enterLegendItem = legendItem
@@ -1217,11 +1723,19 @@ class PbdsDatavizLineComponent {
                 enterLegendItem
                     .append('span')
                     .attr('class', 'legend-key')
-                    .style('background-color', d => this.colorRange(d.label));
+                    .style('background-color', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.colorRange(d.label)));
                 enterLegendItem
                     .append('span')
                     .attr('class', 'legend-label')
-                    .html(d => {
+                    .html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => {
                     switch (this.legendLabelFormatType) {
                         case 'number':
                             return this.legendLabelFormat(d.label);
@@ -1232,11 +1746,26 @@ class PbdsDatavizLineComponent {
                         default:
                             return d.label;
                     }
-                });
+                }));
                 enterLegendItem
-                    .on('mouseover', (data, index, nodes) => this.legendMouseOver(event$1, data, index, nodes))
-                    .on('mouseout', () => this.legendMouseOut())
-                    .on('click', (data, index, nodes) => this.legendMouseClick(event$1, data, index, nodes));
+                    .on('mouseover', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                (data, index, nodes) => this.legendMouseOver(event$1, data, index, nodes)))
+                    .on('mouseout', (/**
+                 * @return {?}
+                 */
+                () => this.legendMouseOut()))
+                    .on('click', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                (data, index, nodes) => this.legendMouseClick(event$1, data, index, nodes)));
             }
             if (!this.hideTooltip) {
                 /** @type {?} */
@@ -1246,9 +1775,13 @@ class PbdsDatavizLineComponent {
                     .data(this.data.series);
                 tooltipItem.exit().remove();
                 // update existing items
-                tooltipItem.select('.tooltip-label pr-2').html(d => {
+                tooltipItem.select('.tooltip-label pr-2').html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => {
                     return this.tooltipHeadingFormat(d.label);
-                });
+                }));
                 // items on enter
                 /** @type {?} */
                 let entertooltipItem = tooltipItem
@@ -1257,33 +1790,67 @@ class PbdsDatavizLineComponent {
                     .attr('class', 'tooltip-item');
                 entertooltipItem
                     .append('td')
-                    .style('color', d => this.colorRange(d.label))
+                    .style('color', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.colorRange(d.label)))
                     .append('span')
                     .attr('class', 'pbds-tooltip-key');
                 entertooltipItem
                     .append('td')
                     .attr('class', 'tooltip-label pr-2')
-                    .html(d => {
+                    .html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => {
                     return this.tooltipLabelFormatType ? this.tooltipLabelFormat(d.label) : d.label;
-                });
+                }));
                 entertooltipItem
                     .append('td')
                     .attr('class', 'tooltip-value text-right')
-                    .html(d => '');
+                    .html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => ''));
             }
             this.mouserect.raise();
-        };
-        this.legendMouseOver = (event, data, index, nodes) => {
+        });
+        this.legendMouseOver = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, data, index, nodes) => {
             this.chart
                 .selectAll('.legend-item')
-                .filter((d, i) => i !== index)
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i !== index))
                 .classed('inactive', true);
             this.chart
                 .selectAll('.line-group')
-                .filter((d, i) => i !== index)
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i !== index))
                 .classed('inactive', true);
             /** @type {?} */
-            const line$$1 = this.chart.selectAll('.line-group').filter((d, i) => i === index);
+            const line$$1 = this.chart.selectAll('.line-group').filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i === index));
             line$$1.classed('active', true);
             if (this.linePoints) {
                 /** @type {?} */
@@ -1291,8 +1858,11 @@ class PbdsDatavizLineComponent {
                 circles.classed('active', true);
             }
             this.hovered.emit({ event, data });
-        };
-        this.legendMouseOut = () => {
+        });
+        this.legendMouseOut = (/**
+         * @return {?}
+         */
+        () => {
             this.chart.selectAll('.legend-item').classed('inactive', false);
             this.chart
                 .selectAll('.line-group')
@@ -1303,11 +1873,24 @@ class PbdsDatavizLineComponent {
                 const circles = this.chart.selectAll('circle');
                 circles.classed('active', false);
             }
-        };
-        this.legendMouseClick = (event, data, index, nodes) => {
+        });
+        this.legendMouseClick = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, data, index, nodes) => {
             this.clicked.emit({ event, data });
-        };
-        this.mouserectMouseMove = (event, index, nodes) => {
+        });
+        this.mouserectMouseMove = (/**
+         * @param {?} event
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, index, nodes) => {
             /** @type {?} */
             const mouseXDate = this.xAxisScale.invert(mouse(nodes[0])[0]);
             // return date at mouse x position
@@ -1329,8 +1912,18 @@ class PbdsDatavizLineComponent {
             // console.log(+mouseXDate, leftIndex, +dateLower, +dateUpper, +closestDate, closestIndex);
             /** @type {?} */
             const circles = this.svg.selectAll('.line-group').selectAll('circle');
-            circles.filter((d, i) => i === closestIndex).classed('active', true);
-            circles.filter((d, i) => i !== closestIndex).classed('active', false);
+            circles.filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i === closestIndex)).classed('active', true);
+            circles.filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i !== closestIndex)).classed('active', false);
             this.tooltipLine
                 .attr('x1', this.xAxisScale(closestDate))
                 .attr('x2', this.xAxisScale(closestDate))
@@ -1339,55 +1932,93 @@ class PbdsDatavizLineComponent {
             this.tooltipShow(this.tooltipLine.node(), closestIndex);
             this.mousedata = {
                 date: closestDate,
-                series: this.data.series.map(d => {
+                series: this.data.series.map((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => {
                     return {
                         label: d.label,
                         value: d.values[closestIndex]
                     };
-                })
+                }))
             };
             this.tooltipHovered.emit({ event, data: this.mousedata });
-        };
-        this.mouserectMouseOut = (event, index, nodes) => {
+        });
+        this.mouserectMouseOut = (/**
+         * @param {?} event
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, index, nodes) => {
             this.svg.selectAll('circle').classed('active', false);
             this.tooltipLine.classed('active', false);
             this.tooltipHide();
-        };
-        this.mouserectMouseClick = () => {
+        });
+        this.mouserectMouseClick = (/**
+         * @return {?}
+         */
+        () => {
             this.tooltipClicked.emit({ event, data: this.mousedata });
-        };
-        this.tooltipShow = (node, closestIndex) => {
+        });
+        this.tooltipShow = (/**
+         * @param {?} node
+         * @param {?} closestIndex
+         * @return {?}
+         */
+        (node, closestIndex) => {
             /** @type {?} */
             let scroll = this._scroll.getScrollPosition();
             /** @type {?} */
             let dimensions = node.getBoundingClientRect();
-            this.tooltip.select('.tooltip-header').html(d => {
+            this.tooltip.select('.tooltip-header').html((/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => {
                 /** @type {?} */
                 const parsedTime = isoParse(this.data.dates[closestIndex]);
                 return this.tooltipHeadingFormat(parsedTime);
-            });
-            this.tooltip.selectAll('.tooltip-value').html((d, i) => {
+            }));
+            this.tooltip.selectAll('.tooltip-value').html((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => {
                 return this.tooltipValueFormatType
                     ? this.tooltipValueFormat(this.data.series[i].values[closestIndex])
                     : this.data.series[i].values[closestIndex];
-            });
+            }));
             /** @type {?} */
             let tooltipOffsetHeight = +this.tooltip.node().offsetHeight;
             this.tooltip.style('top', `${dimensions.y + dimensions.height / 2 - tooltipOffsetHeight / 2 + scroll[1]}px`);
             this.tooltip.style('left', `${dimensions.x + 8}px`);
             this.tooltip.style('opacity', 1);
-        };
-        this.tooltipHide = () => {
+        });
+        this.tooltipHide = (/**
+         * @return {?}
+         */
+        () => {
             this.tooltip.style('opacity', 0);
-        };
-        this.xAxisFormatter = item => {
+        });
+        this.xAxisFormatter = (/**
+         * @param {?} item
+         * @return {?}
+         */
+        item => {
             /** @type {?} */
             const parseDate = isoParse(item);
             return this.xAxisFormat(parseDate);
-        };
-        this.yAxisFormatter = item => {
+        });
+        this.yAxisFormatter = (/**
+         * @param {?} item
+         * @return {?}
+         */
+        item => {
             return this.yAxisFormat(item);
-        };
+        });
     }
     /**
      * @return {?}
@@ -1479,8 +2110,17 @@ class PbdsDatavizLineComponent {
         }
         // define line
         this.d3line = line()
-            .x((d, i) => this.xAxisScale(isoParse(this.data.dates[i])))
-            .y((d) => this.yAxisScale(d));
+            .x((/**
+         * @param {?} d
+         * @param {?} i
+         * @return {?}
+         */
+        (d, i) => this.xAxisScale(isoParse(this.data.dates[i]))))
+            .y((/**
+         * @param {?} d
+         * @return {?}
+         */
+        (d) => this.yAxisScale(d)));
         // define line curve
         if (this.lineCurved) {
             this.d3line.curve(curveCatmullRom.alpha(0.5));
@@ -1488,9 +2128,19 @@ class PbdsDatavizLineComponent {
         // define area
         if (this.area) {
             this.d3area = area()
-                .x((d, i) => this.xAxisScale(isoParse(this.data.dates[i])))
+                .x((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => this.xAxisScale(isoParse(this.data.dates[i]))))
                 .y0(this.height)
-                .y1((d, i) => this.yAxisScale(d));
+                .y1((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => this.yAxisScale(d)));
             if (this.lineCurved) {
                 this.d3area.curve(curveCatmullRom.alpha(0.5));
             }
@@ -1513,9 +2163,27 @@ class PbdsDatavizLineComponent {
             .attr('width', this.width - this.margin.left - this.margin.right)
             .attr('height', this.height)
             .attr('class', 'mouserect')
-            .on('mousemove', (data, index, nodes) => this.mouserectMouseMove(event$1, index, nodes))
-            .on('mouseout', (data, index, nodes) => this.mouserectMouseOut(event$1, index, nodes))
-            .on('click', (data, index, nodes) => this.mouserectMouseClick());
+            .on('mousemove', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => this.mouserectMouseMove(event$1, index, nodes)))
+            .on('mouseout', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => this.mouserectMouseOut(event$1, index, nodes)))
+            .on('click', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => this.mouserectMouseClick()));
         this.tooltipLine = this.svg
             .append('line')
             .attr('y1', 0)
@@ -1527,9 +2195,14 @@ class PbdsDatavizLineComponent {
         this._dataviz.createGlowFilter(this.svg);
         // X AXIS
         this.xAxisScale = scaleTime()
-            .domain(extent(this.data.dates, (d, i) => {
+            .domain(extent(this.data.dates, (/**
+         * @param {?} d
+         * @param {?} i
+         * @return {?}
+         */
+        (d, i) => {
             return isoParse(d);
-        }))
+        })))
             .range([0, this.width - this.margin.left - this.margin.right]);
         this.xAxisCall = axisBottom(this.xAxisScale)
             .ticks(+this.xAxisTicks)
@@ -1558,12 +2231,22 @@ class PbdsDatavizLineComponent {
         // Y AXIS
         this.yAxisScale = scaleLinear()
             .domain([
-            min(this.data.series, (d, i) => {
+            min(this.data.series, (/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => {
                 return +min(d.values);
-            }),
-            max(this.data.series, (d, i) => {
+            })),
+            max(this.data.series, (/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => {
                 return +max(d.values);
-            })
+            }))
         ])
             .nice()
             .range([this.height, 0]);
@@ -1683,7 +2366,7 @@ PbdsDatavizLineComponent.propDecorators = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class PbdsDatavizGaugeComponent {
     /**
@@ -1702,15 +2385,26 @@ class PbdsDatavizGaugeComponent {
         this.labelFormatString = '';
         this.labelSmall = false;
         this.gaugeWidth = 20;
-        this.degreesToRadians = degree => {
+        this.degreesToRadians = (/**
+         * @param {?} degree
+         * @return {?}
+         */
+        degree => {
             return (degree * Math.PI) / 180;
-        };
-        this.calculateMinMax = () => {
+        });
+        this.calculateMinMax = (/**
+         * @return {?}
+         */
+        () => {
             /** @type {?} */
             const percentage = this.data.minvalue / (this.data.maxvalue - this.data.minvalue);
             return percentage * (this.data.value - this.data.minvalue) + (this.data.value - this.data.minvalue);
-        };
-        this.calculateCurve = data => {
+        });
+        this.calculateCurve = (/**
+         * @param {?} data
+         * @return {?}
+         */
+        data => {
             /** @type {?} */
             const start = this.degreesToRadians(this.startAngle);
             /** @type {?} */
@@ -1721,8 +2415,11 @@ class PbdsDatavizGaugeComponent {
                     endAngle: end
                 }
             ];
-        };
-        this.drawChart = () => {
+        });
+        this.drawChart = (/**
+         * @return {?}
+         */
+        () => {
             this.gauge = this.svg.append('g').attr('class', 'gauge-group');
             // background arc
             /** @type {?} */
@@ -1731,28 +2428,36 @@ class PbdsDatavizGaugeComponent {
                 .data(this.calculateCurve(this.data.maxvalue))
                 .attr('class', 'gauge-background')
                 .attr('fill', this.backgroundColor)
-                .attr('d', d => {
+                .attr('d', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => {
                 return this.arc({
                     innerRadius: this.radius - this.gaugeWidth,
                     outerRadius: this.radius,
                     startAngle: d.startAngle,
                     endAngle: d.endAngle
                 });
-            });
+            }));
             // value arc
             this.gauge
                 .append('path')
                 .data(this.calculateCurve(this.calculateMinMax()))
                 .attr('class', 'gauge-value')
                 .attr('fill', this.color)
-                .attr('d', d => {
+                .attr('d', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => {
                 return this.arc({
                     innerRadius: this.radius - this.gaugeWidth,
                     outerRadius: this.radius,
                     startAngle: d.startAngle,
                     endAngle: d.endAngle
                 });
-            });
+            }));
             switch (this.type) {
                 case 'horseshoe':
                     this.svg.attr('height', 230).attr('viewBox', `-${this.width / 2} -${this.height / 2} ${this.height} 230`);
@@ -1762,8 +2467,11 @@ class PbdsDatavizGaugeComponent {
                     this.svg.attr('viewBox', `-${this.width / 2} -${this.width / 2} ${this.width} ${this.width / 2}`);
                     break;
             }
-        };
-        this.updateChart = () => {
+        });
+        this.updateChart = (/**
+         * @return {?}
+         */
+        () => {
             /** @type {?} */
             let group = this.svg.select('.gauge-group');
             group
@@ -1776,14 +2484,27 @@ class PbdsDatavizGaugeComponent {
                 .transition()
                 .duration(750)
                 .call(this.textTween, this.data.value);
-        };
-        this.arcTween = (transition, value) => {
+        });
+        this.arcTween = (/**
+         * @param {?} transition
+         * @param {?} value
+         * @return {?}
+         */
+        (transition, value) => {
             /** @type {?} */
             let newAngle = this.calculateCurve(value);
-            transition.attrTween('d', d => {
+            transition.attrTween('d', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => {
                 /** @type {?} */
                 let interpolate$$1 = interpolate(d.endAngle, newAngle[0].endAngle);
-                return t => {
+                return (/**
+                 * @param {?} t
+                 * @return {?}
+                 */
+                t => {
                     d.endAngle = interpolate$$1(t);
                     return this.arc({
                         innerRadius: this.radius - this.gaugeWidth,
@@ -1791,25 +2512,41 @@ class PbdsDatavizGaugeComponent {
                         startAngle: d.startAngle,
                         endAngle: d.endAngle
                     });
-                };
-            });
-        };
-        this.textTween = (transition, value) => {
+                });
+            }));
+        });
+        this.textTween = (/**
+         * @param {?} transition
+         * @param {?} value
+         * @return {?}
+         */
+        (transition, value) => {
             value = format('.2f')(value); // TODO: check these .1f formats here, should they be inputs?
             value = value.replace(/,/g, '.');
-            transition.tween('text', () => {
+            transition.tween('text', (/**
+             * @return {?}
+             */
+            () => {
                 /** @type {?} */
                 let interpolate$$1 = interpolate(format('.2f')(+this.oldValue), value);
-                return t => {
-                    this.labelTween.text(d => {
+                return (/**
+                 * @param {?} t
+                 * @return {?}
+                 */
+                t => {
+                    this.labelTween.text((/**
+                     * @param {?} d
+                     * @return {?}
+                     */
+                    d => {
                         /** @type {?} */
                         let updatedNumber = this.labelFormat(interpolate$$1(t));
                         this.label = updatedNumber;
                         return updatedNumber;
-                    });
-                };
-            });
-        };
+                    }));
+                });
+            }));
+        });
     }
     /**
      * @return {?}
@@ -1896,7 +2633,7 @@ PbdsDatavizGaugeComponent.propDecorators = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class PbdsDatavizSparklineComponent {
     /**
@@ -1931,13 +2668,31 @@ class PbdsDatavizSparklineComponent {
         x.domain([0, this.data.length]);
         /** @type {?} */
         let line$$1 = line()
-            .x((d, i) => x(i))
-            .y((d) => y(d));
+            .x((/**
+         * @param {?} d
+         * @param {?} i
+         * @return {?}
+         */
+        (d, i) => x(i)))
+            .y((/**
+         * @param {?} d
+         * @return {?}
+         */
+        (d) => y(d)));
         /** @type {?} */
         let area$$1 = area()
-            .x((d, i) => x(i))
+            .x((/**
+         * @param {?} d
+         * @param {?} i
+         * @return {?}
+         */
+        (d, i) => x(i)))
             .y0(this.height)
-            .y1((d) => y(d));
+            .y1((/**
+         * @param {?} d
+         * @return {?}
+         */
+        (d) => y(d)));
         this.chart = select(this._element.nativeElement).attr('aria-hidden', 'true');
         this.svg = this.chart
             .append('svg')
@@ -1975,11 +2730,28 @@ class PbdsDatavizSparklineComponent {
                 .enter()
                 .append('rect')
                 .attr('class', 'sparkbar')
-                .attr('x', (d, i) => x(i))
-                .attr('y', d => (d > 0 ? y(d) : y(0)))
+                .attr('x', (/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => x(i)))
+                .attr('y', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => (d > 0 ? y(d) : y(0))))
                 .attr('width', barWidth)
-                .attr('height', d => Math.abs(y(d) - y(0)))
-                .attr('fill', d => (d > 0 ? this.color : this.colorNegative));
+                .attr('height', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => Math.abs(y(d) - y(0))))
+                .attr('fill', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => (d > 0 ? this.color : this.colorNegative)));
         }
     }
 }
@@ -2009,7 +2781,7 @@ PbdsDatavizSparklineComponent.propDecorators = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class PbdsDatavizModule {
 }
@@ -2035,12 +2807,12 @@ PbdsDatavizModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class PbdsHeaderShadowDirective {
     /**
@@ -2066,9 +2838,13 @@ class PbdsHeaderShadowDirective {
         if (this.item) {
             /** @type {?} */
             const div = document.body.querySelector(`${this.item}`);
-            div.addEventListener('scroll', event => {
+            div.addEventListener('scroll', (/**
+             * @param {?} event
+             * @return {?}
+             */
+            event => {
                 this.shadow = event.srcElement.scrollTop > 20;
-            });
+            }));
         }
     }
 }
@@ -2090,7 +2866,7 @@ PbdsHeaderShadowDirective.propDecorators = {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class PbdsHeaderShadowModule {
 }
@@ -2104,12 +2880,12 @@ PbdsHeaderShadowModule.decorators = [
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 export { PbdsDatavizModule, PbdsDatavizService, PbdsDatavizBarComponent, PbdsDatavizLineComponent, PbdsDatavizPieComponent, PbdsDatavizGaugeComponent, PbdsDatavizSparklineComponent, PbdsHeaderShadowModule, PbdsHeaderShadowDirective };

@@ -4,7 +4,7 @@ import { ViewportScroller, CommonModule } from '@angular/common';
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var PbdsDatavizService = /** @class */ (function () {
     function PbdsDatavizService() {
@@ -26,10 +26,19 @@ var PbdsDatavizService = /** @class */ (function () {
                 '#aad88f'
             ]
         };
-        this.getColors = function (mono) {
+        this.getColors = (/**
+         * @param {?} mono
+         * @return {?}
+         */
+        function (mono) {
             return mono ? _this.colors.mono : _this.colors.theme;
-        };
-        this.createGradientDefs = function (svg, mono) {
+        });
+        this.createGradientDefs = (/**
+         * @param {?} svg
+         * @param {?} mono
+         * @return {?}
+         */
+        function (svg, mono) {
             /** @type {?} */
             var colors = mono ? [_this.colors.mono[2]] : _this.colors.theme;
             for (var i = 0; i < colors.length; i++) {
@@ -57,8 +66,12 @@ var PbdsDatavizService = /** @class */ (function () {
                     .attr('stop-opacity', '.3'); // bottom of bar will be .3 opacity
             }
             return colors;
-        };
-        this.createGlowFilter = function (svg) {
+        });
+        this.createGlowFilter = (/**
+         * @param {?} svg
+         * @return {?}
+         */
+        function (svg) {
             // add a new definition
             /** @type {?} */
             var glow = svg
@@ -105,7 +118,7 @@ var PbdsDatavizService = /** @class */ (function () {
             for (var x = 0; x < feOffsets.length; x++) {
                 merge.append('feMergeNode').attr('in', 'coloredBlur' + x);
             }
-        };
+        });
     }
     PbdsDatavizService.decorators = [
         { type: Injectable, args: [{
@@ -120,7 +133,7 @@ var PbdsDatavizService = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var PbdsDatavizPieComponent = /** @class */ (function () {
     function PbdsDatavizPieComponent(_dataviz, _element) {
@@ -138,84 +151,176 @@ var PbdsDatavizPieComponent = /** @class */ (function () {
         this.legendFormatString = '';
         this.hovered = new EventEmitter();
         this.clicked = new EventEmitter();
-        this.legendMouseOverFocus = function (data, index, nodes) {
+        this.legendMouseOverFocus = (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (data, index, nodes) {
             _this.chart
                 .selectAll('.legend-item')
-                .filter(function (d, i) { return i !== index; })
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i !== index; }))
                 .classed('inactive', true);
-        };
-        this.legendMouseOutBlur = function (data, index, nodes) {
+        });
+        this.legendMouseOutBlur = (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (data, index, nodes) {
             _this.chart.selectAll('.legend-item').classed('inactive', false);
-        };
-        this.pathMouseOver = function (data, index, nodes) {
+        });
+        this.pathMouseOver = (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (data, index, nodes) {
             /** @type {?} */
             var slices = _this.chart.selectAll('.slice');
             /** @type {?} */
-            var slice = slices.filter(function (d, i) { return i === index; });
+            var slice = slices.filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i === index; }));
             _this.chart
                 .selectAll('.legend-item')
-                .filter(function (d, i) { return i !== index; })
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i !== index; }))
                 .classed('inactive', true);
-            slices.filter(function (d, i) { return i !== index; }).classed('inactive', true);
+            slices.filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i !== index; })).classed('inactive', true);
             slice
                 .transition()
                 .duration(300)
                 .delay(0)
-                .attrTween('d', function (d) {
+                .attrTween('d', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            function (d) {
                 /** @type {?} */
                 var i = interpolate(d.outerRadius, _this.outerRadius + _this.arcZoom);
-                return function (t) {
+                return (/**
+                 * @param {?} t
+                 * @return {?}
+                 */
+                function (t) {
                     d.outerRadius = i(t);
                     return _this.arc(d);
-                };
-            });
+                });
+            }));
             _this.hovered.emit(data.data ? data.data : data); // legend hover data is different than slice hover data
-        };
-        this.pathMouseOut = function (data, index, value) {
+        });
+        this.pathMouseOut = (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} value
+         * @return {?}
+         */
+        function (data, index, value) {
             /** @type {?} */
             var slices = _this.chart.selectAll('.slice');
             /** @type {?} */
-            var slice = slices.filter(function (d, i) { return i === index; });
+            var slice = slices.filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i === index; }));
             _this.chart
                 .selectAll('.legend-item')
-                .filter(function (d, i) { return i !== index; })
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i !== index; }))
                 .classed('inactive', false);
             slices.classed('inactive', false);
             slice
                 .transition()
                 .duration(300)
                 .delay(0)
-                .attrTween('d', function (d) {
+                .attrTween('d', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            function (d) {
                 /** @type {?} */
                 var i = interpolate(d.outerRadius, _this.outerRadius);
-                return function (t) {
+                return (/**
+                 * @param {?} t
+                 * @return {?}
+                 */
+                function (t) {
                     d.outerRadius = i(t);
                     return _this.arc(d);
-                };
-            });
-        };
-        this.pathClick = function (data, index, nodes) {
+                });
+            }));
+        });
+        this.pathClick = (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (data, index, nodes) {
             _this.clicked.emit(data.data);
-        };
-        this.tooltipShow = function (node, data) {
+        });
+        this.tooltipShow = (/**
+         * @param {?} node
+         * @param {?} data
+         * @return {?}
+         */
+        function (node, data) {
             _this.tooltipSetPosition(node);
             /** @type {?} */
             var percentage = (data.endAngle - data.startAngle) / (2 * Math.PI);
             _this.tooltip.html("\n        <div class=\"tooltip-label\">" + data.data.label + "</div>\n        <div class=\"tooltip-value\">" + _this.tooltipFormat(percentage) + "</div>\n      ");
             _this.tooltip.style('opacity', 1);
-        };
-        this.tooltipMove = function (node) {
+        });
+        this.tooltipMove = (/**
+         * @param {?} node
+         * @return {?}
+         */
+        function (node) {
             _this.tooltipSetPosition(node);
-        };
-        this.tooltipHide = function () {
+        });
+        this.tooltipHide = (/**
+         * @return {?}
+         */
+        function () {
             _this.tooltip.style('opacity', 0);
-        };
-        this.tooltipSetPosition = function (node) {
+        });
+        this.tooltipSetPosition = (/**
+         * @param {?} node
+         * @return {?}
+         */
+        function (node) {
             /** @type {?} */
             var coordinates = mouse(node);
             _this.tooltip.style('left', coordinates[0] + 16 + "px");
             _this.tooltip.style('top', coordinates[1] + 16 + "px");
-        };
+        });
     }
     /**
      * @return {?}
@@ -237,7 +342,11 @@ var PbdsDatavizPieComponent = /** @class */ (function () {
         this.tooltipFormat = format(this.tooltipFormatString);
         this.colorRange = scaleOrdinal()
             .range(this.colors)
-            .domain(this.data.map(function (c) { return c.label; }));
+            .domain(this.data.map((/**
+         * @param {?} c
+         * @return {?}
+         */
+        function (c) { return c.label; })));
         if (this.type === 'pie') {
             this.innerRadius = 0;
             this.anglePad = 0;
@@ -254,7 +363,11 @@ var PbdsDatavizPieComponent = /** @class */ (function () {
             this.margin.right) + " " + (this.height + this.margin.top + this.margin.bottom));
         this.pie = pie()
             .padAngle(this.anglePad)
-            .value(function (d) { return d.value; });
+            .value((/**
+         * @param {?} d
+         * @return {?}
+         */
+        function (d) { return d.value; }));
         this.arc = arc()
             .padRadius(this.outerRadius)
             .innerRadius(this.innerRadius);
@@ -263,9 +376,17 @@ var PbdsDatavizPieComponent = /** @class */ (function () {
             .data(this.pie(this.data))
             .enter()
             .append('path')
-            .each(function (d) { return (d.outerRadius = _this.outerRadius); })
+            .each((/**
+         * @param {?} d
+         * @return {?}
+         */
+        function (d) { return (d.outerRadius = _this.outerRadius); }))
             .attr('d', this.arc)
-            .attr('fill', function (d) { return _this.colorRange(d.data.label); })
+            .attr('fill', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        function (d) { return _this.colorRange(d.data.label); }))
             .attr('class', 'slice');
         if (this.type === 'pie') {
             this.paths
@@ -285,44 +406,98 @@ var PbdsDatavizPieComponent = /** @class */ (function () {
         this.legend
             .append('span')
             .attr('class', 'legend-key')
-            .style('background-color', function (d) { return _this.colorRange(d.label); });
+            .style('background-color', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        function (d) { return _this.colorRange(d.label); }));
         /** @type {?} */
         var legendDescription = this.legend.append('span').attr('class', 'legend-description');
         legendDescription
             .append('span')
             .attr('class', 'legend-label')
-            .html(function (d) { return d.label; });
+            .html((/**
+         * @param {?} d
+         * @return {?}
+         */
+        function (d) { return d.label; }));
         legendDescription
             .append('span')
             .attr('class', 'legend-value')
-            .html(function (d) { return _this.legendFormat(d.value); });
+            .html((/**
+         * @param {?} d
+         * @return {?}
+         */
+        function (d) { return _this.legendFormat(d.value); }));
         this.legend
-            .on('mouseover focus', function (data, index, nodes) {
+            .on('mouseover focus', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (data, index, nodes) {
             _this.legendMouseOverFocus(data, index, nodes);
             _this.pathMouseOver(data, index, nodes);
-        })
-            .on('mouseout blur', function (data, index, nodes) {
+        }))
+            .on('mouseout blur', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (data, index, nodes) {
             _this.legendMouseOutBlur(data, index, nodes);
             _this.pathMouseOut(data, index, nodes);
-        })
-            .on('click', function (data, index, nodes) {
+        }))
+            .on('click', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (data, index, nodes) {
             _this.clicked.emit(data);
-        });
+        }));
         this.paths
-            .on('mouseover', function (data, index, nodes) {
+            .on('mouseover', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (data, index, nodes) {
             _this.pathMouseOver(data, index, nodes);
             _this.tooltipShow(_this.chart.node(), data);
-        })
-            .on('mousemove', function (data, index, nodes) {
+        }))
+            .on('mousemove', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (data, index, nodes) {
             _this.tooltipMove(_this.chart.node());
-        })
-            .on('mouseout', function (data, index, nodes) {
+        }))
+            .on('mouseout', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (data, index, nodes) {
             _this.pathMouseOut(data, index, nodes);
             _this.tooltipHide();
-        })
-            .on('click', function (data, index, nodes) {
+        }))
+            .on('click', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (data, index, nodes) {
             _this.pathClick(data, index, nodes);
-        });
+        }));
         this.tooltip = this.chart
             .append('div')
             .style('opacity', 0)
@@ -374,7 +549,7 @@ var PbdsDatavizPieComponent = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var PbdsDatavizBarComponent = /** @class */ (function () {
     function PbdsDatavizBarComponent(_dataviz, _element, _scroll) {
@@ -417,12 +592,27 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
         this.average = null;
         this.hovered = new EventEmitter();
         this.clicked = new EventEmitter();
-        this.updateChart = function () {
+        this.updateChart = (/**
+         * @return {?}
+         */
+        function () {
             // update the xScale
-            _this.xAxisScale.domain(_this.data.map(function (d) { return d.label; }));
+            _this.xAxisScale.domain(_this.data.map((/**
+             * @param {?} d
+             * @return {?}
+             */
+            function (d) { return d.label; })));
             // update the yScale
             _this.yAxisScale
-                .domain([min(_this.data, function (d) { return d.value; }), max(_this.data, function (d) { return d.value + d.value * +_this.yAxisBuffer; })])
+                .domain([min(_this.data, (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return d.value; })), max(_this.data, (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return d.value + d.value * +_this.yAxisBuffer; }))])
                 .rangeRound([_this.height, 0])
                 .nice();
             _this.xAxis
@@ -457,17 +647,33 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
                     .select('.gray-bar')
                     .transition()
                     .duration(1000)
-                    .attr('x', function (d) { return _this.xAxisScale(d.label); })
+                    .attr('x', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.xAxisScale(d.label); }))
                     .attr('width', _this.xAxisScale.bandwidth());
                 // update the existing bars
                 group
                     .select('.bar')
                     .transition()
                     .duration(1000)
-                    .attr('x', function (d) { return _this.xAxisScale(d.label) + _this.xAxisScale.bandwidth() / 4; })
+                    .attr('x', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.xAxisScale(d.label) + _this.xAxisScale.bandwidth() / 4; }))
                     .attr('width', _this.xAxisScale.bandwidth() / 2)
-                    .attr('height', function (d) { return _this.height - _this.yAxisScale(d.value); })
-                    .attr('y', function (d) { return _this.yAxisScale(d.value); });
+                    .attr('height', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.height - _this.yAxisScale(d.value); }))
+                    .attr('y', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.yAxisScale(d.value); }));
                 // add group on enter
                 /** @type {?} */
                 var groupEnter = group
@@ -480,7 +686,11 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
                     .attr('class', 'gray-bar')
                     .attr('rx', 0)
                     .attr('height', 0)
-                    .attr('x', function (d) { return _this.xAxisScale(d.label); })
+                    .attr('x', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.xAxisScale(d.label); }))
                     .attr('width', _this.xAxisScale.bandwidth())
                     .transition()
                     // .delay(1000)
@@ -491,22 +701,60 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
                     .append('rect')
                     .attr('class', 'bar')
                     .attr('rx', 2)
-                    .attr('fill', function (d) { return "url(#gradient-" + _this.colorRange(d.value).substr(1) + ")"; }) // removes hash to prevent safari bug;
-                    .attr('x', function (d) { return _this.xAxisScale(d.label) + _this.xAxisScale.bandwidth() / 4; })
+                    .attr('fill', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return "url(#gradient-" + _this.colorRange(d.value).substr(1) + ")"; })) // removes hash to prevent safari bug;
+                    .attr('x', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.xAxisScale(d.label) + _this.xAxisScale.bandwidth() / 4; }))
                     .attr('width', _this.xAxisScale.bandwidth() / 2)
                     .attr('y', _this.height)
                     .attr('height', 0)
                     .transition()
                     .duration(1000)
                     // .delay(1000)
-                    .attr('y', function (d) { return _this.yAxisScale(d.value); })
-                    .attr('height', function (d) { return _this.height - _this.yAxisScale(d.value); })
-                    .attr('data-color', function (d) { return _this.colorRange(d.value); });
+                    .attr('y', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.yAxisScale(d.value); }))
+                    .attr('height', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.height - _this.yAxisScale(d.value); }))
+                    .attr('data-color', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.colorRange(d.value); }));
                 groupEnter
                     .select('.bar')
-                    .on('mouseover focus', function (data, index, nodes) { return _this.barMouseOverFocus(event$1, data, index, nodes); })
-                    .on('mouseout blur', function (data, index, nodes) { return _this.barMouseOutBlur(); })
-                    .on('click', function (data, index, nodes) { return _this.barMouseClick(event$1, data, index, nodes); });
+                    .on('mouseover focus', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                function (data, index, nodes) { return _this.barMouseOverFocus(event$1, data, index, nodes); }))
+                    .on('mouseout blur', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                function (data, index, nodes) { return _this.barMouseOutBlur(); }))
+                    .on('click', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                function (data, index, nodes) { return _this.barMouseClick(event$1, data, index, nodes); }));
             }
             else {
                 // rebind data to groups
@@ -517,12 +765,24 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
                 // update the existing bars
                 group
                     .select('.bar')
-                    .attr('x', function (d) { return _this.xAxisScale(d.label) + _this.xAxisScale.bandwidth() / 5.5; })
+                    .attr('x', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.xAxisScale(d.label) + _this.xAxisScale.bandwidth() / 5.5; }))
                     .attr('width', _this.xAxisScale.bandwidth() / 1.5)
                     .transition()
                     .duration(1000)
-                    .attr('y', function (d) { return _this.yAxisScale(d.value); })
-                    .attr('height', function (d) { return _this.height - _this.yAxisScale(d.value); });
+                    .attr('y', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.yAxisScale(d.value); }))
+                    .attr('height', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.height - _this.yAxisScale(d.value); }));
                 // add group on enter
                 /** @type {?} */
                 var groupEnter = group
@@ -534,21 +794,56 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
                     .append('rect')
                     .attr('class', 'bar')
                     .attr('rx', 2)
-                    .attr('fill', function (d) { return "url(#gradient-" + _this.colorRange(d.value).substr(1) + ")"; }) // removes hash to prevent safari bug;
-                    .attr('x', function (d) { return _this.xAxisScale(d.label) + _this.xAxisScale.bandwidth() / 5.5; })
+                    .attr('fill', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return "url(#gradient-" + _this.colorRange(d.value).substr(1) + ")"; })) // removes hash to prevent safari bug;
+                    .attr('x', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.xAxisScale(d.label) + _this.xAxisScale.bandwidth() / 5.5; }))
                     .attr('width', _this.xAxisScale.bandwidth() / 1.5)
                     .attr('y', _this.height)
                     .attr('height', 0)
                     .transition()
                     .duration(1000)
-                    .attr('y', function (d) { return _this.yAxisScale(d.value); })
-                    .attr('height', function (d) { return _this.height - _this.yAxisScale(d.value); })
-                    .attr('data-color', function (d) { return _this.colorRange(d.value); });
+                    .attr('y', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.yAxisScale(d.value); }))
+                    .attr('height', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.height - _this.yAxisScale(d.value); }))
+                    .attr('data-color', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.colorRange(d.value); }));
                 groupEnter
                     .select('.bar')
-                    .on('mouseover focus', function (data, index, nodes) { return _this.barMouseOverFocus(event$1, data, index, nodes); })
-                    .on('mouseout blur', function () { return _this.barMouseOutBlur(); })
-                    .on('click', function (data, index, nodes) { return _this.barMouseClick(event$1, data, index, nodes); });
+                    .on('mouseover focus', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                function (data, index, nodes) { return _this.barMouseOverFocus(event$1, data, index, nodes); }))
+                    .on('mouseout blur', (/**
+                 * @return {?}
+                 */
+                function () { return _this.barMouseOutBlur(); }))
+                    .on('click', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                function (data, index, nodes) { return _this.barMouseClick(event$1, data, index, nodes); }));
             }
             if (!_this.hideLegend) {
                 /** @type {?} */
@@ -558,7 +853,11 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
                     .data(_this.data);
                 legendItem.exit().remove();
                 // update existing items
-                legendItem.select('.legend-label').html(function (d) {
+                legendItem.select('.legend-label').html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) {
                     // return this.legendLabelFormat === null ? d.label : this.legendLabelFormat(d.label);
                     switch (_this.legendLabelFormatType) {
                         case 'number':
@@ -570,7 +869,7 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
                         default:
                             return d.label;
                     }
-                });
+                }));
                 // legend items on enter
                 /** @type {?} */
                 var enterLegendItem = legendItem
@@ -580,11 +879,19 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
                 enterLegendItem
                     .append('span')
                     .attr('class', 'legend-key')
-                    .style('background-color', function (d) { return _this.colorRange(d.value); });
+                    .style('background-color', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.colorRange(d.value); }));
                 enterLegendItem
                     .append('span')
                     .attr('class', 'legend-label')
-                    .html(function (d) {
+                    .html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) {
                     // return this.legendLabelFormat === null ? d.label : this.legendLabelFormat(d.label);
                     switch (_this.legendLabelFormatType) {
                         case 'number':
@@ -596,11 +903,26 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
                         default:
                             return d.label;
                     }
-                });
+                }));
                 enterLegendItem
-                    .on('mouseover', function (data, index, nodes) { return _this.legendMouseOver(event$1, data, index, nodes); })
-                    .on('mouseout', function () { return _this.legendMouseOut(); })
-                    .on('click', function (data, index, nodes) { return _this.legendMouseClick(event$1, data, index, nodes); });
+                    .on('mouseover', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                function (data, index, nodes) { return _this.legendMouseOver(event$1, data, index, nodes); }))
+                    .on('mouseout', (/**
+                 * @return {?}
+                 */
+                function () { return _this.legendMouseOut(); }))
+                    .on('click', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                function (data, index, nodes) { return _this.legendMouseClick(event$1, data, index, nodes); }));
             }
             if (_this.threshold) {
                 _this.yThreshold
@@ -616,28 +938,61 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
                     .duration(1000)
                     .attr('transform', "translate(0,  " + _this.yAxisScale(+_this.average) + ")");
             }
-        };
-        this.barMouseOverFocus = function (event, data, index, nodes) {
+        });
+        this.barMouseOverFocus = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (event, data, index, nodes) {
             _this.chart
                 .selectAll('.bar-group')
-                .filter(function (d, i) { return i !== index; })
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i !== index; }))
                 .classed('inactive', true);
             /** @type {?} */
             var bar = _this.chart
                 .selectAll('.bar-group')
-                .filter(function (d, i) { return i === index; })
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i === index; }))
                 .select('.bar');
             /** @type {?} */
             var barColor = bar.attr('data-color');
-            bar.style('fill', function () { return barColor; });
+            bar.style('fill', (/**
+             * @return {?}
+             */
+            function () { return barColor; }));
             _this.chart
                 .selectAll('.legend-item')
-                .filter(function (d, i) { return i !== index; })
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i !== index; }))
                 .classed('inactive', true);
-            _this.tooltipShow(data, nodes.filter(function (d, i) { return i === index; }));
+            _this.tooltipShow(data, nodes.filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i === index; })));
             _this.hovered.emit({ event: event, data: data });
-        };
-        this.barMouseOutBlur = function () {
+        });
+        this.barMouseOutBlur = (/**
+         * @return {?}
+         */
+        function () {
             _this.chart
                 .selectAll('.bar-group')
                 .classed('inactive', false)
@@ -645,31 +1000,71 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
                 .style('fill', null);
             _this.chart.selectAll('.legend-item').classed('inactive', false);
             _this.tooltipHide();
-        };
-        this.barMouseClick = function (event, data, index, nodes) {
+        });
+        this.barMouseClick = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (event, data, index, nodes) {
             _this.clicked.emit({ event: event, data: data });
-        };
-        this.legendMouseOver = function (event, data, index, nodes) {
+        });
+        this.legendMouseOver = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (event, data, index, nodes) {
             _this.chart
                 .selectAll('.legend-item')
-                .filter(function (d, i) { return i !== index; })
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i !== index; }))
                 .classed('inactive', true);
             _this.chart
                 .selectAll('.bar-group')
-                .filter(function (d, i) { return i !== index; })
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i !== index; }))
                 .classed('inactive', true);
             /** @type {?} */
             var bar = _this.chart
                 .selectAll('.bar-group')
-                .filter(function (d, i) { return i === index; })
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i === index; }))
                 .select('.bar');
             /** @type {?} */
             var barColor = bar.attr('data-color');
-            bar.style('fill', function () { return barColor; });
-            _this.tooltipShow(data, _this.chart.selectAll('.bar').filter(function (d, i) { return i === index; })._groups[0]); // TODO: find better way than using _groups
+            bar.style('fill', (/**
+             * @return {?}
+             */
+            function () { return barColor; }));
+            _this.tooltipShow(data, _this.chart.selectAll('.bar').filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i === index; }))._groups[0]); // TODO: find better way than using _groups
             _this.hovered.emit({ event: event, data: data });
-        };
-        this.legendMouseOut = function () {
+        });
+        this.legendMouseOut = (/**
+         * @return {?}
+         */
+        function () {
             _this.chart.selectAll('.legend-item').classed('inactive', false);
             _this.chart
                 .selectAll('.bar-group')
@@ -677,11 +1072,23 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
                 .select('.bar')
                 .style('fill', null);
             _this.tooltipHide();
-        };
-        this.legendMouseClick = function (event, data, index, nodes) {
+        });
+        this.legendMouseClick = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (event, data, index, nodes) {
             _this.clicked.emit({ event: event, data: data });
-        };
-        this.tooltipShow = function (data, node) {
+        });
+        this.tooltipShow = (/**
+         * @param {?} data
+         * @param {?} node
+         * @return {?}
+         */
+        function (data, node) {
             /** @type {?} */
             var dimensions = node[0].getBoundingClientRect();
             /** @type {?} */
@@ -712,11 +1119,18 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
             _this.tooltip.style('top', +scroll[1] + +dimensions.top - tooltipOffsetHeight + "px"); //
             _this.tooltip.style('left', +scroll[0] + +dimensions.left - tooltipOffsetWidth + +dimensions.width / 2 + "px");
             _this.tooltip.style('opacity', 1);
-        };
-        this.tooltipHide = function () {
+        });
+        this.tooltipHide = (/**
+         * @return {?}
+         */
+        function () {
             _this.tooltip.style('opacity', 0);
-        };
-        this.xAxisFormatter = function (item) {
+        });
+        this.xAxisFormatter = (/**
+         * @param {?} item
+         * @return {?}
+         */
+        function (item) {
             switch (_this.xAxisFormatType) {
                 case 'number':
                     return _this.xAxisFormat(item);
@@ -727,8 +1141,12 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
                 default:
                     return item;
             }
-        };
-        this.yAxisFormatter = function (item) {
+        });
+        this.yAxisFormatter = (/**
+         * @param {?} item
+         * @return {?}
+         */
+        function (item) {
             switch (_this.yAxisFormatType) {
                 case 'number':
                     return _this.yAxisFormat(item);
@@ -739,7 +1157,7 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
                 default:
                     return item;
             }
-        };
+        });
     }
     /**
      * @return {?}
@@ -883,7 +1301,11 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
         this.colorRange = scaleOrdinal().range(this._dataviz.createGradientDefs(this.svg, this.singleSeries));
         // X AXIS
         this.xAxisScale = scaleBand()
-            .domain(this.data.map(function (d) { return d.label; }))
+            .domain(this.data.map((/**
+         * @param {?} d
+         * @return {?}
+         */
+        function (d) { return d.label; })))
             .rangeRound([0, this.width - this.margin.left])
             .align(0);
         // add padding to the scale for gray bars
@@ -915,7 +1337,15 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
         }
         // Y AXIS
         this.yAxisScale = scaleLinear()
-            .domain([min(this.data, function (d) { return d.value; }), max(this.data, function (d) { return d.value + d.value * +_this.yAxisBuffer; })])
+            .domain([min(this.data, (/**
+             * @param {?} d
+             * @return {?}
+             */
+            function (d) { return d.value; })), max(this.data, (/**
+             * @param {?} d
+             * @return {?}
+             */
+            function (d) { return d.value + d.value * +_this.yAxisBuffer; }))])
             .nice()
             .rangeRound([this.height, 0]);
         this.yAxisCall = axisLeft(this.yAxisScale)
@@ -1047,7 +1477,7 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var PbdsDatavizLineComponent = /** @class */ (function () {
     function PbdsDatavizLineComponent(_dataviz, _element, _scroll) {
@@ -1089,21 +1519,39 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
         this.clicked = new EventEmitter();
         this.tooltipHovered = new EventEmitter();
         this.tooltipClicked = new EventEmitter();
-        this.updateChart = function () {
+        this.updateChart = (/**
+         * @return {?}
+         */
+        function () {
             _this.mouserect.data(_this.data);
             // update the xScale
-            _this.xAxisScale.domain(extent(_this.data.dates, function (d, i) {
+            _this.xAxisScale.domain(extent(_this.data.dates, (/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) {
                 return isoParse(d);
-            }));
+            })));
             // update the yScale
             _this.yAxisScale
                 .domain([
-                min(_this.data.series, function (d, i) {
+                min(_this.data.series, (/**
+                 * @param {?} d
+                 * @param {?} i
+                 * @return {?}
+                 */
+                function (d, i) {
                     return +min(d.values);
-                }),
-                max(_this.data.series, function (d, i) {
+                })),
+                max(_this.data.series, (/**
+                 * @param {?} d
+                 * @param {?} i
+                 * @return {?}
+                 */
+                function (d, i) {
                     return +max(d.values);
-                })
+                }))
             ])
                 .nice();
             _this.xAxis
@@ -1136,21 +1584,42 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
                 .select('path.line')
                 .transition()
                 .duration(1000)
-                .attr('d', function (d) { return _this.d3line(d.values); });
+                .attr('d', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            function (d) { return _this.d3line(d.values); }));
             if (_this.area) {
                 group
                     .select('path.area')
                     .transition()
                     .duration(1000)
-                    .attr('d', function (d) { return _this.d3area(d.values); });
+                    .attr('d', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.d3area(d.values); }));
             }
             group
                 .selectAll('circle')
-                .data(function (d) { return d.values; })
+                .data((/**
+             * @param {?} d
+             * @return {?}
+             */
+            function (d) { return d.values; }))
                 .transition()
                 .duration(1000)
-                .attr('cx', function (d, i) { return _this.xAxisScale(isoParse(_this.data.dates[i])); })
-                .attr('cy', function (d) { return _this.yAxisScale(d); });
+                .attr('cx', (/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return _this.xAxisScale(isoParse(_this.data.dates[i])); }))
+                .attr('cy', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            function (d) { return _this.yAxisScale(d); }));
             // add group on enter
             /** @type {?} */
             var groupEnter = group
@@ -1162,17 +1631,33 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
             var line$$1 = groupEnter
                 .append('path')
                 .attr('class', 'line')
-                .style('color', function (d) { return _this.colorRange(d.label); })
+                .style('color', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            function (d) { return _this.colorRange(d.label); }))
                 .style('stroke-width', _this.lineWidth)
                 .transition()
                 .duration(1000)
-                .attr('d', function (data) { return _this.d3line(data.values); });
+                .attr('d', (/**
+             * @param {?} data
+             * @return {?}
+             */
+            function (data) { return _this.d3line(data.values); }));
             if (_this.area) {
                 groupEnter
                     .append('path')
                     .attr('class', 'area')
-                    .attr('d', function (data) { return _this.d3area(data.values); })
-                    .style('color', function (d) { return _this.colorRange(d.label); });
+                    .attr('d', (/**
+                 * @param {?} data
+                 * @return {?}
+                 */
+                function (data) { return _this.d3area(data.values); }))
+                    .style('color', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.colorRange(d.label); }));
             }
             // add points
             if (_this.linePoints) {
@@ -1180,14 +1665,31 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
                 var points = groupEnter
                     .append('g')
                     .attr('class', 'points')
-                    .style('color', function (d) { return _this.colorRange(d.label); });
+                    .style('color', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.colorRange(d.label); }));
                 /** @type {?} */
-                var circles = points.selectAll('circle').data(function (d) { return d.values; });
+                var circles = points.selectAll('circle').data((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return d.values; }));
                 circles
                     .enter()
                     .append('circle')
-                    .attr('cx', function (d, i) { return _this.xAxisScale(isoParse(_this.data.dates[i])); })
-                    .attr('cy', function (d) { return _this.yAxisScale(d); })
+                    .attr('cx', (/**
+                 * @param {?} d
+                 * @param {?} i
+                 * @return {?}
+                 */
+                function (d, i) { return _this.xAxisScale(isoParse(_this.data.dates[i])); }))
+                    .attr('cy', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.yAxisScale(d); }))
                     .attr('r', _this.lineWidth * 2)
                     .style('stroke-width', _this.lineWidth);
             }
@@ -1202,7 +1704,11 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
                     .data(_this.data.series);
                 legendItem.exit().remove();
                 // update existing items
-                legendItem.select('.legend-label').html(function (d) {
+                legendItem.select('.legend-label').html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) {
                     switch (_this.legendLabelFormatType) {
                         case 'number':
                             return _this.legendLabelFormat(d.label);
@@ -1213,7 +1719,7 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
                         default:
                             return d.label;
                     }
-                });
+                }));
                 // legend items on enter
                 /** @type {?} */
                 var enterLegendItem = legendItem
@@ -1223,11 +1729,19 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
                 enterLegendItem
                     .append('span')
                     .attr('class', 'legend-key')
-                    .style('background-color', function (d) { return _this.colorRange(d.label); });
+                    .style('background-color', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.colorRange(d.label); }));
                 enterLegendItem
                     .append('span')
                     .attr('class', 'legend-label')
-                    .html(function (d) {
+                    .html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) {
                     switch (_this.legendLabelFormatType) {
                         case 'number':
                             return _this.legendLabelFormat(d.label);
@@ -1238,11 +1752,26 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
                         default:
                             return d.label;
                     }
-                });
+                }));
                 enterLegendItem
-                    .on('mouseover', function (data, index, nodes) { return _this.legendMouseOver(event$1, data, index, nodes); })
-                    .on('mouseout', function () { return _this.legendMouseOut(); })
-                    .on('click', function (data, index, nodes) { return _this.legendMouseClick(event$1, data, index, nodes); });
+                    .on('mouseover', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                function (data, index, nodes) { return _this.legendMouseOver(event$1, data, index, nodes); }))
+                    .on('mouseout', (/**
+                 * @return {?}
+                 */
+                function () { return _this.legendMouseOut(); }))
+                    .on('click', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                function (data, index, nodes) { return _this.legendMouseClick(event$1, data, index, nodes); }));
             }
             if (!_this.hideTooltip) {
                 /** @type {?} */
@@ -1252,9 +1781,13 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
                     .data(_this.data.series);
                 tooltipItem.exit().remove();
                 // update existing items
-                tooltipItem.select('.tooltip-label pr-2').html(function (d) {
+                tooltipItem.select('.tooltip-label pr-2').html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) {
                     return _this.tooltipHeadingFormat(d.label);
-                });
+                }));
                 // items on enter
                 /** @type {?} */
                 var entertooltipItem = tooltipItem
@@ -1263,33 +1796,67 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
                     .attr('class', 'tooltip-item');
                 entertooltipItem
                     .append('td')
-                    .style('color', function (d) { return _this.colorRange(d.label); })
+                    .style('color', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return _this.colorRange(d.label); }))
                     .append('span')
                     .attr('class', 'pbds-tooltip-key');
                 entertooltipItem
                     .append('td')
                     .attr('class', 'tooltip-label pr-2')
-                    .html(function (d) {
+                    .html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) {
                     return _this.tooltipLabelFormatType ? _this.tooltipLabelFormat(d.label) : d.label;
-                });
+                }));
                 entertooltipItem
                     .append('td')
                     .attr('class', 'tooltip-value text-right')
-                    .html(function (d) { return ''; });
+                    .html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) { return ''; }));
             }
             _this.mouserect.raise();
-        };
-        this.legendMouseOver = function (event, data, index, nodes) {
+        });
+        this.legendMouseOver = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (event, data, index, nodes) {
             _this.chart
                 .selectAll('.legend-item')
-                .filter(function (d, i) { return i !== index; })
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i !== index; }))
                 .classed('inactive', true);
             _this.chart
                 .selectAll('.line-group')
-                .filter(function (d, i) { return i !== index; })
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i !== index; }))
                 .classed('inactive', true);
             /** @type {?} */
-            var line$$1 = _this.chart.selectAll('.line-group').filter(function (d, i) { return i === index; });
+            var line$$1 = _this.chart.selectAll('.line-group').filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i === index; }));
             line$$1.classed('active', true);
             if (_this.linePoints) {
                 /** @type {?} */
@@ -1297,8 +1864,11 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
                 circles.classed('active', true);
             }
             _this.hovered.emit({ event: event, data: data });
-        };
-        this.legendMouseOut = function () {
+        });
+        this.legendMouseOut = (/**
+         * @return {?}
+         */
+        function () {
             _this.chart.selectAll('.legend-item').classed('inactive', false);
             _this.chart
                 .selectAll('.line-group')
@@ -1309,11 +1879,24 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
                 var circles = _this.chart.selectAll('circle');
                 circles.classed('active', false);
             }
-        };
-        this.legendMouseClick = function (event, data, index, nodes) {
+        });
+        this.legendMouseClick = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (event, data, index, nodes) {
             _this.clicked.emit({ event: event, data: data });
-        };
-        this.mouserectMouseMove = function (event, index, nodes) {
+        });
+        this.mouserectMouseMove = (/**
+         * @param {?} event
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (event, index, nodes) {
             /** @type {?} */
             var mouseXDate = _this.xAxisScale.invert(mouse(nodes[0])[0]);
             // return date at mouse x position
@@ -1335,8 +1918,18 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
             // console.log(+mouseXDate, leftIndex, +dateLower, +dateUpper, +closestDate, closestIndex);
             /** @type {?} */
             var circles = _this.svg.selectAll('.line-group').selectAll('circle');
-            circles.filter(function (d, i) { return i === closestIndex; }).classed('active', true);
-            circles.filter(function (d, i) { return i !== closestIndex; }).classed('active', false);
+            circles.filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i === closestIndex; })).classed('active', true);
+            circles.filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return i !== closestIndex; })).classed('active', false);
             _this.tooltipLine
                 .attr('x1', _this.xAxisScale(closestDate))
                 .attr('x2', _this.xAxisScale(closestDate))
@@ -1345,55 +1938,93 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
             _this.tooltipShow(_this.tooltipLine.node(), closestIndex);
             _this.mousedata = {
                 date: closestDate,
-                series: _this.data.series.map(function (d) {
+                series: _this.data.series.map((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) {
                     return {
                         label: d.label,
                         value: d.values[closestIndex]
                     };
-                })
+                }))
             };
             _this.tooltipHovered.emit({ event: event, data: _this.mousedata });
-        };
-        this.mouserectMouseOut = function (event, index, nodes) {
+        });
+        this.mouserectMouseOut = (/**
+         * @param {?} event
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (event, index, nodes) {
             _this.svg.selectAll('circle').classed('active', false);
             _this.tooltipLine.classed('active', false);
             _this.tooltipHide();
-        };
-        this.mouserectMouseClick = function () {
+        });
+        this.mouserectMouseClick = (/**
+         * @return {?}
+         */
+        function () {
             _this.tooltipClicked.emit({ event: event, data: _this.mousedata });
-        };
-        this.tooltipShow = function (node, closestIndex) {
+        });
+        this.tooltipShow = (/**
+         * @param {?} node
+         * @param {?} closestIndex
+         * @return {?}
+         */
+        function (node, closestIndex) {
             /** @type {?} */
             var scroll = _this._scroll.getScrollPosition();
             /** @type {?} */
             var dimensions = node.getBoundingClientRect();
-            _this.tooltip.select('.tooltip-header').html(function (d) {
+            _this.tooltip.select('.tooltip-header').html((/**
+             * @param {?} d
+             * @return {?}
+             */
+            function (d) {
                 /** @type {?} */
                 var parsedTime = isoParse(_this.data.dates[closestIndex]);
                 return _this.tooltipHeadingFormat(parsedTime);
-            });
-            _this.tooltip.selectAll('.tooltip-value').html(function (d, i) {
+            }));
+            _this.tooltip.selectAll('.tooltip-value').html((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) {
                 return _this.tooltipValueFormatType
                     ? _this.tooltipValueFormat(_this.data.series[i].values[closestIndex])
                     : _this.data.series[i].values[closestIndex];
-            });
+            }));
             /** @type {?} */
             var tooltipOffsetHeight = +_this.tooltip.node().offsetHeight;
             _this.tooltip.style('top', dimensions.y + dimensions.height / 2 - tooltipOffsetHeight / 2 + scroll[1] + "px");
             _this.tooltip.style('left', dimensions.x + 8 + "px");
             _this.tooltip.style('opacity', 1);
-        };
-        this.tooltipHide = function () {
+        });
+        this.tooltipHide = (/**
+         * @return {?}
+         */
+        function () {
             _this.tooltip.style('opacity', 0);
-        };
-        this.xAxisFormatter = function (item) {
+        });
+        this.xAxisFormatter = (/**
+         * @param {?} item
+         * @return {?}
+         */
+        function (item) {
             /** @type {?} */
             var parseDate = isoParse(item);
             return _this.xAxisFormat(parseDate);
-        };
-        this.yAxisFormatter = function (item) {
+        });
+        this.yAxisFormatter = (/**
+         * @param {?} item
+         * @return {?}
+         */
+        function (item) {
             return _this.yAxisFormat(item);
-        };
+        });
     }
     /**
      * @return {?}
@@ -1489,8 +2120,17 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
         }
         // define line
         this.d3line = line()
-            .x(function (d, i) { return _this.xAxisScale(isoParse(_this.data.dates[i])); })
-            .y(function (d) { return _this.yAxisScale(d); });
+            .x((/**
+         * @param {?} d
+         * @param {?} i
+         * @return {?}
+         */
+        function (d, i) { return _this.xAxisScale(isoParse(_this.data.dates[i])); }))
+            .y((/**
+         * @param {?} d
+         * @return {?}
+         */
+        function (d) { return _this.yAxisScale(d); }));
         // define line curve
         if (this.lineCurved) {
             this.d3line.curve(curveCatmullRom.alpha(0.5));
@@ -1498,9 +2138,19 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
         // define area
         if (this.area) {
             this.d3area = area()
-                .x(function (d, i) { return _this.xAxisScale(isoParse(_this.data.dates[i])); })
+                .x((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return _this.xAxisScale(isoParse(_this.data.dates[i])); }))
                 .y0(this.height)
-                .y1(function (d, i) { return _this.yAxisScale(d); });
+                .y1((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return _this.yAxisScale(d); }));
             if (this.lineCurved) {
                 this.d3area.curve(curveCatmullRom.alpha(0.5));
             }
@@ -1523,9 +2173,27 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
             .attr('width', this.width - this.margin.left - this.margin.right)
             .attr('height', this.height)
             .attr('class', 'mouserect')
-            .on('mousemove', function (data, index, nodes) { return _this.mouserectMouseMove(event$1, index, nodes); })
-            .on('mouseout', function (data, index, nodes) { return _this.mouserectMouseOut(event$1, index, nodes); })
-            .on('click', function (data, index, nodes) { return _this.mouserectMouseClick(); });
+            .on('mousemove', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (data, index, nodes) { return _this.mouserectMouseMove(event$1, index, nodes); }))
+            .on('mouseout', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (data, index, nodes) { return _this.mouserectMouseOut(event$1, index, nodes); }))
+            .on('click', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        function (data, index, nodes) { return _this.mouserectMouseClick(); }));
         this.tooltipLine = this.svg
             .append('line')
             .attr('y1', 0)
@@ -1537,9 +2205,14 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
         this._dataviz.createGlowFilter(this.svg);
         // X AXIS
         this.xAxisScale = scaleTime()
-            .domain(extent(this.data.dates, function (d, i) {
+            .domain(extent(this.data.dates, (/**
+         * @param {?} d
+         * @param {?} i
+         * @return {?}
+         */
+        function (d, i) {
             return isoParse(d);
-        }))
+        })))
             .range([0, this.width - this.margin.left - this.margin.right]);
         this.xAxisCall = axisBottom(this.xAxisScale)
             .ticks(+this.xAxisTicks)
@@ -1568,12 +2241,22 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
         // Y AXIS
         this.yAxisScale = scaleLinear()
             .domain([
-            min(this.data.series, function (d, i) {
+            min(this.data.series, (/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) {
                 return +min(d.values);
-            }),
-            max(this.data.series, function (d, i) {
+            })),
+            max(this.data.series, (/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) {
                 return +max(d.values);
-            })
+            }))
         ])
             .nice()
             .range([this.height, 0]);
@@ -1701,7 +2384,7 @@ var PbdsDatavizLineComponent = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var PbdsDatavizGaugeComponent = /** @class */ (function () {
     function PbdsDatavizGaugeComponent(_dataviz, _element) {
@@ -1717,15 +2400,26 @@ var PbdsDatavizGaugeComponent = /** @class */ (function () {
         this.labelFormatString = '';
         this.labelSmall = false;
         this.gaugeWidth = 20;
-        this.degreesToRadians = function (degree) {
+        this.degreesToRadians = (/**
+         * @param {?} degree
+         * @return {?}
+         */
+        function (degree) {
             return (degree * Math.PI) / 180;
-        };
-        this.calculateMinMax = function () {
+        });
+        this.calculateMinMax = (/**
+         * @return {?}
+         */
+        function () {
             /** @type {?} */
             var percentage = _this.data.minvalue / (_this.data.maxvalue - _this.data.minvalue);
             return percentage * (_this.data.value - _this.data.minvalue) + (_this.data.value - _this.data.minvalue);
-        };
-        this.calculateCurve = function (data) {
+        });
+        this.calculateCurve = (/**
+         * @param {?} data
+         * @return {?}
+         */
+        function (data) {
             /** @type {?} */
             var start = _this.degreesToRadians(_this.startAngle);
             /** @type {?} */
@@ -1736,8 +2430,11 @@ var PbdsDatavizGaugeComponent = /** @class */ (function () {
                     endAngle: end
                 }
             ];
-        };
-        this.drawChart = function () {
+        });
+        this.drawChart = (/**
+         * @return {?}
+         */
+        function () {
             _this.gauge = _this.svg.append('g').attr('class', 'gauge-group');
             // background arc
             /** @type {?} */
@@ -1746,28 +2443,36 @@ var PbdsDatavizGaugeComponent = /** @class */ (function () {
                 .data(_this.calculateCurve(_this.data.maxvalue))
                 .attr('class', 'gauge-background')
                 .attr('fill', _this.backgroundColor)
-                .attr('d', function (d) {
+                .attr('d', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            function (d) {
                 return _this.arc({
                     innerRadius: _this.radius - _this.gaugeWidth,
                     outerRadius: _this.radius,
                     startAngle: d.startAngle,
                     endAngle: d.endAngle
                 });
-            });
+            }));
             // value arc
             _this.gauge
                 .append('path')
                 .data(_this.calculateCurve(_this.calculateMinMax()))
                 .attr('class', 'gauge-value')
                 .attr('fill', _this.color)
-                .attr('d', function (d) {
+                .attr('d', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            function (d) {
                 return _this.arc({
                     innerRadius: _this.radius - _this.gaugeWidth,
                     outerRadius: _this.radius,
                     startAngle: d.startAngle,
                     endAngle: d.endAngle
                 });
-            });
+            }));
             switch (_this.type) {
                 case 'horseshoe':
                     _this.svg.attr('height', 230).attr('viewBox', "-" + _this.width / 2 + " -" + _this.height / 2 + " " + _this.height + " 230");
@@ -1777,8 +2482,11 @@ var PbdsDatavizGaugeComponent = /** @class */ (function () {
                     _this.svg.attr('viewBox', "-" + _this.width / 2 + " -" + _this.width / 2 + " " + _this.width + " " + _this.width / 2);
                     break;
             }
-        };
-        this.updateChart = function () {
+        });
+        this.updateChart = (/**
+         * @return {?}
+         */
+        function () {
             /** @type {?} */
             var group = _this.svg.select('.gauge-group');
             group
@@ -1791,14 +2499,27 @@ var PbdsDatavizGaugeComponent = /** @class */ (function () {
                 .transition()
                 .duration(750)
                 .call(_this.textTween, _this.data.value);
-        };
-        this.arcTween = function (transition, value) {
+        });
+        this.arcTween = (/**
+         * @param {?} transition
+         * @param {?} value
+         * @return {?}
+         */
+        function (transition, value) {
             /** @type {?} */
             var newAngle = _this.calculateCurve(value);
-            transition.attrTween('d', function (d) {
+            transition.attrTween('d', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            function (d) {
                 /** @type {?} */
                 var interpolate$$1 = interpolate(d.endAngle, newAngle[0].endAngle);
-                return function (t) {
+                return (/**
+                 * @param {?} t
+                 * @return {?}
+                 */
+                function (t) {
                     d.endAngle = interpolate$$1(t);
                     return _this.arc({
                         innerRadius: _this.radius - _this.gaugeWidth,
@@ -1806,25 +2527,41 @@ var PbdsDatavizGaugeComponent = /** @class */ (function () {
                         startAngle: d.startAngle,
                         endAngle: d.endAngle
                     });
-                };
-            });
-        };
-        this.textTween = function (transition, value) {
+                });
+            }));
+        });
+        this.textTween = (/**
+         * @param {?} transition
+         * @param {?} value
+         * @return {?}
+         */
+        function (transition, value) {
             value = format('.2f')(value); // TODO: check these .1f formats here, should they be inputs?
             value = value.replace(/,/g, '.');
-            transition.tween('text', function () {
+            transition.tween('text', (/**
+             * @return {?}
+             */
+            function () {
                 /** @type {?} */
                 var interpolate$$1 = interpolate(format('.2f')(+_this.oldValue), value);
-                return function (t) {
-                    _this.labelTween.text(function (d) {
+                return (/**
+                 * @param {?} t
+                 * @return {?}
+                 */
+                function (t) {
+                    _this.labelTween.text((/**
+                     * @param {?} d
+                     * @return {?}
+                     */
+                    function (d) {
                         /** @type {?} */
                         var updatedNumber = _this.labelFormat(interpolate$$1(t));
                         _this.label = updatedNumber;
                         return updatedNumber;
-                    });
-                };
-            });
-        };
+                    }));
+                });
+            }));
+        });
     }
     /**
      * @return {?}
@@ -1910,7 +2647,7 @@ var PbdsDatavizGaugeComponent = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var PbdsDatavizSparklineComponent = /** @class */ (function () {
     function PbdsDatavizSparklineComponent(_element) {
@@ -1946,13 +2683,31 @@ var PbdsDatavizSparklineComponent = /** @class */ (function () {
         x.domain([0, this.data.length]);
         /** @type {?} */
         var line$$1 = line()
-            .x(function (d, i) { return x(i); })
-            .y(function (d) { return y(d); });
+            .x((/**
+         * @param {?} d
+         * @param {?} i
+         * @return {?}
+         */
+        function (d, i) { return x(i); }))
+            .y((/**
+         * @param {?} d
+         * @return {?}
+         */
+        function (d) { return y(d); }));
         /** @type {?} */
         var area$$1 = area()
-            .x(function (d, i) { return x(i); })
+            .x((/**
+         * @param {?} d
+         * @param {?} i
+         * @return {?}
+         */
+        function (d, i) { return x(i); }))
             .y0(this.height)
-            .y1(function (d) { return y(d); });
+            .y1((/**
+         * @param {?} d
+         * @return {?}
+         */
+        function (d) { return y(d); }));
         this.chart = select(this._element.nativeElement).attr('aria-hidden', 'true');
         this.svg = this.chart
             .append('svg')
@@ -1990,11 +2745,28 @@ var PbdsDatavizSparklineComponent = /** @class */ (function () {
                 .enter()
                 .append('rect')
                 .attr('class', 'sparkbar')
-                .attr('x', function (d, i) { return x(i); })
-                .attr('y', function (d) { return (d > 0 ? y(d) : y(0)); })
+                .attr('x', (/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            function (d, i) { return x(i); }))
+                .attr('y', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            function (d) { return (d > 0 ? y(d) : y(0)); }))
                 .attr('width', barWidth)
-                .attr('height', function (d) { return Math.abs(y(d) - y(0)); })
-                .attr('fill', function (d) { return (d > 0 ? _this.color : _this.colorNegative); });
+                .attr('height', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            function (d) { return Math.abs(y(d) - y(0)); }))
+                .attr('fill', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            function (d) { return (d > 0 ? _this.color : _this.colorNegative); }));
         }
     };
     PbdsDatavizSparklineComponent.decorators = [
@@ -2025,7 +2797,7 @@ var PbdsDatavizSparklineComponent = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var PbdsDatavizModule = /** @class */ (function () {
     function PbdsDatavizModule() {
@@ -2054,12 +2826,12 @@ var PbdsDatavizModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var PbdsHeaderShadowDirective = /** @class */ (function () {
     function PbdsHeaderShadowDirective(_scroll, _element) {
@@ -2088,9 +2860,13 @@ var PbdsHeaderShadowDirective = /** @class */ (function () {
         if (this.item) {
             /** @type {?} */
             var div = document.body.querySelector("" + this.item);
-            div.addEventListener('scroll', function (event) {
+            div.addEventListener('scroll', (/**
+             * @param {?} event
+             * @return {?}
+             */
+            function (event) {
                 _this.shadow = event.srcElement.scrollTop > 20;
-            });
+            }));
         }
     };
     PbdsHeaderShadowDirective.decorators = [
@@ -2113,7 +2889,7 @@ var PbdsHeaderShadowDirective = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 var PbdsHeaderShadowModule = /** @class */ (function () {
     function PbdsHeaderShadowModule() {
@@ -2130,12 +2906,12 @@ var PbdsHeaderShadowModule = /** @class */ (function () {
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 /**
  * @fileoverview added by tsickle
- * @suppress {checkTypes,extraRequire,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
 export { PbdsDatavizModule, PbdsDatavizService, PbdsDatavizBarComponent, PbdsDatavizLineComponent, PbdsDatavizPieComponent, PbdsDatavizGaugeComponent, PbdsDatavizSparklineComponent, PbdsHeaderShadowModule, PbdsHeaderShadowDirective };
