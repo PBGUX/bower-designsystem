@@ -534,6 +534,7 @@
             this.singleSeries = false;
             this.xAxisFormatType = null;
             this.xAxisFormatString = '';
+            this.xAxisBuffer = 0.01;
             this.yAxisFormatType = null;
             this.yAxisFormatString = '';
             this.yAxisTicks = 5;
@@ -570,13 +571,16 @@
                  */function (d) { return d.label; })));
                 // update the yScale
                 _this.yAxisScale
-                    .domain([d3.min(_this.data, ( /**
+                    .domain([
+                    d3.min(_this.data, ( /**
                      * @param {?} d
                      * @return {?}
-                     */function (d) { return d.value; })), d3.max(_this.data, ( /**
+                     */function (d) { return d.value - d.value * +_this.xAxisBuffer; })),
+                    d3.max(_this.data, ( /**
                      * @param {?} d
                      * @return {?}
-                     */function (d) { return d.value + d.value * +_this.yAxisBuffer; }))])
+                     */function (d) { return d.value + d.value * +_this.yAxisBuffer; }))
+                ])
                     .rangeRound([_this.height, 0])
                     .nice();
                 _this.xAxis
@@ -663,7 +667,7 @@
                         .attr('fill', ( /**
                  * @param {?} d
                  * @return {?}
-                 */function (d) { return "url(#gradient-" + _this.colorRange(d.value).substr(1) + ")"; })) // removes hash to prevent safari bug;
+                 */function (d) { return "url(#gradient-" + _this.colorRange(d.label).substr(1) + ")"; })) // removes hash to prevent safari bug;
                         .attr('x', ( /**
                  * @param {?} d
                  * @return {?}
@@ -685,7 +689,7 @@
                         .attr('data-color', ( /**
                  * @param {?} d
                  * @return {?}
-                 */function (d) { return _this.colorRange(d.value); }));
+                 */function (d) { return _this.colorRange(d.label); }));
                     groupEnter
                         .select('.bar')
                         .on('mouseover focus', ( /**
@@ -745,7 +749,7 @@
                         .attr('fill', ( /**
                  * @param {?} d
                  * @return {?}
-                 */function (d) { return "url(#gradient-" + _this.colorRange(d.value).substr(1) + ")"; })) // removes hash to prevent safari bug;
+                 */function (d) { return "url(#gradient-" + _this.colorRange(d.label).substr(1) + ")"; })) // removes hash to prevent safari bug;
                         .attr('x', ( /**
                  * @param {?} d
                  * @return {?}
@@ -766,7 +770,7 @@
                         .attr('data-color', ( /**
                  * @param {?} d
                  * @return {?}
-                 */function (d) { return _this.colorRange(d.value); }));
+                 */function (d) { return _this.colorRange(d.label); }));
                     groupEnter
                         .select('.bar')
                         .on('mouseover focus', ( /**
@@ -821,7 +825,7 @@
                         .style('background-color', ( /**
                  * @param {?} d
                  * @return {?}
-                 */function (d) { return _this.colorRange(d.value); }));
+                 */function (d) { return _this.colorRange(d.label); }));
                     enterLegendItem
                         .append('span')
                         .attr('class', 'legend-label')
@@ -1250,13 +1254,16 @@
                 }
                 // Y AXIS
                 this.yAxisScale = d3.scaleLinear()
-                    .domain([d3.min(this.data, ( /**
+                    .domain([
+                    d3.min(this.data, ( /**
                      * @param {?} d
                      * @return {?}
-                     */function (d) { return d.value; })), d3.max(this.data, ( /**
+                     */function (d) { return d.value - d.value * +_this.xAxisBuffer; })),
+                    d3.max(this.data, ( /**
                      * @param {?} d
                      * @return {?}
-                     */function (d) { return d.value + d.value * +_this.yAxisBuffer; }))])
+                     */function (d) { return d.value + d.value * +_this.yAxisBuffer; }))
+                ])
                     .nice()
                     .rangeRound([this.height, 0]);
                 this.yAxisCall = d3.axisLeft(this.yAxisScale)
@@ -1363,6 +1370,7 @@
             singleSeries: [{ type: i0.Input }],
             xAxisFormatType: [{ type: i0.Input }],
             xAxisFormatString: [{ type: i0.Input }],
+            xAxisBuffer: [{ type: i0.Input }],
             yAxisFormatType: [{ type: i0.Input }],
             yAxisFormatString: [{ type: i0.Input }],
             yAxisTicks: [{ type: i0.Input }],

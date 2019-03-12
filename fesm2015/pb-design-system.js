@@ -565,6 +565,7 @@ class PbdsDatavizBarComponent {
         this.singleSeries = false;
         this.xAxisFormatType = null;
         this.xAxisFormatString = '';
+        this.xAxisBuffer = 0.01;
         this.yAxisFormatType = null;
         this.yAxisFormatString = '';
         this.yAxisTicks = 5;
@@ -603,15 +604,18 @@ class PbdsDatavizBarComponent {
             d => d.label)));
             // update the yScale
             this.yAxisScale
-                .domain([min(this.data, (/**
+                .domain([
+                min(this.data, (/**
                  * @param {?} d
                  * @return {?}
                  */
-                d => d.value)), max(this.data, (/**
+                d => d.value - d.value * +this.xAxisBuffer)),
+                max(this.data, (/**
                  * @param {?} d
                  * @return {?}
                  */
-                d => d.value + d.value * +this.yAxisBuffer))])
+                d => d.value + d.value * +this.yAxisBuffer))
+            ])
                 .rangeRound([this.height, 0])
                 .nice();
             this.xAxis
@@ -704,7 +708,7 @@ class PbdsDatavizBarComponent {
                  * @param {?} d
                  * @return {?}
                  */
-                d => `url(#gradient-${this.colorRange(d.value).substr(1)})`)) // removes hash to prevent safari bug;
+                d => `url(#gradient-${this.colorRange(d.label).substr(1)})`)) // removes hash to prevent safari bug;
                     .attr('x', (/**
                  * @param {?} d
                  * @return {?}
@@ -730,7 +734,7 @@ class PbdsDatavizBarComponent {
                  * @param {?} d
                  * @return {?}
                  */
-                d => this.colorRange(d.value)));
+                d => this.colorRange(d.label)));
                 groupEnter
                     .select('.bar')
                     .on('mouseover focus', (/**
@@ -797,7 +801,7 @@ class PbdsDatavizBarComponent {
                  * @param {?} d
                  * @return {?}
                  */
-                d => `url(#gradient-${this.colorRange(d.value).substr(1)})`)) // removes hash to prevent safari bug;
+                d => `url(#gradient-${this.colorRange(d.label).substr(1)})`)) // removes hash to prevent safari bug;
                     .attr('x', (/**
                  * @param {?} d
                  * @return {?}
@@ -822,7 +826,7 @@ class PbdsDatavizBarComponent {
                  * @param {?} d
                  * @return {?}
                  */
-                d => this.colorRange(d.value)));
+                d => this.colorRange(d.label)));
                 groupEnter
                     .select('.bar')
                     .on('mouseover focus', (/**
@@ -882,7 +886,7 @@ class PbdsDatavizBarComponent {
                  * @param {?} d
                  * @return {?}
                  */
-                d => this.colorRange(d.value)));
+                d => this.colorRange(d.label)));
                 enterLegendItem
                     .append('span')
                     .attr('class', 'legend-label')
@@ -1335,15 +1339,18 @@ class PbdsDatavizBarComponent {
         }
         // Y AXIS
         this.yAxisScale = scaleLinear()
-            .domain([min(this.data, (/**
+            .domain([
+            min(this.data, (/**
              * @param {?} d
              * @return {?}
              */
-            d => d.value)), max(this.data, (/**
+            d => d.value - d.value * +this.xAxisBuffer)),
+            max(this.data, (/**
              * @param {?} d
              * @return {?}
              */
-            d => d.value + d.value * +this.yAxisBuffer))])
+            d => d.value + d.value * +this.yAxisBuffer))
+        ])
             .nice()
             .rangeRound([this.height, 0]);
         this.yAxisCall = axisLeft(this.yAxisScale)
@@ -1442,6 +1449,7 @@ PbdsDatavizBarComponent.propDecorators = {
     singleSeries: [{ type: Input }],
     xAxisFormatType: [{ type: Input }],
     xAxisFormatString: [{ type: Input }],
+    xAxisBuffer: [{ type: Input }],
     yAxisFormatType: [{ type: Input }],
     yAxisFormatString: [{ type: Input }],
     yAxisTicks: [{ type: Input }],
