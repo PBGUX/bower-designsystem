@@ -15,11 +15,11 @@ export declare class PbdsDatavizBarComponent implements OnInit, OnDestroy, OnCha
     singleSeries: boolean;
     xAxisFormatType: 'number' | 'time';
     xAxisFormatString: string;
-    xAxisBuffer: number;
     yAxisFormatType: 'number' | 'time';
     yAxisFormatString: string;
     yAxisTicks: number;
-    yAxisBuffer: number;
+    yAxisMinBuffer: number;
+    yAxisMaxBuffer: number;
     hideLegend: boolean;
     legendWidth: number;
     legendPosition: 'right' | 'bottom';

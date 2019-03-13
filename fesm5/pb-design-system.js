@@ -566,11 +566,11 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
         this.singleSeries = false;
         this.xAxisFormatType = null;
         this.xAxisFormatString = '';
-        this.xAxisBuffer = 0.01;
         this.yAxisFormatType = null;
         this.yAxisFormatString = '';
         this.yAxisTicks = 5;
-        this.yAxisBuffer = 0.01;
+        this.yAxisMinBuffer = 0.01;
+        this.yAxisMaxBuffer = 0.01;
         this.hideLegend = false;
         this.legendWidth = 105 + 28; // hardcoded legend width + left margin, do not document until feedback
         // hardcoded legend width + left margin, do not document until feedback
@@ -610,12 +610,12 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
                  * @param {?} d
                  * @return {?}
                  */
-                function (d) { return d.value - d.value * +_this.xAxisBuffer; })),
+                function (d) { return d.value - d.value * +_this.yAxisMinBuffer; })),
                 max(_this.data, (/**
                  * @param {?} d
                  * @return {?}
                  */
-                function (d) { return d.value + d.value * +_this.yAxisBuffer; }))
+                function (d) { return d.value + d.value * +_this.yAxisMaxBuffer; }))
             ])
                 .rangeRound([_this.height, 0])
                 .nice();
@@ -1346,12 +1346,12 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
              * @param {?} d
              * @return {?}
              */
-            function (d) { return d.value - d.value * +_this.xAxisBuffer; })),
+            function (d) { return d.value - d.value * +_this.yAxisMinBuffer; })),
             max(this.data, (/**
              * @param {?} d
              * @return {?}
              */
-            function (d) { return d.value + d.value * +_this.yAxisBuffer; }))
+            function (d) { return d.value + d.value * +_this.yAxisMaxBuffer; }))
         ])
             .nice()
             .rangeRound([this.height, 0]);
@@ -1457,11 +1457,11 @@ var PbdsDatavizBarComponent = /** @class */ (function () {
         singleSeries: [{ type: Input }],
         xAxisFormatType: [{ type: Input }],
         xAxisFormatString: [{ type: Input }],
-        xAxisBuffer: [{ type: Input }],
         yAxisFormatType: [{ type: Input }],
         yAxisFormatString: [{ type: Input }],
         yAxisTicks: [{ type: Input }],
-        yAxisBuffer: [{ type: Input }],
+        yAxisMinBuffer: [{ type: Input }],
+        yAxisMaxBuffer: [{ type: Input }],
         hideLegend: [{ type: Input }],
         legendWidth: [{ type: Input }],
         legendPosition: [{ type: Input }],

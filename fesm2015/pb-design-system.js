@@ -565,11 +565,11 @@ class PbdsDatavizBarComponent {
         this.singleSeries = false;
         this.xAxisFormatType = null;
         this.xAxisFormatString = '';
-        this.xAxisBuffer = 0.01;
         this.yAxisFormatType = null;
         this.yAxisFormatString = '';
         this.yAxisTicks = 5;
-        this.yAxisBuffer = 0.01;
+        this.yAxisMinBuffer = 0.01;
+        this.yAxisMaxBuffer = 0.01;
         this.hideLegend = false;
         this.legendWidth = 105 + 28; // hardcoded legend width + left margin, do not document until feedback
         // hardcoded legend width + left margin, do not document until feedback
@@ -609,12 +609,12 @@ class PbdsDatavizBarComponent {
                  * @param {?} d
                  * @return {?}
                  */
-                d => d.value - d.value * +this.xAxisBuffer)),
+                d => d.value - d.value * +this.yAxisMinBuffer)),
                 max(this.data, (/**
                  * @param {?} d
                  * @return {?}
                  */
-                d => d.value + d.value * +this.yAxisBuffer))
+                d => d.value + d.value * +this.yAxisMaxBuffer))
             ])
                 .rangeRound([this.height, 0])
                 .nice();
@@ -1344,12 +1344,12 @@ class PbdsDatavizBarComponent {
              * @param {?} d
              * @return {?}
              */
-            d => d.value - d.value * +this.xAxisBuffer)),
+            d => d.value - d.value * +this.yAxisMinBuffer)),
             max(this.data, (/**
              * @param {?} d
              * @return {?}
              */
-            d => d.value + d.value * +this.yAxisBuffer))
+            d => d.value + d.value * +this.yAxisMaxBuffer))
         ])
             .nice()
             .rangeRound([this.height, 0]);
@@ -1449,11 +1449,11 @@ PbdsDatavizBarComponent.propDecorators = {
     singleSeries: [{ type: Input }],
     xAxisFormatType: [{ type: Input }],
     xAxisFormatString: [{ type: Input }],
-    xAxisBuffer: [{ type: Input }],
     yAxisFormatType: [{ type: Input }],
     yAxisFormatString: [{ type: Input }],
     yAxisTicks: [{ type: Input }],
-    yAxisBuffer: [{ type: Input }],
+    yAxisMinBuffer: [{ type: Input }],
+    yAxisMaxBuffer: [{ type: Input }],
     hideLegend: [{ type: Input }],
     legendWidth: [{ type: Input }],
     legendPosition: [{ type: Input }],

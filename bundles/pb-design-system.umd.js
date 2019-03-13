@@ -534,11 +534,11 @@
             this.singleSeries = false;
             this.xAxisFormatType = null;
             this.xAxisFormatString = '';
-            this.xAxisBuffer = 0.01;
             this.yAxisFormatType = null;
             this.yAxisFormatString = '';
             this.yAxisTicks = 5;
-            this.yAxisBuffer = 0.01;
+            this.yAxisMinBuffer = 0.01;
+            this.yAxisMaxBuffer = 0.01;
             this.hideLegend = false;
             this.legendWidth = 105 + 28; // hardcoded legend width + left margin, do not document until feedback
             // hardcoded legend width + left margin, do not document until feedback
@@ -575,11 +575,11 @@
                     d3.min(_this.data, ( /**
                      * @param {?} d
                      * @return {?}
-                     */function (d) { return d.value - d.value * +_this.xAxisBuffer; })),
+                     */function (d) { return d.value - d.value * +_this.yAxisMinBuffer; })),
                     d3.max(_this.data, ( /**
                      * @param {?} d
                      * @return {?}
-                     */function (d) { return d.value + d.value * +_this.yAxisBuffer; }))
+                     */function (d) { return d.value + d.value * +_this.yAxisMaxBuffer; }))
                 ])
                     .rangeRound([_this.height, 0])
                     .nice();
@@ -1258,11 +1258,11 @@
                     d3.min(this.data, ( /**
                      * @param {?} d
                      * @return {?}
-                     */function (d) { return d.value - d.value * +_this.xAxisBuffer; })),
+                     */function (d) { return d.value - d.value * +_this.yAxisMinBuffer; })),
                     d3.max(this.data, ( /**
                      * @param {?} d
                      * @return {?}
-                     */function (d) { return d.value + d.value * +_this.yAxisBuffer; }))
+                     */function (d) { return d.value + d.value * +_this.yAxisMaxBuffer; }))
                 ])
                     .nice()
                     .rangeRound([this.height, 0]);
@@ -1370,11 +1370,11 @@
             singleSeries: [{ type: i0.Input }],
             xAxisFormatType: [{ type: i0.Input }],
             xAxisFormatString: [{ type: i0.Input }],
-            xAxisBuffer: [{ type: i0.Input }],
             yAxisFormatType: [{ type: i0.Input }],
             yAxisFormatString: [{ type: i0.Input }],
             yAxisTicks: [{ type: i0.Input }],
-            yAxisBuffer: [{ type: i0.Input }],
+            yAxisMinBuffer: [{ type: i0.Input }],
+            yAxisMaxBuffer: [{ type: i0.Input }],
             hideLegend: [{ type: i0.Input }],
             legendWidth: [{ type: i0.Input }],
             legendPosition: [{ type: i0.Input }],
