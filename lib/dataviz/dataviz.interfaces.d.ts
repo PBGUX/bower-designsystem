@@ -1,25 +1,25 @@
-export interface IPbdsDatavizPie {
+export interface PbdsDatavizPie {
     label: string;
     value: number;
 }
-export interface IPbdsDatavizBar {
+export interface PbdsDatavizBar {
     label: string;
     value: number;
 }
-export interface IPbdsDatavizGauge {
+export interface PbdsDatavizGauge {
     minvalue: number;
     maxvalue: number;
     value: number;
 }
-export interface IPbdsDatavizSparkline {
+export interface PbdsDatavizSparkline {
     [index: number]: number;
     length: number;
 }
-export interface IPbdsDatavizLine {
+export interface PbdsDatavizLine {
     dates: Array<string>;
-    series: Array<IPbdsDatavizLineSeries>;
+    series: Array<PbdsDatavizLineSeries>;
 }
-export interface IPbdsDatavizLineSeries {
+export interface PbdsDatavizLineSeries {
     label: string;
     values: Array<number>;
 }

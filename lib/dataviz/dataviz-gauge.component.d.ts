@@ -1,12 +1,12 @@
 import { OnInit, ElementRef, OnChanges, SimpleChanges } from '@angular/core';
 import { PbdsDatavizService } from './dataviz.service';
-import { IPbdsDatavizGauge } from './dataviz.interfaces';
+import { PbdsDatavizGauge } from './dataviz.interfaces';
 export declare class PbdsDatavizGaugeComponent implements OnInit, OnChanges {
     private _dataviz;
     private _element;
     chartClass: boolean;
     pieClass: boolean;
-    data: IPbdsDatavizGauge;
+    data: PbdsDatavizGauge;
     width: number;
     type: 'halfmoon' | 'horseshoe' | 'circle';
     color: string;

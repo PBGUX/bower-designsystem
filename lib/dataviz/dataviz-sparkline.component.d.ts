@@ -1,10 +1,10 @@
 import { OnInit, ElementRef } from '@angular/core';
-import { IPbdsDatavizSparkline } from './dataviz.interfaces';
+import { PbdsDatavizSparkline } from './dataviz.interfaces';
 export declare class PbdsDatavizSparklineComponent implements OnInit {
     private _element;
     chartClass: boolean;
     sparklineClass: boolean;
-    data: IPbdsDatavizSparkline;
+    data: PbdsDatavizSparkline;
     width: number;
     height: number;
     color: string;

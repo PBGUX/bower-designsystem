@@ -1,12 +1,12 @@
 import { OnInit, ElementRef, OnChanges, SimpleChanges, EventEmitter } from '@angular/core';
 import { PbdsDatavizService } from './dataviz.service';
-import { IPbdsDatavizPie } from './dataviz.interfaces';
+import { PbdsDatavizPie } from './dataviz.interfaces';
 export declare class PbdsDatavizPieComponent implements OnInit, OnChanges {
     private _dataviz;
     private _element;
     chartClass: boolean;
     pieClass: boolean;
-    data: Array<IPbdsDatavizPie>;
+    data: Array<PbdsDatavizPie>;
     width: number;
     type: 'pie' | 'donut';
     mono: boolean;

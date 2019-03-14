@@ -1,14 +1,14 @@
 import { OnInit, OnChanges, EventEmitter, ElementRef, OnDestroy, SimpleChanges } from '@angular/core';
 import { ViewportScroller } from '@angular/common';
 import { PbdsDatavizService } from './dataviz.service';
-import { IPbdsDatavizLine } from './dataviz.interfaces';
+import { PbdsDatavizLine } from './dataviz.interfaces';
 export declare class PbdsDatavizLineComponent implements OnInit, OnDestroy, OnChanges {
     private _dataviz;
     private _element;
     private _scroll;
     chartClass: boolean;
     lineClass: boolean;
-    data: IPbdsDatavizLine;
+    data: PbdsDatavizLine;
     width: number;
     height: number;
     type: 'medium' | 'high' | 'debug';
