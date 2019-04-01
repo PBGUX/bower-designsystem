@@ -1278,7 +1278,8 @@ class PbdsDatavizBarComponent {
             // single series overrides
             if (this.singleSeries) {
                 this.hideLegend = true;
-                this.hideXAxis = true;
+                this.hideXAxis = false;
+                this.hideXAxisTicks = true;
                 this.hideXGrid = true;
                 this.hideTooltipLabel = false;
             }
