@@ -1,5 +1,5 @@
 import { select, scaleOrdinal, pie, arc, interpolate, mouse, format, isoParse, timeFormat, scaleBand, scaleLinear, min, max, axisBottom, axisLeft, event as event$1, isoFormat, scaleTime, line, extent, curveCatmullRom, bisectLeft, area } from 'd3';
-import { Injectable, NgModule, Directive, HostListener, HostBinding, ElementRef, Input, Component, Output, EventEmitter, ChangeDetectionStrategy, defineInjectable } from '@angular/core';
+import { Injectable, NgModule, Directive, HostListener, HostBinding, Component, Input, ElementRef, Output, EventEmitter, ChangeDetectionStrategy, defineInjectable } from '@angular/core';
 import { ViewportScroller, CommonModule } from '@angular/common';
 
 /**
@@ -580,7 +580,7 @@ class PbdsDatavizBarComponent {
         this.tooltipLabelFormatString = '';
         this.tooltipValueFormatType = null;
         this.tooltipValueFormatString = '';
-        this.marginTop = 0; // hardcoded on purpose, do not document until feedback
+        this.marginTop = 10; // hardcoded on purpose, do not document until feedback
         // hardcoded on purpose, do not document until feedback
         this.marginRight = 0; // hardcoded on purpose, do not document until feedback
         // hardcoded on purpose, do not document until feedback
@@ -1100,12 +1100,12 @@ class PbdsDatavizBarComponent {
             let label;
             switch (this.tooltipLabelFormatType) {
                 case 'number':
-                    label = this.legendLabelFormat(data.label);
+                    label = this.tooltipLabelFormat(data.label);
                     break;
                 case 'time':
                     /** @type {?} */
                     const parsedTime = isoParse(data.label);
-                    label = this.legendLabelFormat(parsedTime);
+                    label = this.tooltipLabelFormat(parsedTime);
                     break;
                 default:
                     label = data.label;
@@ -1808,7 +1808,7 @@ class PbdsDatavizLineComponent {
                     .attr('class', 'pbds-tooltip-key');
                 entertooltipItem
                     .append('td')
-                    .attr('class', 'tooltip-label pr-2')
+                    .attr('class', 'tooltip-label pr-2 text-nowrap')
                     .html((/**
                  * @param {?} d
                  * @return {?}
@@ -1818,7 +1818,7 @@ class PbdsDatavizLineComponent {
                 }));
                 entertooltipItem
                     .append('td')
-                    .attr('class', 'tooltip-value text-right')
+                    .attr('class', 'tooltip-value text-right text-nowrap')
                     .html((/**
                  * @param {?} d
                  * @return {?}
@@ -1978,9 +1978,19 @@ class PbdsDatavizLineComponent {
          */
         (node, closestIndex) => {
             /** @type {?} */
-            let scroll = this._scroll.getScrollPosition();
+            const scroll = this._scroll.getScrollPosition();
             /** @type {?} */
-            let dimensions = node.getBoundingClientRect();
+            const mouserectDimensions = node.getBoundingClientRect();
+            /** @type {?} */
+            const tooltipOffsetHeight = +this.tooltip.node().offsetHeight;
+            /** @type {?} */
+            const tooltipDimensions = this.tooltip.node().getBoundingClientRect();
+            /** @type {?} */
+            const dimensionCalculated = mouserectDimensions.left + tooltipDimensions.width + 8;
+            /** @type {?} */
+            const clientWidth = document.body.clientWidth - 10;
+            /** @type {?} */
+            let position;
             this.tooltip.select('.tooltip-header').html((/**
              * @param {?} d
              * @return {?}
@@ -2000,10 +2010,20 @@ class PbdsDatavizLineComponent {
                     ? this.tooltipValueFormat(this.data.series[i].values[closestIndex])
                     : this.data.series[i].values[closestIndex];
             }));
-            /** @type {?} */
-            let tooltipOffsetHeight = +this.tooltip.node().offsetHeight;
-            this.tooltip.style('top', `${dimensions.y + dimensions.height / 2 - tooltipOffsetHeight / 2 + scroll[1]}px`);
-            this.tooltip.style('left', `${dimensions.x + 8}px`);
+            // flip the tooltip positions if near the right edge of the screen
+            if (dimensionCalculated > clientWidth) {
+                this.tooltip.classed('east', true);
+                this.tooltip.classed('west', false);
+                position = `${mouserectDimensions.x - tooltipDimensions.width - 8}px`;
+            }
+            else if (dimensionCalculated < clientWidth) {
+                this.tooltip.classed('east', false);
+                this.tooltip.classed('west', true);
+                position = `${mouserectDimensions.x + 8}px`;
+            }
+            // set the tooltip styles
+            this.tooltip.style('top', `${mouserectDimensions.y + mouserectDimensions.height / 2 - tooltipOffsetHeight / 2 + scroll[1]}px`);
+            this.tooltip.style('left', position);
             this.tooltip.style('opacity', 1);
         });
         this.tooltipHide = (/**
@@ -2826,11 +2846,9 @@ PbdsDatavizModule.decorators = [
 class PbdsHeaderShadowDirective {
     /**
      * @param {?} _scroll
-     * @param {?} _element
      */
-    constructor(_scroll, _element) {
+    constructor(_scroll) {
         this._scroll = _scroll;
-        this._element = _element;
     }
     /**
      * @return {?}
@@ -2840,36 +2858,18 @@ class PbdsHeaderShadowDirective {
         const offset = this._scroll.getScrollPosition();
         this.shadow = offset[1] > 20;
     }
-    /**
-     * @return {?}
-     */
-    ngAfterViewInit() {
-        if (this.item) {
-            /** @type {?} */
-            const div = document.body.querySelector(`${this.item}`);
-            div.addEventListener('scroll', (/**
-             * @param {?} event
-             * @return {?}
-             */
-            event => {
-                this.shadow = event.srcElement.scrollTop > 20;
-            }));
-        }
-    }
 }
 PbdsHeaderShadowDirective.decorators = [
     { type: Directive, args: [{
-                selector: '[pbdsHeaderShadow]'
+                selector: 'header.bg-brand-header'
             },] }
 ];
 /** @nocollapse */
 PbdsHeaderShadowDirective.ctorParameters = () => [
-    { type: ViewportScroller },
-    { type: ElementRef }
+    { type: ViewportScroller }
 ];
 PbdsHeaderShadowDirective.propDecorators = {
     shadow: [{ type: HostBinding, args: ['class.pbds-header-shadow',] }],
-    item: [{ type: Input, args: ['pbdsHeaderShadow',] }],
     onWindowScroll: [{ type: HostListener, args: ['window:scroll', [],] }]
 };
 

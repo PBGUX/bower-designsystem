@@ -549,7 +549,7 @@
             this.tooltipLabelFormatString = '';
             this.tooltipValueFormatType = null;
             this.tooltipValueFormatString = '';
-            this.marginTop = 0; // hardcoded on purpose, do not document until feedback
+            this.marginTop = 10; // hardcoded on purpose, do not document until feedback
             // hardcoded on purpose, do not document until feedback
             this.marginRight = 0; // hardcoded on purpose, do not document until feedback
             // hardcoded on purpose, do not document until feedback
@@ -1018,12 +1018,12 @@
                 var label;
                 switch (_this.tooltipLabelFormatType) {
                     case 'number':
-                        label = _this.legendLabelFormat(data.label);
+                        label = _this.tooltipLabelFormat(data.label);
                         break;
                     case 'time':
                         /** @type {?} */
                         var parsedTime = d3.isoParse(data.label);
-                        label = _this.legendLabelFormat(parsedTime);
+                        label = _this.tooltipLabelFormat(parsedTime);
                         break;
                     default:
                         label = data.label;
@@ -1702,7 +1702,7 @@
                         .attr('class', 'pbds-tooltip-key');
                     entertooltipItem
                         .append('td')
-                        .attr('class', 'tooltip-label pr-2')
+                        .attr('class', 'tooltip-label pr-2 text-nowrap')
                         .html(( /**
                  * @param {?} d
                  * @return {?}
@@ -1711,7 +1711,7 @@
                     }));
                     entertooltipItem
                         .append('td')
-                        .attr('class', 'tooltip-value text-right')
+                        .attr('class', 'tooltip-value text-right text-nowrap')
                         .html(( /**
                  * @param {?} d
                  * @return {?}
@@ -1859,7 +1859,17 @@
                 /** @type {?} */
                 var scroll = _this._scroll.getScrollPosition();
                 /** @type {?} */
-                var dimensions = node.getBoundingClientRect();
+                var mouserectDimensions = node.getBoundingClientRect();
+                /** @type {?} */
+                var tooltipOffsetHeight = +_this.tooltip.node().offsetHeight;
+                /** @type {?} */
+                var tooltipDimensions = _this.tooltip.node().getBoundingClientRect();
+                /** @type {?} */
+                var dimensionCalculated = mouserectDimensions.left + tooltipDimensions.width + 8;
+                /** @type {?} */
+                var clientWidth = document.body.clientWidth - 10;
+                /** @type {?} */
+                var position;
                 _this.tooltip.select('.tooltip-header').html(( /**
                  * @param {?} d
                  * @return {?}
@@ -1877,10 +1887,20 @@
                         ? _this.tooltipValueFormat(_this.data.series[i].values[closestIndex])
                         : _this.data.series[i].values[closestIndex];
                 }));
-                /** @type {?} */
-                var tooltipOffsetHeight = +_this.tooltip.node().offsetHeight;
-                _this.tooltip.style('top', dimensions.y + dimensions.height / 2 - tooltipOffsetHeight / 2 + scroll[1] + "px");
-                _this.tooltip.style('left', dimensions.x + 8 + "px");
+                // flip the tooltip positions if near the right edge of the screen
+                if (dimensionCalculated > clientWidth) {
+                    _this.tooltip.classed('east', true);
+                    _this.tooltip.classed('west', false);
+                    position = mouserectDimensions.x - tooltipDimensions.width - 8 + "px";
+                }
+                else if (dimensionCalculated < clientWidth) {
+                    _this.tooltip.classed('east', false);
+                    _this.tooltip.classed('west', true);
+                    position = mouserectDimensions.x + 8 + "px";
+                }
+                // set the tooltip styles
+                _this.tooltip.style('top', mouserectDimensions.y + mouserectDimensions.height / 2 - tooltipOffsetHeight / 2 + scroll[1] + "px");
+                _this.tooltip.style('left', position);
                 _this.tooltip.style('opacity', 1);
             });
             this.tooltipHide = ( /**
@@ -2680,9 +2700,8 @@
      * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
      */
     var PbdsHeaderShadowDirective = /** @class */ (function () {
-        function PbdsHeaderShadowDirective(_scroll, _element) {
+        function PbdsHeaderShadowDirective(_scroll) {
             this._scroll = _scroll;
-            this._element = _element;
         }
         /**
          * @return {?}
@@ -2695,40 +2714,19 @@
                 var offset = this._scroll.getScrollPosition();
                 this.shadow = offset[1] > 20;
             };
-        /**
-         * @return {?}
-         */
-        PbdsHeaderShadowDirective.prototype.ngAfterViewInit = /**
-         * @return {?}
-         */
-            function () {
-                var _this = this;
-                if (this.item) {
-                    /** @type {?} */
-                    var div = document.body.querySelector("" + this.item);
-                    div.addEventListener('scroll', ( /**
-                     * @param {?} event
-                     * @return {?}
-                     */function (event) {
-                        _this.shadow = event.srcElement.scrollTop > 20;
-                    }));
-                }
-            };
         PbdsHeaderShadowDirective.decorators = [
             { type: i0.Directive, args: [{
-                        selector: '[pbdsHeaderShadow]'
+                        selector: 'header.bg-brand-header'
                     },] }
         ];
         /** @nocollapse */
         PbdsHeaderShadowDirective.ctorParameters = function () {
             return [
-                { type: common.ViewportScroller },
-                { type: i0.ElementRef }
+                { type: common.ViewportScroller }
             ];
         };
         PbdsHeaderShadowDirective.propDecorators = {
             shadow: [{ type: i0.HostBinding, args: ['class.pbds-header-shadow',] }],
-            item: [{ type: i0.Input, args: ['pbdsHeaderShadow',] }],
             onWindowScroll: [{ type: i0.HostListener, args: ['window:scroll', [],] }]
         };
         return PbdsHeaderShadowDirective;
