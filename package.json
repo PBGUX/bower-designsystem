@@ -1,14 +1,16 @@
 {
   "name": "pb-design-system",
-  "version": "5.1.0-beta.1",
+  "version": "5.1.0",
   "description": "PB Design System",
   "main": "dist/css/designsystem.css",
-  "scripts": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/PBGUX/pb-design-system.git"
   },
-  "author": "Design System Team",
+  "author": "Pitney Bowes",
   "license": "",
   "bugs": {
     "url": "https://github.com/PBGUX/pb-design-system/issues"
