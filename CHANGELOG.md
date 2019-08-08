@@ -25,7 +25,7 @@
 
 ## Additions
 
-- Added Component Libray overview
+- Added Component Library overview
 - Add "skip navigation" link to header for screen reader users
 - Added resizable split pane views
 - Added sticky table headers for HTML tables
