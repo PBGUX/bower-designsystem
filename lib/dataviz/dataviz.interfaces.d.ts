@@ -34,8 +34,36 @@ export interface PbdsDatavizMapData {
     value: number | string;
     [propName: string]: any;
 }
+export interface PbdsDatavizChoroplethMapData {
+    id: string | number;
+    value: number;
+    label?: string;
+    [propName: string]: any;
+}
 export interface PbdsDatavizHeatmap {
     yLabel: string;
     xLabel: string;
     value: number;
+}
+export interface PbdsDatavizGroupedBar {
+    key: string;
+    [propName: string]: any;
+}
+export interface PbdsDatavizSingleStackedBar {
+    label: string;
+    value: number;
+    startDate?: string;
+    endDate?: string;
+}
+export interface PbdsDatavizSingleStackedBarCompare {
+    label: string;
+    value: number;
+    startDate: string;
+    endDate: string;
+    compareValue: number | null;
+    compareStartDate: string;
+    compareEndDate: string;
+    compareChangeValue: number;
+    compareChangeDirection: 'increase' | 'decrease' | '';
+    compareChangeInverse: boolean;
 }

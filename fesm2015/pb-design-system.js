@@ -1,6 +1,6 @@
 import { Injectable, ɵɵdefineInjectable, EventEmitter, Component, ChangeDetectionStrategy, ElementRef, HostBinding, Input, Output, ContentChild, NgModule, Directive, HostListener } from '@angular/core';
 import { ViewportScroller, Location, CommonModule } from '@angular/common';
-import { isoParse, event as event$1, interpolate, mouse, format, timeFormat, scaleOrdinal, pie, arc, select, min, max, scaleBand, axisBottom, scaleLinear, axisLeft, extent, bisectLeft, isoFormat, line, curveCatmullRom, area, scaleTime, stack, stackOrderNone, geoAlbers, geoAlbersUsa, geoMercator, geoPath, scaleThreshold, scaleQuantile, scaleQuantize } from 'd3';
+import { isoParse, event as event$1, interpolate, mouse, format, timeFormat, scaleOrdinal, pie, arc, select, min, max, scaleBand, axisBottom, scaleLinear, axisLeft, extent, bisectLeft, isoFormat, line, curveCatmullRom, area, scaleTime, stack, stackOrderNone, geoAlbers, geoAlbersUsa, geoMercator, geoPath, scaleThreshold, scaleQuantile, scaleQuantize, range, values, sum, easeLinear } from 'd3';
 import { feature, mesh } from 'topojson';
 
 /**
@@ -8,79 +8,75 @@ import { feature, mesh } from 'topojson';
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 class PbdsDatavizService {
-    // mono: ['#253162', '#314183', '#3e53a4', '#8b98c8', '#d8dded', '#eceef6'] // blue
-    // mono: ['#00436e', '#005a93', '#0072b8', '#66aad4', '#cce3f1', '#e5f1f8'] // medium blue
     constructor() {
         this.colors = {
             classic: {
                 full: [
-                    '#E23DA8',
+                    '#e23da8',
                     '#314183',
-                    '#1BB9FF',
-                    '#FF8B00',
-                    '#0384D4',
-                    '#00B140',
-                    '#A319B1',
-                    '#FFC500',
-                    '#8B98C8',
-                    '#CCB8CE',
-                    '#E6C49C',
-                    '#9B9B9B'
+                    '#1bb9ff',
+                    '#ff8b00',
+                    '#0384d4',
+                    '#00b140',
+                    '#a319b1',
+                    '#ffc500',
+                    '#8b98c8',
+                    '#ccb8ce',
+                    '#e6c49c',
+                    '#9b9b9b'
                 ],
-                // mono: ['#060810', '#253262', '#3E53A4', '#7887BF', '#B2BADB', '#D8DDED'] // for heatmap testing
-                mono: ['#253162', '#314183', '#3e53a4', '#8b98c8', '#d8dded', '#eceef6'] // blue
+                mono: ['#001D56', '#003296', '#4B74C5', '#89A1D0', '#A3BCEE', '#C9D7F3'] // blue
             },
             twilight: {
                 full: [
-                    '#E23DA8',
+                    '#0384d4',
                     '#314183',
-                    '#1BB9FF',
-                    '#FF8B00',
-                    '#0384D4',
-                    '#00B140',
-                    '#A319B1',
-                    '#FFC500',
-                    '#8B98C8',
-                    '#CCB8CE',
-                    '#E6C49C',
-                    '#9B9B9B'
+                    '#1bb9ff',
+                    '#ff8b00',
+                    '#e23da8',
+                    '#00b140',
+                    '#a319b1',
+                    '#ffc500',
+                    '#8b98c8',
+                    '#ccb8ce',
+                    '#e6c49c',
+                    '#9b9b9b'
                 ],
-                mono: ['#60255d', '#80327c', '#a03f9b', '#c68cc3', '#ecd9eb', '#f5ecf5'] // purple
+                mono: ['#0F6894', '#3697C7', '#45BAF5', '#98D1ED', '#B5E6FF', '#D8E9F2'] // light blue
             },
             ocean: {
                 full: [
-                    '#0384D4',
-                    '#00B140',
+                    '#00b140',
+                    '#0384d4',
                     '#314183',
-                    '#1BB9FF',
-                    '#E23DA8',
-                    '#FFC500',
-                    '#A319B1',
-                    '#FF8B00',
-                    '#8B98C8',
-                    '#E6C49C',
-                    '#CCB8CE',
-                    '#9B9B9B'
+                    '#1bb9ff',
+                    '#e23da8',
+                    '#ffc500',
+                    '#a319b1',
+                    '#ff8b00',
+                    '#8b98c8',
+                    '#e6c49c',
+                    '#ccb8ce',
+                    '#9b9b9b'
                 ],
-                mono: ['#00436e', '#005a93', '#0072b8', '#66aad4', '#cce3f1', '#e5f1f8'] // medium blue
+                mono: ['#394B4D', '#3A6B6E', '#14767D', '#99BFC2', '#C0ECF0', '#CAE1E3'] // blue-green
             },
             sunset: {
                 full: [
-                    '#FF8B00',
-                    '#A319B1',
-                    '#1BB9FF',
-                    '#E23DA8',
-                    '#FFC500',
+                    '#512e8b',
+                    '#ff8b00',
+                    '#1bb9ff',
+                    '#e23da8',
+                    '#ffc500',
+                    '#00b140',
+                    '#0384d4',
+                    '#ccb8ce',
                     '#314183',
-                    '#00B140',
-                    '#0384D4',
-                    '#CCB8CE',
-                    '#E6C49C',
-                    '#8B98C8',
-                    '#9B9B9B'
+                    '#e6c49c',
+                    '#8b98c8',
+                    '#9b9b9b'
                 ],
-                // mono: ['#fff2e3', '#fee3cb', '#f6a76b', '#ee6b0b', '#be5408', '#8e3f06'] // orange
-                mono: ['#8e3f06', '#be5408', '#ee6b0b', '#f6a76b', '#fee3cb', '#fff2e3'] // orange
+                mono: ['#34254A', '#46248F', '#6235C4', '#9A79E2', '#C4A8FF', '#DACCED'] // purple
             }
         };
         this.getColors = (/**
@@ -95,34 +91,59 @@ class PbdsDatavizService {
          * @param {?} svg
          * @param {?=} mono
          * @param {?=} theme
+         * @param {?=} vertical
          * @return {?}
          */
-        (svg, mono = false, theme = 'classic') => {
+        (svg, mono = false, theme = 'classic', vertical = true) => {
             /** @type {?} */
             const colors = mono ? [this.colors[theme].mono[2]] : this.colors[theme].full;
             for (let i = 0; i < colors.length; i++) {
                 /** @type {?} */
                 const color = mono ? this.colors[theme].mono[2] : this.colors[theme].full[i];
                 /** @type {?} */
-                const gradient = svg
-                    .append('defs')
-                    .append('linearGradient')
-                    .attr('id', `gradient-${color.replace('#', '')}`)
-                    .attr('x1', '0')
-                    .attr('y1', '0')
-                    .attr('x2', '0')
-                    .attr('y2', '1')
-                    .attr('spreadMethod', 'pad');
-                gradient
-                    .append('stop')
-                    .attr('offset', '0%')
-                    .attr('stop-color', color)
-                    .attr('stop-opacity', '1'); // top of bar will be full opacity
-                gradient
-                    .append('stop')
-                    .attr('offset', '100%')
-                    .attr('stop-color', color)
-                    .attr('stop-opacity', '.3'); // bottom of bar will be .3 opacity
+                let gradient;
+                if (vertical) {
+                    gradient = svg
+                        .append('defs')
+                        .append('linearGradient')
+                        .attr('id', `gradient-${color.replace('#', '')}`)
+                        .attr('x1', '0')
+                        .attr('y1', '0')
+                        .attr('x2', '0')
+                        .attr('y2', '1')
+                        .attr('spreadMethod', 'pad');
+                    gradient
+                        .append('stop')
+                        .attr('offset', '0%')
+                        .attr('stop-color', color)
+                        .attr('stop-opacity', '1'); // top of bar will be full opacity
+                    gradient
+                        .append('stop')
+                        .attr('offset', '100%')
+                        .attr('stop-color', color)
+                        .attr('stop-opacity', '.3'); // bottom of bar will be .3 opacity
+                }
+                else {
+                    gradient = svg
+                        .append('defs')
+                        .append('linearGradient')
+                        .attr('id', `gradient-horizontal-${color.replace('#', '')}`)
+                        .attr('x1', '1')
+                        .attr('y1', '0')
+                        .attr('x2', '0')
+                        .attr('y2', '0')
+                        .attr('spreadMethod', 'pad');
+                    gradient
+                        .append('stop')
+                        .attr('offset', '0%')
+                        .attr('stop-color', color)
+                        .attr('stop-opacity', '1'); // top of bar will be full opacity
+                    gradient
+                        .append('stop')
+                        .attr('offset', '100%')
+                        .attr('stop-color', color)
+                        .attr('stop-opacity', '.3'); // bottom of bar will be .3 opacity
+                }
             }
             return colors;
         });
@@ -172,7 +193,7 @@ class PbdsDatavizService {
                     .attr('slope', feOffsets[y].slope);
             }
             /** @type {?} */
-            let merge = glow.append('feMerge');
+            const merge = glow.append('feMerge');
             merge.append('feMergeNode').attr('in', 'SourceGraphic');
             for (let x = 0; x < feOffsets.length; x++) {
                 merge.append('feMergeNode').attr('in', 'coloredBlur' + x);
@@ -188,6 +209,19 @@ PbdsDatavizService.decorators = [
 /** @nocollapse */
 PbdsDatavizService.ctorParameters = () => [];
 /** @nocollapse */ PbdsDatavizService.ngInjectableDef = ɵɵdefineInjectable({ factory: function PbdsDatavizService_Factory() { return new PbdsDatavizService(); }, token: PbdsDatavizService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizService.prototype.colors;
+    /** @type {?} */
+    PbdsDatavizService.prototype.getColors;
+    /** @type {?} */
+    PbdsDatavizService.prototype.createGradientDefs;
+    /** @type {?} */
+    PbdsDatavizService.prototype.createGlowFilter;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -728,6 +762,195 @@ PbdsDatavizPieComponent.propDecorators = {
     hovered: [{ type: Output }],
     clicked: [{ type: Output }]
 };
+if (false) {
+    /** @type {?} */
+    PbdsDatavizPieComponent.prototype.chartClass;
+    /** @type {?} */
+    PbdsDatavizPieComponent.prototype.pieClass;
+    /** @type {?} */
+    PbdsDatavizPieComponent.prototype.data;
+    /** @type {?} */
+    PbdsDatavizPieComponent.prototype.width;
+    /** @type {?} */
+    PbdsDatavizPieComponent.prototype.type;
+    /** @type {?} */
+    PbdsDatavizPieComponent.prototype.monochrome;
+    /** @type {?} */
+    PbdsDatavizPieComponent.prototype.legendLabelFormatType;
+    /** @type {?} */
+    PbdsDatavizPieComponent.prototype.legendLabelFormatString;
+    /** @type {?} */
+    PbdsDatavizPieComponent.prototype.legendValueFormatString;
+    /** @type {?} */
+    PbdsDatavizPieComponent.prototype.tooltipLabelFormatType;
+    /** @type {?} */
+    PbdsDatavizPieComponent.prototype.tooltipLabelFormatString;
+    /** @type {?} */
+    PbdsDatavizPieComponent.prototype.tooltipValueFormatString;
+    /** @type {?} */
+    PbdsDatavizPieComponent.prototype.theme;
+    /** @type {?} */
+    PbdsDatavizPieComponent.prototype.hovered;
+    /** @type {?} */
+    PbdsDatavizPieComponent.prototype.clicked;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.currentData;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.height;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.chart;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.margin;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.colors;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.colorRange;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.arc;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.arcZoom;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.svg;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.pie;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.legend;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.legendLabelFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.legendValueFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.innerRadius;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.anglePad;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.outerRadius;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.tooltip;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.tooltipLabelFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.tooltipValueFormat;
+    /** @type {?} */
+    PbdsDatavizPieComponent.prototype.updateChart;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.arcTween;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.legendMouseOverFocus;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.legendMouseOutBlur;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.pathMouseOver;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.pathMouseOut;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.pathClick;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.tooltipShow;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.tooltipMove;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.tooltipHide;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype.tooltipSetPosition;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype._dataviz;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizPieComponent.prototype._element;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -785,6 +1008,10 @@ class PbdsDatavizBarComponent {
          * @return {?}
          */
         () => {
+            /** @type {?} */
+            let group;
+            /** @type {?} */
+            let groupEnter;
             // update the xScale
             this.xAxisScale.domain(this.data.map((/**
              * @param {?} d
@@ -830,8 +1057,7 @@ class PbdsDatavizBarComponent {
             }
             if (!this.hideGrayBars) {
                 // rebind data to groups
-                /** @type {?} */
-                let group = this.svg.selectAll('.bar-group').data(this.data);
+                group = this.svg.selectAll('.bar-group').data(this.data);
                 // remove bars
                 group.exit().remove();
                 // update gray bars
@@ -867,8 +1093,7 @@ class PbdsDatavizBarComponent {
                  */
                 d => this.yAxisScale(d.value)));
                 // add group on enter
-                /** @type {?} */
-                const groupEnter = group
+                groupEnter = group
                     .enter()
                     .append('g')
                     .attr('class', 'bar-group');
@@ -950,8 +1175,7 @@ class PbdsDatavizBarComponent {
             }
             else {
                 // rebind data to groups
-                /** @type {?} */
-                let group = this.svg.selectAll('.bar-group').data(this.data);
+                group = this.svg.selectAll('.bar-group').data(this.data);
                 // remove bars
                 group.exit().remove();
                 // update the existing bars
@@ -976,8 +1200,7 @@ class PbdsDatavizBarComponent {
                  */
                 d => this.height - this.yAxisScale(d.value)));
                 // add group on enter
-                /** @type {?} */
-                const groupEnter = group
+                groupEnter = group
                     .enter()
                     .append('g')
                     .attr('class', 'bar-group');
@@ -1039,7 +1262,7 @@ class PbdsDatavizBarComponent {
             }
             if (!this.hideLegend) {
                 /** @type {?} */
-                let legendItem = this.chart
+                const legendItem = this.chart
                     .select('.legend')
                     .selectAll('.legend-item')
                     .data(this.data);
@@ -1064,7 +1287,7 @@ class PbdsDatavizBarComponent {
                 }));
                 // legend items on enter
                 /** @type {?} */
-                let enterLegendItem = legendItem
+                const enterLegendItem = legendItem
                     .enter()
                     .append('li')
                     .attr('class', 'legend-item');
@@ -1282,9 +1505,9 @@ class PbdsDatavizBarComponent {
          */
         (data, node) => {
             /** @type {?} */
-            let dimensions = node[0].getBoundingClientRect();
+            const dimensions = node[0].getBoundingClientRect();
             /** @type {?} */
-            let scroll = this._scroll.getScrollPosition();
+            const scroll = this._scroll.getScrollPosition();
             /** @type {?} */
             let label;
             switch (this.tooltipLabelFormatType) {
@@ -1300,7 +1523,7 @@ class PbdsDatavizBarComponent {
                     label = data.label;
             }
             /** @type {?} */
-            let value = this.tooltipValueFormat === null
+            const value = this.tooltipValueFormat === null
                 ? `<div class="tooltip-value">${data.value}</div>`
                 : `<div class="tooltip-value">${this.tooltipValueFormat(data.value)}</div>`;
             this.tooltip.html(`
@@ -1308,9 +1531,9 @@ class PbdsDatavizBarComponent {
         ${value}
       `);
             /** @type {?} */
-            let tooltipOffsetWidth = +this.tooltip.node().offsetWidth / 2;
+            const tooltipOffsetWidth = +this.tooltip.node().offsetWidth / 2;
             /** @type {?} */
-            let tooltipOffsetHeight = +this.tooltip.node().offsetHeight + 8;
+            const tooltipOffsetHeight = +this.tooltip.node().offsetHeight + 8;
             this.tooltip.style('top', `${+scroll[1] + +dimensions.top - tooltipOffsetHeight}px`); //
             this.tooltip.style('left', `${+scroll[0] + +dimensions.left - tooltipOffsetWidth + +dimensions.width / 2}px`);
             this.tooltip.style('opacity', 1);
@@ -1663,6 +1886,321 @@ PbdsDatavizBarComponent.propDecorators = {
     hovered: [{ type: Output }],
     clicked: [{ type: Output }]
 };
+if (false) {
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.chartClass;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.barClass;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.data;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.width;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.height;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.type;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.singleSeries;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.xAxisFormatType;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.xAxisFormatString;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.yAxisFormatType;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.yAxisFormatString;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.yAxisTicks;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.yAxisMinBuffer;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.yAxisMaxBuffer;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.hideLegend;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.legendWidth;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.legendPosition;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.legendLabelFormatType;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.legendLabelFormatString;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.tooltipLabelFormatType;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.tooltipLabelFormatString;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.tooltipValueFormatType;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.tooltipValueFormatString;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.marginTop;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.marginRight;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.marginBottom;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.marginLeft;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.threshold;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.average;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.theme;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.hovered;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.clicked;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.chart;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.svg;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.margin;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.colorRange;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.hideGrayBars;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.yThreshold;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.yAverage;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.xAxisScale;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.xAxisCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.xAxis;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.xAxisFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.yAxisScale;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.yAxisCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.yAxis;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.yAxisFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.xGrid;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.xGridCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.yGrid;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.yGridCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.xAxisTickSize;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.xAxisTickSizeOuter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.yAxisTickSize;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.yAxisTickSizeOuter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.hideXAxis;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.hideYAxis;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.hideXAxisDomain;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.hideYAxisDomain;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.hideXAxisZero;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.hideYAxisZero;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.hideXGrid;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.hideYGrid;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.hideXAxisTicks;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.hideYAxisTicks;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.legendLabelFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.tooltip;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.hideTooltip;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.hideTooltipLabel;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.tooltipValueFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.tooltipLabelFormat;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.updateChart;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.barMouseOver;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.barMouseOut;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.barMouseClick;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.legendMouseOver;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.legendMouseOut;
+    /** @type {?} */
+    PbdsDatavizBarComponent.prototype.legendMouseClick;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.tooltipShow;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.tooltipHide;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.xAxisFormatter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype.yAxisFormatter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype._dataviz;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype._element;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype._scroll;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizBarComponent.prototype._location;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -2599,6 +3137,346 @@ PbdsDatavizLineComponent.propDecorators = {
     tooltipHovered: [{ type: Output }],
     tooltipClicked: [{ type: Output }]
 };
+if (false) {
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.chartClass;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.lineClass;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.data;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.width;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.height;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.type;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.area;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.xAxisFormatString;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.xAxisTicks;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.yAxisFormatString;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.yAxisTicks;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.yAxisMinBuffer;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.yAxisMaxBuffer;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.hideLegend;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.legendWidth;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.legendPosition;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.legendLabelFormatType;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.legendLabelFormatString;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.tooltipHeadingFormatString;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.tooltipLabelFormatType;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.tooltipLabelFormatString;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.tooltipValueFormatType;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.tooltipValueFormatString;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.marginTop;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.marginRight;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.marginBottom;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.marginLeft;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.theme;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.hovered;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.clicked;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.tooltipHovered;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.tooltipClicked;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.chart;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.svg;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.mouserect;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.tooltipLine;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.margin;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.d3line;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.d3area;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.lineWidth;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.lineCurved;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.linePoints;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.colorRange;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.xAxisScale;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.xAxisCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.xAxis;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.xAxisFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.yAxisScale;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.yAxisCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.yAxis;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.yAxisFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.xGrid;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.xGridCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.yGrid;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.yGridCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.xAxisTickSize;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.xAxisTickSizeOuter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.yAxisTickSize;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.yAxisTickSizeOuter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.hideXAxis;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.hideYAxis;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.hideXAxisDomain;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.hideYAxisDomain;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.hideXAxisZero;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.hideYAxisZero;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.hideXGrid;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.hideYGrid;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.hideXAxisTicks;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.hideYAxisTicks;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.legendLabelFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.tooltip;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.hideTooltip;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.tooltipHeadingFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.tooltipValueFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.tooltipLabelFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.mousedata;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.updateChart;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.legendMouseOver;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.legendMouseOut;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.legendMouseClick;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.mouserectMouseMove;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.mouserectMouseOut;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.mouserectMouseClick;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.tooltipShow;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.tooltipHide;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.xAxisFormatter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype.yAxisFormatter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype._dataviz;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype._element;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype._scroll;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizLineComponent.prototype._location;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -2657,12 +3535,10 @@ class PbdsDatavizGaugeComponent {
         () => {
             this.gauge = this.svg.append('g').attr('class', 'gauge-group');
             // background arc
-            /** @type {?} */
-            const background = this.gauge
+            this.gauge
                 .append('path')
                 .data(this.calculateCurve(this.data.maxvalue))
                 .attr('class', 'gauge-background')
-                .attr('fill', this.backgroundColor)
                 .attr('d', (/**
              * @param {?} d
              * @return {?}
@@ -2708,7 +3584,7 @@ class PbdsDatavizGaugeComponent {
          */
         () => {
             /** @type {?} */
-            let group = this.svg.select('.gauge-group');
+            const group = this.svg.select('.gauge-group');
             group
                 .select('.gauge-value')
                 .transition()
@@ -2727,14 +3603,14 @@ class PbdsDatavizGaugeComponent {
          */
         (transition, value) => {
             /** @type {?} */
-            let newAngle = this.calculateCurve(value);
+            const newAngle = this.calculateCurve(value);
             transition.attrTween('d', (/**
              * @param {?} d
              * @return {?}
              */
             d => {
                 /** @type {?} */
-                let interpolate$1 = interpolate(d.endAngle, newAngle[0].endAngle);
+                const interpolate$1 = interpolate(d.endAngle, newAngle[0].endAngle);
                 return (/**
                  * @param {?} t
                  * @return {?}
@@ -2763,7 +3639,7 @@ class PbdsDatavizGaugeComponent {
              */
             () => {
                 /** @type {?} */
-                let interpolate$1 = interpolate(format('.2f')(+this.oldValue), value);
+                const interpolate$1 = interpolate(format('.2f')(+this.oldValue), value);
                 return (/**
                  * @param {?} t
                  * @return {?}
@@ -2775,7 +3651,7 @@ class PbdsDatavizGaugeComponent {
                      */
                     d => {
                         /** @type {?} */
-                        let updatedNumber = this.labelFormat(interpolate$1(t));
+                        const updatedNumber = this.labelFormat(interpolate$1(t));
                         this.label = updatedNumber;
                         return updatedNumber;
                     }));
@@ -2790,7 +3666,6 @@ class PbdsDatavizGaugeComponent {
         this.height = this.width;
         this.radius = Math.max(this.width, this.height) / 2;
         this.labelFormat = format(this.labelFormatString);
-        this.backgroundColor = '#F0F0F0';
         this.label = this.labelFormat(this.data.value);
         switch (this.type) {
             case 'halfmoon':
@@ -2865,6 +3740,114 @@ PbdsDatavizGaugeComponent.propDecorators = {
     description: [{ type: Input }],
     gaugeWidth: [{ type: Input }]
 };
+if (false) {
+    /** @type {?} */
+    PbdsDatavizGaugeComponent.prototype.chartClass;
+    /** @type {?} */
+    PbdsDatavizGaugeComponent.prototype.gaugeClass;
+    /** @type {?} */
+    PbdsDatavizGaugeComponent.prototype.data;
+    /** @type {?} */
+    PbdsDatavizGaugeComponent.prototype.width;
+    /** @type {?} */
+    PbdsDatavizGaugeComponent.prototype.type;
+    /** @type {?} */
+    PbdsDatavizGaugeComponent.prototype.color;
+    /** @type {?} */
+    PbdsDatavizGaugeComponent.prototype.hideLabel;
+    /** @type {?} */
+    PbdsDatavizGaugeComponent.prototype.labelFormatString;
+    /** @type {?} */
+    PbdsDatavizGaugeComponent.prototype.description;
+    /** @type {?} */
+    PbdsDatavizGaugeComponent.prototype.gaugeWidth;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGaugeComponent.prototype.chart;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGaugeComponent.prototype.svg;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGaugeComponent.prototype.gauge;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGaugeComponent.prototype.labelTween;
+    /** @type {?} */
+    PbdsDatavizGaugeComponent.prototype.label;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGaugeComponent.prototype.startAngle;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGaugeComponent.prototype.endAngle;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGaugeComponent.prototype.radius;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGaugeComponent.prototype.arc;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGaugeComponent.prototype.labelFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGaugeComponent.prototype.oldValue;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGaugeComponent.prototype.height;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGaugeComponent.prototype.rounded;
+    /** @type {?} */
+    PbdsDatavizGaugeComponent.prototype.degreesToRadians;
+    /** @type {?} */
+    PbdsDatavizGaugeComponent.prototype.calculateMinMax;
+    /** @type {?} */
+    PbdsDatavizGaugeComponent.prototype.calculateCurve;
+    /** @type {?} */
+    PbdsDatavizGaugeComponent.prototype.drawChart;
+    /** @type {?} */
+    PbdsDatavizGaugeComponent.prototype.updateChart;
+    /** @type {?} */
+    PbdsDatavizGaugeComponent.prototype.arcTween;
+    /** @type {?} */
+    PbdsDatavizGaugeComponent.prototype.textTween;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGaugeComponent.prototype._dataviz;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGaugeComponent.prototype._element;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -3022,6 +4005,50 @@ PbdsDatavizSparklineComponent.propDecorators = {
     yAxisMinBuffer: [{ type: Input }],
     yAxisMaxBuffer: [{ type: Input }]
 };
+if (false) {
+    /** @type {?} */
+    PbdsDatavizSparklineComponent.prototype.chartClass;
+    /** @type {?} */
+    PbdsDatavizSparklineComponent.prototype.sparklineClass;
+    /** @type {?} */
+    PbdsDatavizSparklineComponent.prototype.data;
+    /** @type {?} */
+    PbdsDatavizSparklineComponent.prototype.width;
+    /** @type {?} */
+    PbdsDatavizSparklineComponent.prototype.height;
+    /** @type {?} */
+    PbdsDatavizSparklineComponent.prototype.type;
+    /** @type {?} */
+    PbdsDatavizSparklineComponent.prototype.color;
+    /** @type {?} */
+    PbdsDatavizSparklineComponent.prototype.colorNegative;
+    /** @type {?} */
+    PbdsDatavizSparklineComponent.prototype.strokeWidth;
+    /** @type {?} */
+    PbdsDatavizSparklineComponent.prototype.yAxisMinBuffer;
+    /** @type {?} */
+    PbdsDatavizSparklineComponent.prototype.yAxisMaxBuffer;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSparklineComponent.prototype.chart;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSparklineComponent.prototype.svg;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSparklineComponent.prototype.margin;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSparklineComponent.prototype._element;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -3360,11 +4387,12 @@ class PbdsDatavizStackedBarComponent {
              */
             (data, index, nodes) => this.barMouseClick(event$1, data, index, nodes)));
             this.bars.raise();
+            this.xAxis.raise();
             this.mouseBars.raise();
             if (!this.hideLegend) {
                 // TODO: refactor to use .join() with enter, update, exit
                 /** @type {?} */
-                let legendItem = this.chart
+                const legendItem = this.chart
                     .select('.legend')
                     .selectAll('.legend-item')
                     .data(this.dataStack);
@@ -3389,7 +4417,7 @@ class PbdsDatavizStackedBarComponent {
                 }));
                 // legend items on enter
                 /** @type {?} */
-                let enterLegendItem = legendItem
+                const enterLegendItem = legendItem
                     .enter()
                     .append('li')
                     .attr('class', 'legend-item');
@@ -3964,8 +4992,7 @@ class PbdsDatavizStackedBarComponent {
             this.tooltip.append('div').attr('class', 'tooltip-header');
             this.tooltip.append('div').attr('class', 'tooltip-header-value');
             // tooltip table
-            /** @type {?} */
-            const tooltipTable = this.tooltip
+            this.tooltip
                 .append('table')
                 .attr('class', 'tooltip-table text-left w-100')
                 .append('tbody');
@@ -4042,6 +5069,338 @@ PbdsDatavizStackedBarComponent.propDecorators = {
     hovered: [{ type: Output }],
     clicked: [{ type: Output }]
 };
+if (false) {
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.chartClass;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.stackedBarClass;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.data;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.width;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.height;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.type;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.marginTop;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.marginRight;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.marginBottom;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.marginLeft;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.hideXAxis;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.xAxisFormatType;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.xAxisFormatString;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.yAxisFormatType;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.yAxisFormatString;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.yAxisTicks;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.yAxisMaxBuffer;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.hideLegend;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.legendWidth;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.legendPosition;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.legendLabelFormatType;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.legendLabelFormatString;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.tooltipHeadingFormatType;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.tooltipHeadingFormatString;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.tooltipHeadingValueFormatType;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.tooltipHeadingValueFormatString;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.tooltipLabelFormatType;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.tooltipLabelFormatString;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.tooltipValueFormatType;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.tooltipValueFormatString;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.theme;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.hovered;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.clicked;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.dataStack;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.dataKeys;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.chart;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.svg;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.grayBars;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.mouseBars;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.bars;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.margin;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.colorRange;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.hideGrayBars;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.xAxisScale;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.xAxisCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.xAxis;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.xAxisFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.xAxisTickSize;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.xAxisTickSizeOuter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.hideXAxisDomain;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.hideXAxisZero;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.hideXAxisTicks;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.hideXGrid;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.hideYGrid;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.yAxisMax;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.yAxisScale;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.yAxisCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.yAxis;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.yAxisFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.yAxisTickSize;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.yAxisTickSizeOuter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.xGrid;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.xGridCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.yGrid;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.yGridCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.hideYAxis;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.hideYAxisZero;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.hideYAxisDomain;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.hideYAxisTicks;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.legendLabelFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.tooltip;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.hideTooltip;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.tooltipHeadingFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.tooltipHeadingValueFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.tooltipValueFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.tooltipLabelFormat;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.updateChart;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.barMouseOver;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.barMouseOut;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.barMouseClick;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.legendMouseOver;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.legendMouseOut;
+    /** @type {?} */
+    PbdsDatavizStackedBarComponent.prototype.legendMouseClick;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.xAxisFormatter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.tooltipShow;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.tooltipHide;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype.yAxisFormatter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype._dataviz;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype._element;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizStackedBarComponent.prototype._scroll;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -4060,10 +5419,6 @@ class PbdsDatavizMetricIndicatorComponent {
     get hostClasses() {
         return ['metric-block-indicator', this.indicator, this.inverse ? 'inverse' : '', this.class].join(' ');
     }
-    /**
-     * @return {?}
-     */
-    ngOnInit() { }
 }
 PbdsDatavizMetricIndicatorComponent.decorators = [
     { type: Component, args: [{
@@ -4073,8 +5428,6 @@ PbdsDatavizMetricIndicatorComponent.decorators = [
   `
             }] }
 ];
-/** @nocollapse */
-PbdsDatavizMetricIndicatorComponent.ctorParameters = () => [];
 PbdsDatavizMetricIndicatorComponent.propDecorators = {
     value: [{ type: Input }],
     class: [{ type: Input }],
@@ -4082,6 +5435,16 @@ PbdsDatavizMetricIndicatorComponent.propDecorators = {
     inverse: [{ type: Input }],
     hostClasses: [{ type: HostBinding, args: ['class',] }]
 };
+if (false) {
+    /** @type {?} */
+    PbdsDatavizMetricIndicatorComponent.prototype.value;
+    /** @type {?} */
+    PbdsDatavizMetricIndicatorComponent.prototype.class;
+    /** @type {?} */
+    PbdsDatavizMetricIndicatorComponent.prototype.indicator;
+    /** @type {?} */
+    PbdsDatavizMetricIndicatorComponent.prototype.inverse;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -4095,6 +5458,7 @@ class PbdsDatavizMetricBlockComponent {
         this.unit = null;
         this.description = null;
         this.centered = false;
+        this.centeredText = false;
         this.hideValueMargin = false;
         this.isPercentUnit = false;
         this.isUnit = false;
@@ -4103,7 +5467,12 @@ class PbdsDatavizMetricBlockComponent {
      * @return {?}
      */
     get hostClasses() {
-        return ['metric-block', this.centered ? 'metric-block-centered' : '', this.class].join(' ');
+        return [
+            'metric-block',
+            this.centered ? 'metric-block-centered' : '',
+            this.centeredText ? 'metric-block-centered-text' : '',
+            this.class
+        ].join(' ');
     }
     /**
      * @return {?}
@@ -4124,25 +5493,28 @@ PbdsDatavizMetricBlockComponent.decorators = [
     { type: Component, args: [{
                 selector: 'pbds-dataviz-metric-block',
                 template: `
-    <ng-content select="pbds-dataviz-sparkline"></ng-content>
-
-    <div class="metric-block-data">
+    <div class="metric-block-inner">
       <div *ngIf="heading" class="metric-block-heading">{{ heading }}</div>
+      <div class="metric-block-data-block">
+        <div class="metric-block-contents">
+          <div class="metric-block-value" [ngClass]="{ 'mr-0': hideValueMargin }">
+            {{ value
+            }}<span [ngClass]="{ 'metric-block-unit': isUnit, 'metric-block-percentage': isPercentUnit }">{{
+              unit
+            }}</span>
+          </div>
 
-      <div class="metric-block-value" [ngClass]="{ 'mr-0': hideValueMargin }">
-        {{ value
-        }}<span [ngClass]="{ 'metric-block-unit': isUnit, 'metric-block-percentage': isPercentUnit }">{{ unit }}</span>
+          <div *ngIf="description" class="metric-block-description">{{ description }}</div>
+          <div>
+            <ng-content select="pbds-dataviz-metric-indicator"></ng-content>
+          </div>
+        </div>
+        <ng-content select="pbds-dataviz-sparkline"></ng-content>
       </div>
-
-      <ng-content select="pbds-dataviz-metric-indicator"></ng-content>
-
-      <div *ngIf="description" class="metric-block-description">{{ description }}</div>
     </div>
   `
             }] }
 ];
-/** @nocollapse */
-PbdsDatavizMetricBlockComponent.ctorParameters = () => [];
 PbdsDatavizMetricBlockComponent.propDecorators = {
     class: [{ type: Input }],
     heading: [{ type: Input }],
@@ -4150,9 +5522,34 @@ PbdsDatavizMetricBlockComponent.propDecorators = {
     unit: [{ type: Input }],
     description: [{ type: Input }],
     centered: [{ type: Input }],
+    centeredText: [{ type: Input }],
     hostClasses: [{ type: HostBinding, args: ['class',] }],
     indicatorRef: [{ type: ContentChild, args: [PbdsDatavizMetricIndicatorComponent, { static: true },] }]
 };
+if (false) {
+    /** @type {?} */
+    PbdsDatavizMetricBlockComponent.prototype.class;
+    /** @type {?} */
+    PbdsDatavizMetricBlockComponent.prototype.heading;
+    /** @type {?} */
+    PbdsDatavizMetricBlockComponent.prototype.value;
+    /** @type {?} */
+    PbdsDatavizMetricBlockComponent.prototype.unit;
+    /** @type {?} */
+    PbdsDatavizMetricBlockComponent.prototype.description;
+    /** @type {?} */
+    PbdsDatavizMetricBlockComponent.prototype.centered;
+    /** @type {?} */
+    PbdsDatavizMetricBlockComponent.prototype.centeredText;
+    /** @type {?} */
+    PbdsDatavizMetricBlockComponent.prototype.hideValueMargin;
+    /** @type {?} */
+    PbdsDatavizMetricBlockComponent.prototype.isPercentUnit;
+    /** @type {?} */
+    PbdsDatavizMetricBlockComponent.prototype.isUnit;
+    /** @type {?} */
+    PbdsDatavizMetricBlockComponent.prototype.indicatorRef;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -4630,6 +6027,154 @@ DatavizBubbleMapComponent.propDecorators = {
     hovered: [{ type: Output }],
     clicked: [{ type: Output }]
 };
+if (false) {
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.chartClass;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.bubbleMapClass;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.data;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.topojson;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.feature;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.projectionType;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.scale;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.center;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.width;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.height;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.type;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.dot;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.marginTop;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.marginRight;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.marginBottom;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.marginLeft;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.color;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.textColor;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.textSizeRange;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.dotSize;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.bubbleSizeRange;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.bubbleLabelFormatType;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.bubbleLabelFormatString;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.hideTooltip;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.hideTooltipValue;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.tooltipValueFormatType;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.tooltipValueFormatString;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.hovered;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.clicked;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatavizBubbleMapComponent.prototype.projection;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatavizBubbleMapComponent.prototype.geoPath;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatavizBubbleMapComponent.prototype.topojsonFeature;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatavizBubbleMapComponent.prototype.chart;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatavizBubbleMapComponent.prototype.svg;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatavizBubbleMapComponent.prototype.margin;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatavizBubbleMapComponent.prototype.bubbleContainer;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatavizBubbleMapComponent.prototype.bubbleRadius;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatavizBubbleMapComponent.prototype.fontRange;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatavizBubbleMapComponent.prototype.bubbleLabelFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatavizBubbleMapComponent.prototype.tooltip;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatavizBubbleMapComponent.prototype.tooltipValueFormat;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.updateChart;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.bubbleMouseOver;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.bubbleMouseOut;
+    /** @type {?} */
+    DatavizBubbleMapComponent.prototype.bubbleMouseClick;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatavizBubbleMapComponent.prototype.tooltipShow;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatavizBubbleMapComponent.prototype.tooltipHide;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatavizBubbleMapComponent.prototype._element;
+    /**
+     * @type {?}
+     * @private
+     */
+    DatavizBubbleMapComponent.prototype._scroll;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -4783,7 +6328,7 @@ class PbdsDatavizHeatmapComponent {
                  */
                 enter => {
                     /** @type {?} */
-                    let li = enter.append('li').attr('class', 'legend-item');
+                    const li = enter.append('li').attr('class', 'legend-item');
                     li.append('span')
                         .attr('class', 'legend-key')
                         .style('background-color', (/**
@@ -4942,9 +6487,9 @@ class PbdsDatavizHeatmapComponent {
             // console.log('TOOLTIP: ', data, index, node);
             // console.log('TOOLTIP: ', data, index, node);
             /** @type {?} */
-            let dimensions = node.getBoundingClientRect();
+            const dimensions = node.getBoundingClientRect();
             /** @type {?} */
-            let scroll = this._scroll.getScrollPosition();
+            const scroll = this._scroll.getScrollPosition();
             /** @type {?} */
             let yLabel;
             /** @type {?} */
@@ -4974,7 +6519,7 @@ class PbdsDatavizHeatmapComponent {
                     xLabel = `${data.xLabel}${this.tooltipXLabelFormatString}`;
             }
             /** @type {?} */
-            let value = this.tooltipValueFormat === null
+            const value = this.tooltipValueFormat === null
                 ? `<div class="tooltip-value">${data.value}</div>`
                 : `<div class="tooltip-value">${this.tooltipValueFormat(data.value)}</div>`;
             this.tooltip.html(`
@@ -4982,9 +6527,9 @@ class PbdsDatavizHeatmapComponent {
         ${value}
       `);
             /** @type {?} */
-            let tooltipOffsetWidth = +this.tooltip.node().offsetWidth / 2;
+            const tooltipOffsetWidth = +this.tooltip.node().offsetWidth / 2;
             /** @type {?} */
-            let tooltipOffsetHeight = +this.tooltip.node().offsetHeight + 8;
+            const tooltipOffsetHeight = +this.tooltip.node().offsetHeight + 8;
             this.tooltip.style('top', `${+scroll[1] + +dimensions.top - tooltipOffsetHeight}px`); //
             this.tooltip.style('left', `${+scroll[0] + +dimensions.left - tooltipOffsetWidth + +dimensions.width / 2}px`);
             this.tooltip.style('opacity', 1);
@@ -5127,7 +6672,7 @@ class PbdsDatavizHeatmapComponent {
             .slice()
             .reverse();
         /** @type {?} */
-        let colorDomain = [
+        const colorDomain = [
             +min(this.data, (/**
              * @param {?} d
              * @return {?}
@@ -5140,7 +6685,7 @@ class PbdsDatavizHeatmapComponent {
             (d) => d.value))
         ];
         /** @type {?} */
-        let colorValues = this.data.map((/**
+        const colorValues = this.data.map((/**
          * @param {?} d
          * @return {?}
          */
@@ -5283,6 +6828,3542 @@ PbdsDatavizHeatmapComponent.propDecorators = {
     hovered: [{ type: Output }],
     clicked: [{ type: Output }]
 };
+if (false) {
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.chartClass;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.heatmapClass;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.data;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.width;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.height;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.marginTop;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.marginRight;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.marginBottom;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.marginLeft;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.scale;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.domain;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.xAxisFormatType;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.xAxisFormatString;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.yAxisFormatType;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.yAxisFormatString;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.hideLegend;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.legendWidth;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.legendPosition;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.legendLabelFormatType;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.legendLabelFormatString;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.tooltipXLabelFormatType;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.tooltipXLabelFormatString;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.tooltipYLabelFormatType;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.tooltipYLabelFormatString;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.tooltipValueFormatType;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.tooltipValueFormatString;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.theme;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.hovered;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.clicked;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.chart;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.svg;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.margin;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.colorRange;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.colorDomain;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.xAxisScale;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.xAxisCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.xAxis;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.xAxisFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.xAxisTickSize;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.xAxisTickSizeOuter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.hideXAxisDomain;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.hideXAxisZero;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.hideXAxisTicks;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.hideXAxis;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.yAxis;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.yAxisFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.yAxisTickSize;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.yAxisTickSizeOuter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.yAxisScale;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.yAxisCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.hideYAxis;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.hideYAxisDomain;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.hideYAxisZero;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.hideYAxisTicks;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.legendLabelFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.tooltip;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.tooltipYLabelFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.tooltipXLabelFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.hideTooltip;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.tooltipValueFormat;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.updateChart;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.blockMouseOver;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.blockMouseOut;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.blockMouseClick;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.legendMouseOver;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.legendMouseOut;
+    /** @type {?} */
+    PbdsDatavizHeatmapComponent.prototype.legendMouseClick;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.tooltipShow;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.tooltipHide;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.xAxisFormatter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype.yAxisFormatter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype._dataviz;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype._element;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizHeatmapComponent.prototype._scroll;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class PbdsDatavizChoroplethMapComponent {
+    /**
+     * @param {?} _dataviz
+     * @param {?} _element
+     * @param {?} _scroll
+     */
+    constructor(_dataviz, _element, _scroll) {
+        this._dataviz = _dataviz;
+        this._element = _element;
+        this._scroll = _scroll;
+        this.chartClass = true;
+        this.choroplethMapClass = true;
+        this.feature = '';
+        this.dataField = 'id';
+        this.mesh = null;
+        this.scale = null;
+        this.center = null;
+        this.width = 960;
+        this.height = 500;
+        this.marginTop = 0;
+        this.marginRight = 0;
+        this.marginBottom = 0;
+        this.marginLeft = 0;
+        this.theme = 'classic';
+        this.colorScale = 'quantile';
+        this.hideTooltip = false;
+        this.tooltipValueFormatType = null;
+        this.tooltipValueFormatString = '';
+        this.hideLegend = false;
+        this.legendWidth = 260;
+        this.legendLabel = null;
+        this.legendValueFormatType = null;
+        this.legendValueFormatString = '';
+        this.legendLeft = 20;
+        this.legendTop = 20;
+        this.hovered = new EventEmitter();
+        this.clicked = new EventEmitter();
+        this.updateChart = (/**
+         * @return {?}
+         */
+        () => {
+            this.svg
+                .select('.map')
+                .selectAll('path')
+                .style('fill', (/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => {
+                /** @type {?} */
+                const match = this.data.find((/**
+                 * @param {?} obj
+                 * @return {?}
+                 */
+                obj => obj[this.dataField] === d[this.dataField]));
+                if (match) {
+                    return this.colorRange(match.value);
+                }
+            }))
+                .classed('hasData', (/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => {
+                return this.data.some((/**
+                 * @param {?} obj
+                 * @return {?}
+                 */
+                obj => obj[this.dataField] === d[this.dataField]));
+            }));
+            if (!this.hideTooltip) {
+                this.svg
+                    .select('.map')
+                    .selectAll('path')
+                    .on('mouseover', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                (data, index, nodes) => this.featureMouseOver(event$1, this.data.find((/**
+                 * @param {?} obj
+                 * @return {?}
+                 */
+                obj => obj[this.dataField] === data[this.dataField])), index, nodes)))
+                    .on('mouseout', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                (data, index, nodes) => this.featureMouseOut(event$1, this.data, index, nodes)))
+                    .on('mousemove', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                (data, index, nodes) => this.tooltipMove(this.chart.node())))
+                    .on('click', (/**
+                 * @param {?} data
+                 * @param {?} index
+                 * @param {?} nodes
+                 * @return {?}
+                 */
+                (data, index, nodes) => this.featureMouseClick(event$1, this.data.find((/**
+                 * @param {?} obj
+                 * @return {?}
+                 */
+                obj => obj[this.dataField] === data[this.dataField])), index, nodes)));
+            }
+        });
+        this.featureMouseOver = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, data, index, nodes) => {
+            if (data) {
+                this.tooltipShow(data, nodes[index]);
+                this.hovered.emit({ event, data });
+            }
+        });
+        this.featureMouseOut = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, data, index, nodes) => {
+            this.tooltipHide();
+        });
+        this.featureMouseClick = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, data, index, nodes) => {
+            if (data) {
+                this.clicked.emit({ event, data });
+            }
+        });
+        this.tooltipShow = (/**
+         * @param {?} data
+         * @param {?} node
+         * @return {?}
+         */
+        (data, node) => {
+            // console.log('TOOLTIP: ', data, node);
+            this.tooltipSetPosition(node);
+            if (data.label) {
+                this.tooltip.select('.tooltip-header').html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => `${data.label}`));
+            }
+            this.tooltip
+                .select('.tooltip-value')
+                .html((/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => (this.tooltipValueFormat ? `${this.tooltipValueFormat(data.value)}` : `${data.value}`)));
+            this.tooltip.style('opacity', 1);
+        });
+        this.tooltipHide = (/**
+         * @return {?}
+         */
+        () => {
+            this.tooltip.style('opacity', 0);
+        });
+        this.tooltipMove = (/**
+         * @param {?} node
+         * @return {?}
+         */
+        node => {
+            this.tooltipSetPosition(node);
+        });
+        this.tooltipSetPosition = (/**
+         * @param {?} node
+         * @return {?}
+         */
+        node => {
+            /** @type {?} */
+            const mouse$1 = mouse(node);
+            /** @type {?} */
+            const mouseLeft = +mouse$1[0];
+            /** @type {?} */
+            const mouseTop = +mouse$1[1];
+            /** @type {?} */
+            const geometry = node.getBoundingClientRect();
+            /** @type {?} */
+            const geometryLeft = +geometry.left;
+            /** @type {?} */
+            const geometryTop = +geometry.top;
+            /** @type {?} */
+            const scroll = this._scroll.getScrollPosition();
+            // const scrollLeft = +scroll[0];
+            /** @type {?} */
+            const scrollTop = +scroll[1];
+            /** @type {?} */
+            const tooltipOffsetWidth = +this.tooltip.node().offsetWidth / 2;
+            /** @type {?} */
+            const tooltipOffsetHeight = +this.tooltip.node().offsetHeight;
+            this.tooltip.style('top', `${scrollTop + mouseTop + geometryTop - tooltipOffsetHeight - 14}px`);
+            this.tooltip.style('left', `${mouseLeft + geometryLeft - tooltipOffsetWidth}px`);
+        });
+        this.legend = (/**
+         * @param {?} g
+         * @return {?}
+         */
+        g => {
+            /** @type {?} */
+            const length = this.colorRange.range().length;
+            // console.log(this.colorRange.range().length, this.colorDomain);
+            /** @type {?} */
+            const x = scaleLinear()
+                .domain([1, length - 1])
+                .rangeRound([+this.legendWidth / length, (this.legendWidth * (length - 1)) / length]);
+            g.attr('class', 'legend')
+                .selectAll('rect')
+                .data(this.colorRange.range())
+                .join('rect')
+                .attr('height', 8)
+                .attr('x', (/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => x(i)))
+                .attr('width', (/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => x(i + 1) - x(i)))
+                .attr('fill', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => d));
+            if (this.legendLabel) {
+                g.append('text')
+                    .attr('y', -6)
+                    .attr('text-anchor', 'start')
+                    .attr('class', 'legend-label')
+                    .text(this.legendLabel);
+            }
+            g.call(axisBottom(x)
+                .tickSize(13)
+                .tickValues(range(1, length))
+                .tickFormat((/**
+             * @param {?} i
+             * @return {?}
+             */
+            (i) => this.legendValueFormat ? `${this.legendValueFormat(this.colorDomain[i - 1])}` : `${this.colorDomain[i - 1]}`)))
+                .select('.domain')
+                .remove();
+        });
+    }
+    /**
+     * @return {?}
+     */
+    ngOnInit() {
+        this.margin = {
+            top: +this.marginTop,
+            right: +this.marginRight,
+            bottom: +this.marginBottom,
+            left: +this.marginLeft
+        };
+        // color range
+        /** @type {?} */
+        const colors = this._dataviz
+            .getColors(true, this.theme)
+            .slice()
+            .reverse();
+        /** @type {?} */
+        const colorDomain = [+min(this.data, (/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => d.value)), +max(this.data, (/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => d.value))];
+        /** @type {?} */
+        const colorValues = this.data.map((/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => d.value));
+        switch (this.colorScale) {
+            case 'threshold':
+                this.colorRange = scaleThreshold()
+                    .domain(this.domain)
+                    .range(colors);
+                this.colorDomain = this.colorRange.domain();
+                break;
+            case 'quantile':
+                this.colorRange = scaleQuantile()
+                    .domain(colorValues)
+                    .range(colors);
+                this.colorDomain = this.colorRange.quantiles();
+                break;
+            case 'quantize':
+                this.colorRange = scaleQuantize()
+                    .domain(colorDomain)
+                    .range(colors);
+                this.colorDomain = this.colorRange.thresholds();
+                break;
+        }
+        switch (this.tooltipValueFormatType) {
+            case 'number':
+                this.tooltipValueFormat = format(this.tooltipValueFormatString);
+                break;
+            default:
+                this.tooltipValueFormat = null;
+        }
+        switch (this.legendValueFormatType) {
+            case 'number':
+                this.legendValueFormat = format(this.legendValueFormatString);
+                break;
+            default:
+                this.tooltipValueFormat = null;
+        }
+        switch (this.projectionType) {
+            case 'geoAlbers':
+                this.projection = geoAlbers();
+                break;
+            case 'geoAlbersUsa':
+                this.projection = geoAlbersUsa();
+                break;
+            case 'geoMercator':
+                this.projection = geoMercator();
+                break;
+        }
+        this.topojsonFeature = feature(this.topojson, this.topojson.objects[this.feature]);
+        this.projection.fitSize([+this.width, +this.height], this.topojsonFeature);
+        if (this.scale) {
+            this.projection.scale(+this.scale);
+        }
+        if (this.center) {
+            this.projection.center(this.center);
+        }
+        this.geoPath = geoPath().projection(this.projection);
+        // console.log('TOPOJSON: ', this.topojson);
+        // console.log('TOPOJSON FEATURE: ', this.topojsonFeature);
+        // console.log('MESH: ', topojson.mesh(this.topojson, this.topojson.objects[this.feature], (a, b) => a !== b));
+        // console.log('DATA: ', this.data);
+        // create the chart
+        this.chart = select(this._element.nativeElement).attr('aria-hidden', 'true');
+        // TOOLTIP
+        if (!this.hideTooltip) {
+            this.tooltip = select('body')
+                .append('div')
+                .attr('class', 'pbds-tooltip south')
+                .style('opacity', 0)
+                .attr('aria-hidden', 'true'); // hide tooltip for accessibility
+            // tooltip header
+            this.tooltip.append('div').attr('class', 'tooltip-header');
+            this.tooltip.append('div').attr('class', 'tooltip-value');
+        }
+        // create chart svg
+        this.svg = this.chart
+            .append('svg')
+            .attr('width', +this.width)
+            .attr('height', +this.height + this.margin.top + this.margin.bottom)
+            .attr('class', 'img-fluid')
+            .attr('preserveAspectRatio', 'xMinYMin meet')
+            .attr('viewBox', `-${this.margin.left} -${this.margin.top} ${+this.width} ${+this.height + this.margin.top + this.margin.bottom}`);
+        // map
+        this.svg
+            .append('g')
+            .attr('class', 'map')
+            .selectAll('path')
+            .data(this.topojsonFeature.features)
+            .enter()
+            .append('path')
+            .attr('class', 'feature')
+            .attr('d', this.geoPath);
+        // borders
+        this.svg
+            .append('path')
+            .attr('class', 'mesh')
+            .datum(mesh(this.topojson, this.topojson.objects[this.mesh || this.feature], (/**
+         * @param {?} a
+         * @param {?} b
+         * @return {?}
+         */
+        (a, b) => a !== b)))
+            .attr('d', this.geoPath);
+        // legend
+        if (!this.hideLegend) {
+            this.svg
+                .append('g')
+                .attr('transform', `translate(${+this.legendLeft}, ${+this.legendTop})`) // TODO: this needs to be the top/right of the chart
+                .call(this.legend);
+        }
+        this.updateChart();
+    }
+    /**
+     * @param {?} changes
+     * @return {?}
+     */
+    ngOnChanges(changes) {
+        if (changes.data && !changes.data.firstChange) {
+            this.updateChart();
+        }
+    }
+    /**
+     * @return {?}
+     */
+    ngOnDestroy() {
+        if (this.tooltip)
+            this.tooltip.remove();
+    }
+}
+PbdsDatavizChoroplethMapComponent.decorators = [
+    { type: Component, args: [{
+                selector: 'pbds-dataviz-choropleth-map',
+                template: ``,
+                changeDetection: ChangeDetectionStrategy.OnPush
+            }] }
+];
+/** @nocollapse */
+PbdsDatavizChoroplethMapComponent.ctorParameters = () => [
+    { type: PbdsDatavizService },
+    { type: ElementRef },
+    { type: ViewportScroller }
+];
+PbdsDatavizChoroplethMapComponent.propDecorators = {
+    chartClass: [{ type: HostBinding, args: ['class.pbds-chart',] }],
+    choroplethMapClass: [{ type: HostBinding, args: ['class.pbds-chart-choropleth-map',] }],
+    data: [{ type: Input }],
+    topojson: [{ type: Input }],
+    feature: [{ type: Input }],
+    projectionType: [{ type: Input }],
+    dataField: [{ type: Input }],
+    mesh: [{ type: Input }],
+    scale: [{ type: Input }],
+    center: [{ type: Input }],
+    width: [{ type: Input }],
+    height: [{ type: Input }],
+    marginTop: [{ type: Input }],
+    marginRight: [{ type: Input }],
+    marginBottom: [{ type: Input }],
+    marginLeft: [{ type: Input }],
+    theme: [{ type: Input }],
+    colorScale: [{ type: Input }],
+    domain: [{ type: Input }],
+    hideTooltip: [{ type: Input }],
+    tooltipValueFormatType: [{ type: Input }],
+    tooltipValueFormatString: [{ type: Input }],
+    hideLegend: [{ type: Input }],
+    legendWidth: [{ type: Input }],
+    legendLabel: [{ type: Input }],
+    legendValueFormatType: [{ type: Input }],
+    legendValueFormatString: [{ type: Input }],
+    legendLeft: [{ type: Input }],
+    legendTop: [{ type: Input }],
+    hovered: [{ type: Output }],
+    clicked: [{ type: Output }]
+};
+if (false) {
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.chartClass;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.choroplethMapClass;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.data;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.topojson;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.feature;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.projectionType;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.dataField;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.mesh;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.scale;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.center;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.width;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.height;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.marginTop;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.marginRight;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.marginBottom;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.marginLeft;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.theme;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.colorScale;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.domain;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.hideTooltip;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.tooltipValueFormatType;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.tooltipValueFormatString;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.hideLegend;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.legendWidth;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.legendLabel;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.legendValueFormatType;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.legendValueFormatString;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.legendLeft;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.legendTop;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.hovered;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.clicked;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizChoroplethMapComponent.prototype.projection;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizChoroplethMapComponent.prototype.geoPath;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizChoroplethMapComponent.prototype.topojsonFeature;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizChoroplethMapComponent.prototype.chart;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizChoroplethMapComponent.prototype.svg;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizChoroplethMapComponent.prototype.margin;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizChoroplethMapComponent.prototype.colorRange;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizChoroplethMapComponent.prototype.colorDomain;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizChoroplethMapComponent.prototype.tooltip;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizChoroplethMapComponent.prototype.tooltipValueFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizChoroplethMapComponent.prototype.legendValueFormat;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.updateChart;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.featureMouseOver;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.featureMouseOut;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.featureMouseClick;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizChoroplethMapComponent.prototype.tooltipShow;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizChoroplethMapComponent.prototype.tooltipHide;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizChoroplethMapComponent.prototype.tooltipMove;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizChoroplethMapComponent.prototype.tooltipSetPosition;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapComponent.prototype.legend;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizChoroplethMapComponent.prototype._dataviz;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizChoroplethMapComponent.prototype._element;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizChoroplethMapComponent.prototype._scroll;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class PbdsDatavizGroupedBarComponent {
+    /**
+     * @param {?} _dataviz
+     * @param {?} _element
+     * @param {?} _scroll
+     * @param {?} _location
+     */
+    constructor(_dataviz, _element, _scroll, _location) {
+        this._dataviz = _dataviz;
+        this._element = _element;
+        this._scroll = _scroll;
+        this._location = _location;
+        this.chartClass = true;
+        this.groupedBarClass = true;
+        this.width = 306;
+        this.height = 400;
+        this.vertical = true;
+        this.hideXAxis = false;
+        this.xAxisMaxBuffer = 0.01;
+        this.xAxisFormatType = null;
+        this.xAxisFormatString = '';
+        this.xAxisTicks = 5;
+        this.hideYAxis = false;
+        this.yAxisMaxBuffer = 0.01;
+        this.yAxisFormatType = null;
+        this.yAxisFormatString = '';
+        this.yAxisTicks = 5;
+        this.marginTop = 10;
+        this.marginRight = this.vertical ? 0 : 55;
+        this.marginBottom = 30;
+        this.marginLeft = 55;
+        this.hideLegend = false;
+        this.legendWidth = 105 + 28; // hardcoded legend width + left margin, do not document until feedback
+        // hardcoded legend width + left margin, do not document until feedback
+        this.legendPosition = 'right';
+        this.legendLabelFormatType = null;
+        this.legendLabelFormatString = '';
+        this.hideTooltip = false;
+        this.tooltipLabelFormatType = null;
+        this.tooltipLabelFormatString = '';
+        this.tooltipValueFormatType = null;
+        this.tooltipValueFormatString = '';
+        this.showGrid = false;
+        this.theme = 'classic';
+        this.hovered = new EventEmitter();
+        this.clicked = new EventEmitter();
+        this.barMouseOver = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, data, index, nodes) => {
+            /** @type {?} */
+            const node = select(nodes[index]);
+            this.chart
+                .selectAll('.bar-group')
+                .selectAll('.bar')
+                .classed('inactive', true);
+            node.classed('inactive', false).style('fill', node.attr('data-color'));
+            this.tooltipShow(data, nodes[index]);
+            this.hovered.emit({ event, data });
+        });
+        this.barMouseOut = (/**
+         * @return {?}
+         */
+        () => {
+            this.chart
+                .selectAll('.bar')
+                .classed('inactive', false)
+                .style('fill', null);
+            this.tooltipHide();
+        });
+        this.barMouseClick = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, data, index, nodes) => {
+            this.clicked.emit({ event, data });
+        });
+        this.legendMouseOver = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, data, index, nodes) => {
+            this.chart
+                .selectAll('.legend-item')
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i !== index))
+                .classed('inactive', true);
+            this.chart
+                .selectAll('.bar-group')
+                .selectAll('.bar')
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i !== index))
+                .classed('inactive', true);
+            /** @type {?} */
+            const bar = this.chart
+                .selectAll('.bar-group')
+                .selectAll('.bar')
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i === index))
+                .classed('inactive', null);
+            /** @type {?} */
+            const barColor = bar.attr('data-color');
+            bar.style('fill', (/**
+             * @return {?}
+             */
+            () => barColor));
+            this.hovered.emit({ event, data });
+        });
+        this.legendMouseOut = (/**
+         * @return {?}
+         */
+        () => {
+            this.chart.selectAll('.legend-item').classed('inactive', false);
+            this.chart
+                .selectAll('.bar-group')
+                .selectAll('.bar')
+                .classed('inactive', false)
+                .style('fill', null);
+        });
+        this.legendMouseClick = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, data, index, nodes) => {
+            this.clicked.emit({ event, data });
+        });
+        this.tooltipShow = (/**
+         * @param {?} data
+         * @param {?} node
+         * @return {?}
+         */
+        (data, node) => {
+            /** @type {?} */
+            const dimensions = node.getBoundingClientRect();
+            /** @type {?} */
+            const scroll = this._scroll.getScrollPosition();
+            /** @type {?} */
+            let label;
+            switch (this.tooltipLabelFormatType) {
+                case 'number':
+                    label = this.tooltipLabelFormat(data.label);
+                    break;
+                case 'time':
+                    /** @type {?} */
+                    const parsedTime = isoParse(data.label);
+                    label = this.tooltipLabelFormat(parsedTime);
+                    break;
+                default:
+                    label = data.label;
+            }
+            /** @type {?} */
+            const value = this.tooltipValueFormat === null
+                ? `<div class="tooltip-value">${data.value}</div>`
+                : `<div class="tooltip-value">${this.tooltipValueFormat(data.value)}</div>`;
+            this.tooltip.html(`
+        ${label}
+        ${value}
+      `);
+            /** @type {?} */
+            const tooltipOffsetWidth = +this.tooltip.node().offsetWidth / 2;
+            /** @type {?} */
+            const tooltipOffsetHeight = +this.tooltip.node().offsetHeight;
+            /** @type {?} */
+            const tooltipTipSize = 8;
+            if (this.vertical) {
+                this.tooltip.style('top', `${+scroll[1] + +dimensions.top - tooltipOffsetHeight - tooltipTipSize}px`);
+                this.tooltip.style('left', `${+scroll[0] + +dimensions.left - tooltipOffsetWidth + +dimensions.width / 2}px`);
+            }
+            else {
+                this.tooltip.style('top', `${+scroll[1] + +dimensions.top + +dimensions.height / 2 - tooltipOffsetHeight / 2}px`);
+                this.tooltip.style('left', `${+scroll[0] + +dimensions.right + tooltipTipSize}px`);
+            }
+            this.tooltip.style('opacity', 1);
+        });
+        this.tooltipHide = (/**
+         * @return {?}
+         */
+        () => {
+            this.tooltip.style('opacity', 0);
+        });
+        this.xAxisFormatter = (/**
+         * @param {?} item
+         * @return {?}
+         */
+        item => {
+            switch (this.xAxisFormatType) {
+                case 'number':
+                    return this.xAxisFormat(item);
+                case 'time':
+                    /** @type {?} */
+                    const parseDate = isoParse(item);
+                    return this.xAxisFormat(parseDate);
+                default:
+                    return item;
+            }
+        });
+        this.yAxisFormatter = (/**
+         * @param {?} item
+         * @return {?}
+         */
+        item => {
+            switch (this.yAxisFormatType) {
+                case 'number':
+                    return this.yAxisFormat(item);
+                case 'time':
+                    /** @type {?} */
+                    const parseDate = isoParse(item);
+                    return this.yAxisFormat(parseDate);
+                default:
+                    return item;
+            }
+        });
+    }
+    /**
+     * @return {?}
+     */
+    ngOnInit() {
+        this.margin = {
+            top: +this.marginTop,
+            right: +this.marginRight,
+            bottom: +this.marginBottom,
+            left: +this.marginLeft
+        };
+        switch (this.xAxisFormatType) {
+            case 'number':
+                this.xAxisFormat = format(this.xAxisFormatString);
+                break;
+            case 'time':
+                this.xAxisFormat = timeFormat(this.xAxisFormatString);
+                break;
+        }
+        switch (this.yAxisFormatType) {
+            case 'number':
+                this.yAxisFormat = format(this.yAxisFormatString);
+                break;
+            case 'time':
+                this.yAxisFormat = timeFormat(this.yAxisFormatString);
+                break;
+        }
+        switch (this.legendLabelFormatType) {
+            case 'number':
+                this.legendLabelFormat = format(this.legendLabelFormatString);
+                break;
+            case 'time':
+                this.legendLabelFormat = timeFormat(this.legendLabelFormatString);
+                break;
+            default:
+                this.legendLabelFormat = null;
+                break;
+        }
+        switch (this.tooltipLabelFormatType) {
+            case 'time':
+                this.tooltipLabelFormat = timeFormat(this.tooltipLabelFormatString);
+                break;
+            default:
+                this.tooltipLabelFormat = null;
+                break;
+        }
+        switch (this.tooltipValueFormatType) {
+            case 'number':
+                this.tooltipValueFormat = format(this.tooltipValueFormatString);
+                break;
+            default:
+                this.tooltipValueFormat = null;
+        }
+        // defaults for all chart types
+        this.hideGrayBars = false;
+        this.hideXAxisZero = false;
+        this.hideXAxisDomain = false;
+        this.hideXAxisTicks = true;
+        this.xAxisTickSize = 8;
+        this.xAxisTickSizeOuter = 0;
+        this.hideYAxisZero = false;
+        this.hideYAxisDomain = false;
+        this.hideYAxisTicks = true;
+        this.yAxisTickSize = 8;
+        this.yAxisTickSizeOuter = 0;
+        if (!this.hideLegend && this.legendPosition === 'right') {
+            this.width = +this.width - +this.legendWidth;
+        }
+        // create the chart
+        this.chart = select(this._element.nativeElement).attr('aria-hidden', 'true');
+        // create chart svg
+        this.svg = this.chart
+            .append('svg')
+            .attr('width', (/**
+         * @return {?}
+         */
+        () => {
+            if (this.vertical) {
+                return +this.width;
+            }
+            else {
+                return +this.width + this.margin.left + this.margin.right;
+            }
+        }))
+            .attr('height', +this.height + this.margin.top + this.margin.bottom)
+            .attr('class', 'img-fluid')
+            .attr('preserveAspectRatio', 'xMinYMin meet')
+            .attr('viewBox', (/**
+         * @return {?}
+         */
+        () => {
+            if (this.vertical) {
+                return `-${this.margin.left} -${this.margin.top} ${+this.width} ${+this.height +
+                    this.margin.top +
+                    this.margin.bottom}`;
+            }
+            else {
+                return `-${this.margin.left} -${this.margin.top} ${+this.width + this.margin.left + this.margin.right} ${+this
+                    .height +
+                    this.margin.top +
+                    this.margin.bottom}`;
+            }
+        }));
+        // TOOLTIP
+        if (!this.hideTooltip) {
+            this.tooltip = select('body')
+                .append('div')
+                .attr('class', (/**
+             * @return {?}
+             */
+            () => {
+                return this.vertical ? 'pbds-tooltip south' : 'pbds-tooltip west';
+            }))
+                .style('opacity', 0)
+                .attr('aria-hidden', 'true'); // hide tooltip for accessibility
+        }
+        // add legend classes
+        if (!this.hideLegend) {
+            this.chart.classed('pbds-chart-legend-bottom', this.legendPosition === 'bottom' ? true : false);
+            this.chart.append('ul').attr('class', `legend legend-${this.legendPosition}`);
+        }
+        // build color ranges
+        this.colorRange = scaleOrdinal().range(this._dataviz.createGradientDefs(this.svg, false, this.theme, this.vertical));
+        if (this.vertical) {
+            // X AXIS
+            this.xAxisScale = scaleBand()
+                .domain(this.data.map((/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => d.key)))
+                .rangeRound([0, this.width - this.margin.left])
+                .align(0);
+            // add padding to the scale for gray bars
+            !this.hideGrayBars
+                ? this.xAxisScale.paddingInner(0.1).paddingOuter(0)
+                : this.xAxisScale.paddingInner(0).paddingOuter(0);
+            this.xAxisCall = axisBottom(this.xAxisScale)
+                .tickSize(this.xAxisTickSize)
+                .tickSizeOuter(this.xAxisTickSizeOuter)
+                .tickFormat(this.xAxisFormatter);
+            this.xAxis = this.svg
+                .append('g')
+                .attr('class', 'axis axis-x')
+                .attr('transform', `translate(0, ${this.height})`)
+                .classed('axis-hidden', this.hideXAxis)
+                .classed('axis-zero-hidden', this.hideXAxisZero)
+                .classed('axis-domain-hidden', this.hideXAxisDomain)
+                .classed('axis-ticks-hidden', this.hideXAxisTicks)
+                .call(this.xAxisCall);
+            // X GRIDLINES
+            // if (!this.hideXGrid) {
+            //   this.xGridCall = d3_axisBottom(this.xAxisScale).tickSize(-this.height);
+            //   this.xGrid = this.svg
+            //     .append('g')
+            //     .attr('class', 'grid grid-x')
+            //     .classed('grid-zero-hidden', this.hideXAxisZero)
+            //     .attr('transform', `translate(0, ${this.height})`)
+            //     .call(this.xGridCall);
+            // }
+            // Y AXIS
+            this.yAxisMax = max(this.data, (/**
+             * @param {?} data
+             * @return {?}
+             */
+            (data) => {
+                /** @type {?} */
+                const clone = Object.assign({}, data);
+                delete clone.key;
+                return max(values(clone));
+            }));
+            this.yAxisMax = this.yAxisMax + this.yAxisMax * this.yAxisMaxBuffer;
+            this.yAxisScale = scaleLinear()
+                .domain([0, this.yAxisMax])
+                .nice()
+                .rangeRound([this.height, 0]);
+            this.yAxisCall = axisLeft(this.yAxisScale)
+                .ticks(this.yAxisTicks)
+                .tickSize(this.yAxisTickSize)
+                .tickSizeOuter(this.yAxisTickSizeOuter)
+                .tickFormat(this.yAxisFormatter);
+            this.yAxis = this.svg
+                .append('g')
+                .attr('class', 'axis axis-y')
+                .classed('axis-hidden', this.hideYAxis)
+                .classed('axis-zero-hidden', this.hideYAxisZero)
+                .classed('axis-domain-hidden', this.hideYAxisDomain)
+                .classed('axis-ticks-hidden', this.hideYAxisTicks)
+                .call(this.yAxisCall);
+            // Y GRIDLINES
+            if (this.showGrid) {
+                this.yGridCall = axisLeft(this.yAxisScale)
+                    .ticks(this.yAxisTicks)
+                    .tickSize(-this.width + this.margin.left + this.margin.right);
+                this.yGrid = this.svg
+                    .append('g')
+                    .attr('class', 'grid grid-y')
+                    .classed('grid-zero-hidden', this.hideYAxisZero)
+                    .attr('transform', `translate(0, 0)`)
+                    .call(this.yGridCall);
+            }
+            // color bar scale
+            this.barScale = scaleBand()
+                .domain(Object.keys(this.data[0]).slice(1))
+                .rangeRound([0, this.xAxisScale.bandwidth()])
+                .paddingInner(0.1)
+                .paddingOuter(0.5);
+            this.updateChartVertical();
+        }
+        else {
+            // X AXIS
+            this.xAxisMax = max(this.data, (/**
+             * @param {?} data
+             * @return {?}
+             */
+            (data) => {
+                /** @type {?} */
+                const clone = Object.assign({}, data);
+                delete clone.key;
+                return max(values(clone));
+            }));
+            this.xAxisMax = this.xAxisMax + this.xAxisMax * this.xAxisMaxBuffer;
+            this.xAxisScale = scaleLinear()
+                .domain([0, this.xAxisMax])
+                .rangeRound([0, this.width])
+                .nice();
+            this.xAxisCall = axisBottom(this.xAxisScale)
+                .ticks(this.xAxisTicks)
+                .tickSize(this.xAxisTickSize)
+                .tickSizeOuter(this.xAxisTickSizeOuter)
+                .tickFormat(this.xAxisFormatter);
+            this.xAxis = this.svg
+                .append('g')
+                .attr('class', 'axis axis-x')
+                .attr('transform', `translate(0, ${this.height})`)
+                .classed('axis-hidden', this.hideXAxis)
+                .classed('axis-zero-hidden', this.hideXAxisZero)
+                .classed('axis-domain-hidden', this.hideXAxisDomain)
+                .classed('axis-ticks-hidden', this.hideXAxisTicks)
+                .call(this.xAxisCall);
+            // Y AXIS
+            this.yAxisScale = scaleBand()
+                .domain(this.data.map((/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => d.key)))
+                .rangeRound([0, this.height])
+                .align(1);
+            // add padding to the scale for gray bars
+            !this.hideGrayBars
+                ? this.yAxisScale.paddingInner(0.1).paddingOuter(0)
+                : this.yAxisScale.paddingInner(0).paddingOuter(0);
+            this.yAxisCall = axisLeft(this.yAxisScale)
+                .tickSize(this.yAxisTickSize)
+                .tickSizeOuter(this.yAxisTickSizeOuter)
+                .tickFormat(this.yAxisFormatter);
+            this.yAxis = this.svg
+                .append('g')
+                .attr('class', 'axis axis-y')
+                .classed('axis-hidden', this.hideYAxis)
+                .classed('axis-zero-hidden', this.hideYAxisZero)
+                .classed('axis-domain-hidden', this.hideYAxisDomain)
+                .classed('axis-ticks-hidden', this.hideYAxisTicks)
+                .call(this.yAxisCall);
+            // X GRIDLINES
+            if (this.showGrid) {
+                this.xGridCall = axisBottom(this.xAxisScale).tickSize(-this.height);
+                this.xGrid = this.svg
+                    .append('g')
+                    .attr('class', 'grid grid-x')
+                    .classed('grid-zero-hidden', this.hideXAxisZero)
+                    .attr('transform', `translate(0, ${this.height})`)
+                    .call(this.xGridCall);
+            }
+            // Y GRIDLINES
+            // if (!this.hideYGrid) {
+            //   this.yGridCall = d3_axisLeft(this.yAxisScale)
+            //     .ticks(this.yAxisTicks)
+            //     .tickSize(-this.width);
+            //   this.yGrid = this.svg
+            //     .append('g')
+            //     .attr('class', 'grid grid-y')
+            //     .classed('grid-zero-hidden', this.hideYAxisZero)
+            //     .attr('transform', `translate(0, 0)`)
+            //     .call(this.yGridCall);
+            // }
+            // color bar scale
+            this.barScale = scaleBand()
+                .domain(Object.keys(this.data[0]).slice(1))
+                .rangeRound([this.yAxisScale.bandwidth(), 0])
+                .paddingInner(0.1)
+                .paddingOuter(0.5);
+            this.updateChartHorizontal();
+        }
+    }
+    /**
+     * @return {?}
+     */
+    ngOnDestroy() {
+        if (this.tooltip)
+            this.tooltip.remove();
+    }
+    /**
+     * @param {?} changes
+     * @return {?}
+     */
+    ngOnChanges(changes) {
+        if (changes.data && !changes.data.firstChange) {
+            if (this.vertical) {
+                this.updateChartVertical();
+            }
+            else {
+                this.updateChartHorizontal();
+            }
+        }
+    }
+    /**
+     * @return {?}
+     */
+    updateChartVertical() {
+        // update the xScale
+        this.xAxisScale.domain(this.data.map((/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => d.key)));
+        // update the yScale
+        this.yAxisMax = max(this.data, (/**
+         * @param {?} data
+         * @return {?}
+         */
+        (data) => {
+            /** @type {?} */
+            const clone = Object.assign({}, data);
+            delete clone.key;
+            return max(values(clone));
+        }));
+        this.yAxisMax = this.yAxisMax + this.yAxisMax * this.yAxisMaxBuffer;
+        this.yAxisScale
+            .domain([0, this.yAxisMax])
+            .rangeRound([this.height, 0])
+            .nice();
+        this.xAxis
+            .transition()
+            .duration(1000)
+            .call(this.xAxisCall);
+        this.yAxis
+            .transition()
+            .duration(1000)
+            .call(this.yAxisCall);
+        // update the grids
+        // if (!this.hideXGrid) {
+        //   this.xGrid
+        //     .transition()
+        //     .duration(1000)
+        //     .call(this.xGridCall);
+        // }
+        if (this.showGrid) {
+            this.yGrid
+                .transition()
+                .duration(1000)
+                .call(this.yGridCall);
+        }
+        // update the color bar scale
+        this.barScale.domain(Object.keys(this.data[0]).slice(1)).rangeRound([0, this.xAxisScale.bandwidth()]);
+        this.svg
+            .selectAll('.gray-bar')
+            .data(this.data)
+            .join((/**
+         * @param {?} enter
+         * @return {?}
+         */
+        enter => enter
+            .append('rect')
+            .attr('class', 'gray-bar')
+            .attr('x', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => this.xAxisScale(d.key)))
+            .attr('y', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => this.yAxisScale(d.value)))
+            .attr('width', this.xAxisScale.bandwidth())
+            .attr('height', this.height)), (/**
+         * @param {?} update
+         * @return {?}
+         */
+        update => update
+            .transition()
+            .duration(1000)
+            .attr('x', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => this.xAxisScale(d.key)))
+            .attr('y', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => this.yAxisScale(d.value)))
+            .attr('width', this.xAxisScale.bandwidth())
+            .attr('height', this.height)));
+        this.svg
+            .selectAll('.bar-group')
+            .data(this.data)
+            .join((/**
+         * @param {?} enter
+         * @return {?}
+         */
+        enter => enter
+            .append('g')
+            .attr('class', 'bar-group')
+            .attr('transform', (/**
+         * @param {?} d
+         * @param {?} i
+         * @return {?}
+         */
+        (d, i) => {
+            return `translate(${this.xAxisScale(d.key)}, 0)`;
+        }))), (/**
+         * @param {?} update
+         * @return {?}
+         */
+        update => update
+            .transition()
+            .duration(1000)
+            .attr('transform', (/**
+         * @param {?} d
+         * @param {?} i
+         * @return {?}
+         */
+        (d, i) => {
+            return `translate(${this.xAxisScale(d.key)}, 0)`;
+        }))));
+        this.svg
+            .selectAll('.bar-group')
+            .selectAll('.bar')
+            .data((/**
+         * @param {?} d
+         * @param {?} i
+         * @return {?}
+         */
+        (d, i) => {
+            /** @type {?} */
+            const clone = Object.assign({}, d);
+            delete clone.key;
+            /** @type {?} */
+            const keys = Object.keys(clone);
+            /** @type {?} */
+            const keyData = keys.map((/**
+             * @param {?} key
+             * @return {?}
+             */
+            function (key) {
+                return { label: key, value: d[key], parentIndex: i };
+            }));
+            return keyData;
+        }))
+            .join((/**
+         * @param {?} enter
+         * @return {?}
+         */
+        enter => enter
+            .append('rect')
+            .attr('class', 'bar')
+            .attr('fill', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => `url(${this._location.path()}#gradient-${this.colorRange(d.label).substr(1)})`))
+            .attr('data-color', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => this.colorRange(d.label)))
+            .attr('data-parent-index', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => d.parentIndex))
+            .attr('x', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => this.barScale(d.label)))
+            .attr('width', this.barScale.bandwidth())
+            .attr('y', this.height)
+            .attr('height', 0)
+            .call((/**
+         * @param {?} enter
+         * @return {?}
+         */
+        enter => {
+            return enter
+                .transition()
+                .duration(500)
+                .attr('height', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => this.height - this.yAxisScale(d.value)))
+                .attr('y', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => this.yAxisScale(d.value)));
+        }))), (/**
+         * @param {?} update
+         * @return {?}
+         */
+        update => update
+            .transition()
+            .duration(1000)
+            .attr('x', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => this.barScale(d.label)))
+            .attr('width', this.barScale.bandwidth())
+            .attr('height', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => this.height - this.yAxisScale(d.value)))
+            .attr('y', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => this.yAxisScale(d.value)))), (/**
+         * @param {?} exit
+         * @return {?}
+         */
+        exit => exit
+            .transition()
+            .duration(100)
+            .attr('height', 0)
+            .attr('y', this.height)))
+            .on('mouseover', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => this.barMouseOver(event$1, data, index, nodes)))
+            .on('mouseout', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => this.barMouseOut()))
+            .on('click', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => this.barMouseClick(event$1, data, index, nodes)));
+        this.updateLegend();
+        this.svg.selectAll('.axis').raise();
+    }
+    /**
+     * @return {?}
+     */
+    updateChartHorizontal() {
+        // update the xScale
+        this.xAxisMax = max(this.data, (/**
+         * @param {?} data
+         * @return {?}
+         */
+        (data) => {
+            /** @type {?} */
+            const clone = Object.assign({}, data);
+            delete clone.key;
+            return max(values(clone));
+        }));
+        this.xAxisMax = this.xAxisMax + this.xAxisMax * this.xAxisMaxBuffer;
+        this.xAxisScale
+            .domain([0, this.xAxisMax])
+            .rangeRound([0, this.width])
+            .nice();
+        // update the yScale
+        this.yAxisScale.domain(this.data.map((/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => d.key)));
+        this.xAxis
+            .transition()
+            .duration(1000)
+            .call(this.xAxisCall);
+        this.yAxis
+            .transition()
+            .duration(1000)
+            .call(this.yAxisCall);
+        // update the grids
+        if (this.showGrid) {
+            this.xGrid
+                .transition()
+                .duration(1000)
+                .call(this.xGridCall);
+        }
+        // if (!this.hideYGrid) {
+        //   this.yGrid
+        //     .transition()
+        //     .duration(1000)
+        //     .call(this.yGridCall);
+        // }
+        // update the color bar scale
+        this.barScale.domain(Object.keys(this.data[0]).slice(1)).rangeRound([0, this.yAxisScale.bandwidth()]);
+        this.svg
+            .selectAll('.gray-bar')
+            .data(this.data)
+            .join((/**
+         * @param {?} enter
+         * @return {?}
+         */
+        enter => enter
+            .append('rect')
+            .attr('class', 'gray-bar')
+            .attr('y', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => this.yAxisScale(d.key)))
+            .attr('width', this.width)
+            .attr('height', this.yAxisScale.bandwidth())), (/**
+         * @param {?} update
+         * @return {?}
+         */
+        update => update
+            .transition()
+            .duration(1000)
+            .attr('y', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => this.yAxisScale(d.key)))
+            .attr('width', this.width)
+            .attr('height', this.yAxisScale.bandwidth())));
+        this.svg
+            .selectAll('.bar-group')
+            .data(this.data)
+            .join((/**
+         * @param {?} enter
+         * @return {?}
+         */
+        enter => enter
+            .append('g')
+            .attr('class', 'bar-group')
+            .attr('transform', (/**
+         * @param {?} d
+         * @param {?} i
+         * @return {?}
+         */
+        (d, i) => {
+            return `translate(0, ${this.yAxisScale(d.key)})`;
+        }))), (/**
+         * @param {?} update
+         * @return {?}
+         */
+        update => update
+            .transition()
+            .duration(1000)
+            .attr('transform', (/**
+         * @param {?} d
+         * @param {?} i
+         * @return {?}
+         */
+        (d, i) => {
+            return `translate(0, ${this.yAxisScale(d.key)})`;
+        }))));
+        this.svg
+            .selectAll('.bar-group')
+            .selectAll('.bar')
+            .data((/**
+         * @param {?} d
+         * @param {?} i
+         * @return {?}
+         */
+        (d, i) => {
+            /** @type {?} */
+            const clone = Object.assign({}, d);
+            delete clone.key;
+            /** @type {?} */
+            const keys = Object.keys(clone);
+            /** @type {?} */
+            const keyData = keys.map((/**
+             * @param {?} key
+             * @return {?}
+             */
+            function (key) {
+                return { label: key, value: d[key], parentIndex: i };
+            }));
+            return keyData;
+        }))
+            .join((/**
+         * @param {?} enter
+         * @return {?}
+         */
+        enter => enter
+            .append('rect')
+            .attr('class', 'bar')
+            .attr('fill', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => `url(${this._location.path()}#gradient-horizontal-${this.colorRange(d.label).substr(1)})`))
+            .attr('data-color', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => this.colorRange(d.label)))
+            .attr('data-parent-index', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => d.parentIndex))
+            .attr('x', 0)
+            .attr('width', 0)
+            .attr('y', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => this.barScale(d.label)))
+            .attr('height', this.barScale.bandwidth())
+            .call((/**
+         * @param {?} enter
+         * @return {?}
+         */
+        enter => {
+            return enter
+                .transition()
+                .duration(500)
+                .attr('width', (/**
+             * @param {?} d
+             * @return {?}
+             */
+            d => this.xAxisScale(d.value)));
+        }))), (/**
+         * @param {?} update
+         * @return {?}
+         */
+        update => update
+            .transition()
+            .duration(1000)
+            .attr('width', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => this.xAxisScale(d.value)))
+            .attr('height', this.barScale.bandwidth())
+            .attr('y', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => this.barScale(d.label)))), (/**
+         * @param {?} exit
+         * @return {?}
+         */
+        exit => exit
+            .transition()
+            .duration(100)
+            .attr('width', 0)))
+            .on('mouseover', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => this.barMouseOver(event$1, data, index, nodes)))
+            .on('mouseout', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => this.barMouseOut()))
+            .on('click', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => this.barMouseClick(event$1, data, index, nodes)));
+        this.updateLegend();
+        this.svg.selectAll('.axis').raise();
+    }
+    /**
+     * @return {?}
+     */
+    updateLegend() {
+        // legend
+        if (!this.hideLegend) {
+            /** @type {?} */
+            const legendData = Object.assign({}, this.data[0]);
+            delete legendData.key;
+            /** @type {?} */
+            const legendKeys = Object.keys(legendData).map((/**
+             * @param {?} key
+             * @return {?}
+             */
+            function (key) {
+                return { label: key };
+            }));
+            this.chart
+                .select('.legend')
+                .selectAll('.legend-item')
+                .data(legendKeys)
+                .join((/**
+             * @param {?} enter
+             * @return {?}
+             */
+            enter => {
+                /** @type {?} */
+                const li = enter.append('li').attr('class', 'legend-item');
+                li.insert('span')
+                    .attr('class', 'legend-key')
+                    .style('background-color', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.colorRange(d.label)));
+                li.insert('span', '.legend-item')
+                    .attr('class', 'legend-label')
+                    .html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => {
+                    switch (this.legendLabelFormatType) {
+                        case 'number':
+                            return this.legendLabelFormat(d.label);
+                        case 'time':
+                            /** @type {?} */
+                            const parsedTime = isoParse(d.label);
+                            return this.legendLabelFormat(parsedTime);
+                        default:
+                            return d.label;
+                    }
+                }));
+                return li;
+            }), (/**
+             * @param {?} update
+             * @return {?}
+             */
+            update => {
+                update.select('.legend-label').html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => {
+                    switch (this.legendLabelFormatType) {
+                        case 'number':
+                            return this.legendLabelFormat(d.label);
+                        case 'time':
+                            /** @type {?} */
+                            const parsedTime = isoParse(d.label);
+                            return this.legendLabelFormat(parsedTime);
+                        default:
+                            return d.label;
+                    }
+                }));
+                return update;
+            }), (/**
+             * @param {?} exit
+             * @return {?}
+             */
+            exit => exit.remove()))
+                .on('mouseover', (/**
+             * @param {?} data
+             * @param {?} index
+             * @param {?} nodes
+             * @return {?}
+             */
+            (data, index, nodes) => this.legendMouseOver(event$1, data, index, nodes)))
+                .on('mouseout', (/**
+             * @return {?}
+             */
+            () => this.legendMouseOut()))
+                .on('click', (/**
+             * @param {?} data
+             * @param {?} index
+             * @param {?} nodes
+             * @return {?}
+             */
+            (data, index, nodes) => this.legendMouseClick(event$1, data, index, nodes)));
+        }
+    }
+}
+PbdsDatavizGroupedBarComponent.decorators = [
+    { type: Component, args: [{
+                selector: 'pbds-dataviz-grouped-bar',
+                template: ``,
+                changeDetection: ChangeDetectionStrategy.OnPush
+            }] }
+];
+/** @nocollapse */
+PbdsDatavizGroupedBarComponent.ctorParameters = () => [
+    { type: PbdsDatavizService },
+    { type: ElementRef },
+    { type: ViewportScroller },
+    { type: Location }
+];
+PbdsDatavizGroupedBarComponent.propDecorators = {
+    chartClass: [{ type: HostBinding, args: ['class.pbds-chart',] }],
+    groupedBarClass: [{ type: HostBinding, args: ['class.pbds-chart-grouped-bar',] }],
+    data: [{ type: Input }],
+    width: [{ type: Input }],
+    height: [{ type: Input }],
+    vertical: [{ type: Input }],
+    hideXAxis: [{ type: Input }],
+    xAxisMaxBuffer: [{ type: Input }],
+    xAxisFormatType: [{ type: Input }],
+    xAxisFormatString: [{ type: Input }],
+    xAxisTicks: [{ type: Input }],
+    hideYAxis: [{ type: Input }],
+    yAxisMaxBuffer: [{ type: Input }],
+    yAxisFormatType: [{ type: Input }],
+    yAxisFormatString: [{ type: Input }],
+    yAxisTicks: [{ type: Input }],
+    marginTop: [{ type: Input }],
+    marginRight: [{ type: Input }],
+    marginBottom: [{ type: Input }],
+    marginLeft: [{ type: Input }],
+    hideLegend: [{ type: Input }],
+    legendWidth: [{ type: Input }],
+    legendPosition: [{ type: Input }],
+    legendLabelFormatType: [{ type: Input }],
+    legendLabelFormatString: [{ type: Input }],
+    hideTooltip: [{ type: Input }],
+    tooltipLabelFormatType: [{ type: Input }],
+    tooltipLabelFormatString: [{ type: Input }],
+    tooltipValueFormatType: [{ type: Input }],
+    tooltipValueFormatString: [{ type: Input }],
+    showGrid: [{ type: Input }],
+    theme: [{ type: Input }],
+    hovered: [{ type: Output }],
+    clicked: [{ type: Output }]
+};
+if (false) {
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.chartClass;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.groupedBarClass;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.data;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.width;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.height;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.vertical;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.hideXAxis;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.xAxisMaxBuffer;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.xAxisFormatType;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.xAxisFormatString;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.xAxisTicks;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.hideYAxis;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.yAxisMaxBuffer;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.yAxisFormatType;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.yAxisFormatString;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.yAxisTicks;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.marginTop;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.marginRight;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.marginBottom;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.marginLeft;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.hideLegend;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.legendWidth;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.legendPosition;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.legendLabelFormatType;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.legendLabelFormatString;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.hideTooltip;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.tooltipLabelFormatType;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.tooltipLabelFormatString;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.tooltipValueFormatType;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.tooltipValueFormatString;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.showGrid;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.theme;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.hovered;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.clicked;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.barScale;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.chart;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.svg;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.margin;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.colorRange;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.xAxisMax;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.xAxisScale;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.xAxisCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.xAxis;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.xAxisTickSize;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.xAxisTickSizeOuter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.xAxisFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.hideXAxisDomain;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.hideXAxisZero;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.hideXAxisTicks;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.xGrid;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.xGridCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.yAxisMax;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.yAxisScale;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.yAxisCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.yAxis;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.yAxisFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.yAxisTickSize;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.yAxisTickSizeOuter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.hideYAxisZero;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.hideYAxisDomain;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.hideYAxisTicks;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.yGrid;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.yGridCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.legendLabelFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.hideGrayBars;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.tooltip;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.tooltipValueFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.tooltipLabelFormat;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.barMouseOver;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.barMouseOut;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.barMouseClick;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.legendMouseOver;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.legendMouseOut;
+    /** @type {?} */
+    PbdsDatavizGroupedBarComponent.prototype.legendMouseClick;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.tooltipShow;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.tooltipHide;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.xAxisFormatter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype.yAxisFormatter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype._dataviz;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype._element;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype._scroll;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizGroupedBarComponent.prototype._location;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class PbdsDatavizSingleStackedBarComponent {
+    /**
+     * @param {?} _dataviz
+     * @param {?} _element
+     * @param {?} _scroll
+     * @param {?} _location
+     */
+    constructor(_dataviz, _element, _scroll, _location) {
+        this._dataviz = _dataviz;
+        this._element = _element;
+        this._scroll = _scroll;
+        this._location = _location;
+        this.chartClass = true;
+        this.singleStackedBarClass = true;
+        this.width = 300;
+        this.height = 40;
+        this.nullValueText = 'No data available';
+        this.percentage = false;
+        this.marginTop = 10;
+        this.marginRight = 20;
+        this.marginBottom = 35;
+        this.marginLeft = 15;
+        this.barMargin = 2;
+        this.hideXAxis = false;
+        this.xAxisTicks = 6;
+        this.xAxisTitle = null;
+        this.xAxisFormatType = null;
+        this.xAxisFormatString = '';
+        this.xAxisTickLabelSuffix = '';
+        this.hideXGrid = false;
+        this.hideLegend = false;
+        this.hideLegendTooltip = true;
+        this.legendWidth = 105 + 28; // hardcoded legend width + left margin, do not document until feedback
+        // hardcoded legend width + left margin, do not document until feedback
+        this.legendPosition = 'bottom';
+        this.legendLabelFormatType = null;
+        this.legendLabelFormatString = '';
+        this.hideTooltip = false;
+        this.tooltipLabelFormatType = null;
+        this.tooltipLabelFormatString = '';
+        this.tooltipDateFormatString = '%b %e, %Y';
+        this.tooltipValueFormatType = null;
+        this.tooltipValueFormatString = '';
+        this.tooltipValueSuffix = '';
+        this.tooltipPercentFormatString = '.2%';
+        this.compareChangeFormatString = '.2%';
+        this.monochrome = false;
+        this.hovered = new EventEmitter();
+        this.clicked = new EventEmitter();
+        this.isSingleData = false;
+        this.isCompare = false;
+        this.barPadding = 40;
+        this.barMouseOver = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, data, index, nodes) => {
+            /** @type {?} */
+            const node = select(nodes[index]);
+            this.chart.selectAll('.bar').classed('inactive', true);
+            node.classed('inactive', false);
+            this.chart
+                .selectAll('.legend-item')
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => {
+                // debugger;
+                return i !== index;
+            }))
+                .classed('inactive', true);
+            this.tooltipShow(data, nodes[index]);
+            this.hovered.emit({ event, data });
+        });
+        this.barMouseOut = (/**
+         * @return {?}
+         */
+        () => {
+            this.chart
+                .selectAll('.bar')
+                .classed('inactive', false)
+                .style('fill', null);
+            this.chart.selectAll('.legend-item').classed('inactive', false);
+            this.tooltipHide();
+        });
+        this.barMouseClick = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, data, index, nodes) => {
+            this.clicked.emit({ event, data });
+        });
+        this.tooltipShow = (/**
+         * @param {?} data
+         * @param {?} node
+         * @return {?}
+         */
+        (data, node) => {
+            /** @type {?} */
+            const dimensions = node.getBoundingClientRect();
+            /** @type {?} */
+            const scroll = this._scroll.getScrollPosition();
+            /** @type {?} */
+            const percentage = data.value / sum(this.data, (/**
+             * @param {?} d
+             * @return {?}
+             */
+            (d) => d.value));
+            /** @type {?} */
+            const comparePercentage = data.compareValue / sum(this.data, (/**
+             * @param {?} d
+             * @return {?}
+             */
+            (d) => d.compareValue));
+            /** @type {?} */
+            let tooltipLabel = ``;
+            /** @type {?} */
+            let tooltipCompareDaterangeMargin = ``;
+            /** @type {?} */
+            let tooltipCompareDaterange = ``;
+            /** @type {?} */
+            let tooltipCompareValue = ``;
+            /** @type {?} */
+            let tooltipDaterangeMargin = ``;
+            /** @type {?} */
+            let tooltipDaterange = ``;
+            /** @type {?} */
+            let tooltipValue = `${this.nullValueText}`;
+            /** @type {?} */
+            let tooltipIndicator = '';
+            // tooltip label
+            if (!this.isSingleData) {
+                switch (this.tooltipLabelFormatType) {
+                    case 'number':
+                        tooltipLabel = this.tooltipLabelFormat(data.label);
+                        break;
+                    case 'time':
+                        /** @type {?} */
+                        const parsedTime = isoParse(data.label);
+                        tooltipLabel = this.tooltipLabelFormat(parsedTime);
+                        break;
+                    default:
+                        tooltipLabel = data.label;
+                }
+            }
+            // tooltip compare daterange
+            if (this.isCompare && data.compareStartDate && data.compareEndDate) {
+                tooltipCompareDaterangeMargin = `mt-2`;
+                tooltipCompareDaterange = `${this.tooltipDateFormat(isoParse(data.compareStartDate))} - ${this.tooltipDateFormat(isoParse(data.compareEndDate))}`;
+            }
+            // tooltip compare value
+            if (this.percentage && this.isCompare && data.compareValue) {
+                tooltipCompareValue =
+                    this.tooltipValueFormat === null
+                        ? `${this.tooltipPercentFormat(comparePercentage)} (${data.comparveValue}${this.tooltipValueSuffix})`
+                        : `${this.tooltipPercentFormat(comparePercentage)} (${this.tooltipValueFormat(data.compareValue)}${this.tooltipValueSuffix})`;
+            }
+            else if (this.isCompare && data.compareValue !== null) {
+                tooltipCompareValue =
+                    this.tooltipValueFormat === null
+                        ? `${data.compareValue}${this.tooltipValueSuffix} (${this.tooltipPercentFormat(comparePercentage)})`
+                        : `${this.tooltipValueFormat(data.compareValue)}${this.tooltipValueSuffix} (${this.tooltipPercentFormat(comparePercentage)})`;
+            }
+            else if (this.isCompare && data.compareValue === null) {
+                tooltipCompareValue = `${this.nullValueText}`;
+            }
+            // tooltip daterange
+            if (data.startDate && data.endDate) {
+                tooltipDaterange = `${this.tooltipDateFormat(isoParse(data.startDate))} - ${this.tooltipDateFormat(isoParse(data.endDate))}`;
+            }
+            //tooltip daterange margin
+            if (tooltipLabel !== '') {
+                tooltipDaterangeMargin = `mt-2`;
+            }
+            // tooltip value
+            if (this.isSingleData && this.percentage && data.value) {
+                tooltipValue = this.tooltipValueFormat === null ? `${data.value}` : `${this.tooltipValueFormat(data.value)}`;
+            }
+            else if (this.isSingleData && data.value !== null) {
+                tooltipValue =
+                    this.tooltipValueFormat === null
+                        ? `${data.value}${this.tooltipValueSuffix}`
+                        : `${this.tooltipValueFormat(data.value)}${this.tooltipValueSuffix}`;
+            }
+            else if (!this.isSingleData && this.percentage && data.value !== null) {
+                tooltipValue =
+                    this.tooltipValueFormat === null
+                        ? `${this.tooltipPercentFormat(percentage)} (${data.value}${this.tooltipValueSuffix})`
+                        : `${this.tooltipPercentFormat(percentage)} (${this.tooltipValueFormat(data.value)}${this.tooltipValueSuffix})`;
+            }
+            else if (!this.isSingleData && data.value !== null) {
+                tooltipValue =
+                    this.tooltipValueFormat === null
+                        ? `${data.value}${this.tooltipValueSuffix} (${this.tooltipPercentFormat(percentage)})`
+                        : `${this.tooltipValueFormat(data.value)}${this.tooltipValueSuffix} (${this.tooltipPercentFormat(percentage)})`;
+            }
+            // tooltip metric indicator
+            if (!this.isSingleData && this.isCompare && data.value !== null && data.compareValue !== null) {
+                tooltipIndicator = `<div class="metric-block-indicator ${data.compareChangeDirection} ${data.compareChangeInverse ? 'inverse' : ''} ml-2"><span>${this.tooltipCompareChangeFormat(data.compareChangeValue)}</span></div>`;
+            }
+            this.tooltip.html((/**
+             * @return {?}
+             */
+            () => {
+                return `
+        <div class="tooltip-label font-weight-bold">${tooltipLabel}</div>
+        <div class="${tooltipCompareDaterangeMargin}">${tooltipCompareDaterange}</div>
+        <div class="tooltip-value font-weight-bold">${tooltipCompareValue}</div>
+        <div class="${tooltipDaterangeMargin}">${tooltipDaterange}</div>
+        <div class="tooltip-value"><span class="font-weight-bold">${tooltipValue}</span> <span>${tooltipIndicator}</span></div>
+      `;
+            }));
+            /** @type {?} */
+            const tooltipOffsetWidth = +this.tooltip.node().offsetWidth / 2;
+            /** @type {?} */
+            const tooltipOffsetHeight = +this.tooltip.node().offsetHeight;
+            /** @type {?} */
+            const tooltipTipSize = 8;
+            this.tooltip.style('top', `${+scroll[1] + +dimensions.top - tooltipOffsetHeight - tooltipTipSize}px`);
+            if (this.data.length > 1) {
+                this.tooltip.style('left', `${+scroll[0] + +dimensions.left - tooltipOffsetWidth + +dimensions.width / 2}px`);
+            }
+            else {
+                this.tooltip.style('left', `${+scroll[0] - tooltipOffsetWidth + +dimensions.right}px`);
+            }
+            this.tooltip.style('opacity', 1);
+        });
+        this.tooltipHide = (/**
+         * @return {?}
+         */
+        () => {
+            this.tooltip.style('opacity', 0);
+        });
+        this.legendMouseOver = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, data, index, nodes) => {
+            if (!this.hideLegendTooltip) {
+                /** @type {?} */
+                const barHover = this.svg
+                    .selectAll('.bar')
+                    .filter((/**
+                 * @param {?} d
+                 * @param {?} i
+                 * @return {?}
+                 */
+                (d, i) => i === index))
+                    .node();
+                this.tooltipShow(data, barHover);
+            }
+            this.chart
+                .selectAll('.legend-item')
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i !== index))
+                .classed('inactive', true);
+            this.chart
+                .selectAll('.bar')
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i !== index))
+                .classed('inactive', true);
+            this.chart
+                .selectAll('.bar')
+                .filter((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i === index))
+                .classed('inactive', null);
+            this.hovered.emit({ event, data });
+        });
+        this.legendMouseOut = (/**
+         * @return {?}
+         */
+        () => {
+            this.chart.selectAll('.legend-item').classed('inactive', false);
+            this.chart
+                .selectAll('.bar')
+                .classed('inactive', false)
+                .style('fill', null);
+            // hide tooltip for zero/null values
+            this.tooltipHide();
+        });
+        this.legendMouseClick = (/**
+         * @param {?} event
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (event, data, index, nodes) => {
+            this.clicked.emit({ event, data });
+        });
+        this.xAxisFormatter = (/**
+         * @param {?} item
+         * @return {?}
+         */
+        item => {
+            switch (this.xAxisFormatType) {
+                case 'number':
+                    return `${this.xAxisFormat(item)}${this.xAxisTickLabelSuffix}`;
+                default:
+                    return `${item}${this.xAxisTickLabelSuffix}`;
+            }
+        });
+    }
+    /**
+     * @return {?}
+     */
+    ngOnInit() {
+        this.height = +this.height + this.barPadding;
+        this.margin = {
+            top: +this.marginTop,
+            right: +this.marginRight,
+            bottom: +this.marginBottom,
+            left: +this.marginLeft
+        };
+        this.isSingleData = this.data.length === 1 ? true : false;
+        this.isCompare = Object.keys(this.data[0]).includes('compareValue');
+        switch (this.xAxisFormatType) {
+            case 'number':
+                this.xAxisFormat = format(this.xAxisFormatString);
+                break;
+        }
+        switch (this.legendLabelFormatType) {
+            case 'number':
+                this.legendLabelFormat = format(this.legendLabelFormatString);
+                break;
+            case 'time':
+                this.legendLabelFormat = timeFormat(this.legendLabelFormatString);
+                break;
+            default:
+                this.legendLabelFormat = null;
+                break;
+        }
+        switch (this.tooltipValueFormatType) {
+            case 'number':
+                this.tooltipValueFormat = format(this.tooltipValueFormatString);
+                break;
+            default:
+                this.tooltipValueFormat = null;
+        }
+        this.tooltipDateFormat = timeFormat(this.tooltipDateFormatString);
+        this.tooltipPercentFormat = format(this.tooltipPercentFormatString);
+        this.tooltipCompareChangeFormat = format(this.compareChangeFormatString);
+        // defaults for all chart types
+        this.hideXAxisZero = false;
+        this.hideXAxisDomain = true;
+        this.hideXAxisTicks = true;
+        this.xAxisTickSize = 8;
+        this.xAxisTickSizeOuter = 0;
+        this.xAxisTitleMargin = this.xAxisTitle ? 20 : 0;
+        if (!this.hideLegend && this.legendPosition === 'right') {
+            this.width = +this.width - +this.legendWidth;
+        }
+        // create the chart
+        this.chart = select(this._element.nativeElement).attr('aria-hidden', 'true');
+        // create chart svg
+        this.svg = this.chart
+            .append('svg')
+            .attr('width', (/**
+         * @return {?}
+         */
+        () => {
+            return +this.width + this.margin.left + this.margin.right;
+        }))
+            .attr('height', +this.height + this.margin.top + this.margin.bottom + this.xAxisTitleMargin)
+            .attr('class', 'img-fluid')
+            .attr('preserveAspectRatio', 'xMinYMin meet')
+            .attr('viewBox', (/**
+         * @return {?}
+         */
+        () => {
+            return `-${this.margin.left} -${this.margin.top} ${+this.width + this.margin.left + this.margin.right} ${+this
+                .height +
+                this.margin.top +
+                this.margin.bottom +
+                this.xAxisTitleMargin}`;
+        }));
+        // TOOLTIP
+        if (!this.hideTooltip) {
+            this.tooltip = select('body')
+                .append('div')
+                .attr('class', 'pbds-tooltip south')
+                .classed('pbds-tooltip-compare', this.isCompare)
+                .style('opacity', 0)
+                .attr('aria-hidden', 'true'); // hide tooltip for accessibility
+        }
+        // add legend classes
+        if (!this.hideLegend && this.data.length > 1) {
+            this.chart.classed('pbds-chart-legend-bottom', this.legendPosition === 'bottom' ? true : false);
+            this.chart.append('ul').attr('class', `legend legend-${this.legendPosition}`);
+        }
+        // X AXIS
+        this.xAxisScale = scaleLinear()
+            .domain([0, Math.ceil(sum(this.data, (/**
+             * @param {?} d
+             * @return {?}
+             */
+            (d) => d.value)))])
+            .range([0, +this.width]);
+        this.xAxisCall = axisBottom(this.xAxisScale)
+            // .tickValues([0, d3_sum(this.data, (d: any) => d.value)])
+            .ticks(this.xAxisTicks)
+            .tickSize(this.xAxisTickSize)
+            .tickSizeOuter(this.xAxisTickSizeOuter)
+            .tickFormat(this.xAxisFormatter);
+        this.xAxis = this.svg
+            .append('g')
+            .attr('class', 'axis axis-x')
+            .attr('transform', `translate(0, ${this.height})`)
+            .classed('axis-hidden', this.hideXAxis)
+            .classed('axis-zero-hidden', this.hideXAxisZero)
+            .classed('axis-domain-hidden', this.hideXAxisDomain)
+            .classed('axis-ticks-hidden', this.hideXAxisTicks);
+        // .call(this.xAxisCall);
+        // X GRIDLINES
+        if (!this.hideXGrid) {
+            this.xGridCall = axisBottom(this.xAxisScale).tickSize(-this.height);
+            this.xGrid = this.svg
+                .append('g')
+                .attr('class', 'grid grid-x')
+                .classed('grid-zero-hidden', this.hideXAxisZero)
+                .attr('transform', `translate(0, ${this.height})`)
+                .call(this.xGridCall);
+        }
+        if (this.xAxisTitle) {
+            this.svg
+                .append('text')
+                .attr('class', 'axis-title')
+                .attr('text-anchor', 'center')
+                .attr('x', this.width / 2 - this.margin.left)
+                .attr('y', this.height + this.margin.top + (!this.hideXAxis ? 40 : 0))
+                .text(this.xAxisTitle);
+        }
+        // build color ranges
+        /** @type {?} */
+        let colors;
+        if (this.isSingleData) {
+            colors = this._dataviz.createGradientDefs(this.svg, this.monochrome, this.theme, false);
+        }
+        else if (this.monochrome) {
+            colors = this._dataviz.getColors(this.monochrome, this.theme).reverse();
+        }
+        else {
+            colors = this._dataviz.getColors(this.monochrome, this.theme);
+        }
+        this.colorRange = scaleOrdinal().range(colors);
+        this.updateChart();
+    }
+    /**
+     * @param {?} changes
+     * @return {?}
+     */
+    ngOnChanges(changes) {
+        if (changes.data && !changes.data.firstChange) {
+            this.updateChart();
+        }
+    }
+    /**
+     * @return {?}
+     */
+    ngOnDestroy() {
+        if (this.tooltip)
+            this.tooltip.remove();
+    }
+    /**
+     * @return {?}
+     */
+    updateChart() {
+        /** @type {?} */
+        const sumValues = sum(this.data, (/**
+         * @param {?} d
+         * @return {?}
+         */
+        (d) => d.value));
+        /** @type {?} */
+        const isLastBarZero = this.data[this.data.length - 1].value === 0 || this.data[this.data.length - 1].value === null ? true : false;
+        /** @type {?} */
+        let lastBarZeroCount = 0;
+        /** @type {?} */
+        const cloneData = [...this.data];
+        /** @type {?} */
+        let isLast = false;
+        cloneData.reverse().forEach((/**
+         * @param {?} value
+         * @param {?} index
+         * @param {?} array
+         * @return {?}
+         */
+        (value, index, array) => {
+            if ((value.value === 0 || value.value === null) && !isLast) {
+                lastBarZeroCount++;
+            }
+            else {
+                isLast = true;
+            }
+        }));
+        if (this.percentage && !this.isSingleData) {
+            this.xAxisScale.domain([0, sumValues]).range([0, +this.width]);
+            this.xAxisCall.tickValues([0, sumValues * 0.25, sumValues * 0.5, sumValues * 0.75, sumValues]);
+            this.xAxis.call(this.xAxisCall);
+            this.xGridCall.tickValues([0, sumValues * 0.25, sumValues * 0.5, sumValues * 0.75, sumValues]);
+            this.xGrid.call(this.xGridCall);
+            this.svg
+                .select('.axis-x')
+                .selectAll('text')
+                .html((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => {
+                /** @type {?} */
+                const format$1 = format('.0%');
+                return format$1(i * 0.25);
+            }));
+        }
+        else if (this.percentage && this.isSingleData) {
+            this.xAxisScale.domain([0, 1.0]).range([0, +this.width]);
+            this.xAxisCall.tickValues([0, 0.25, 0.5, 0.75, 1.0]);
+            this.xAxis.call(this.xAxisCall);
+            this.xGridCall.tickValues([0, 0.25, 0.5, 0.75, 1.0]);
+            this.xGrid.call(this.xGridCall);
+            this.svg
+                .select('.axis-x')
+                .selectAll('text')
+                .html((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => {
+                /** @type {?} */
+                const format$1 = format('.0%');
+                return format$1(i * 0.25);
+            }));
+        }
+        else {
+            this.xAxisScale.domain([0, Math.ceil(sumValues)]).range([0, +this.width]);
+            this.xGridCall.tickValues(this.xAxisScale.ticks().filter((/**
+             * @param {?} n
+             * @return {?}
+             */
+            n => Number.isInteger(n)))); // remove decimal grid values
+            this.xAxis
+                .transition()
+                .duration(1000)
+                .call(this.xAxisCall);
+            // update the grids
+            if (!this.hideXGrid) {
+                this.xGrid
+                    .transition()
+                    .duration(1000)
+                    .call(this.xGridCall);
+            }
+        }
+        this.svg
+            .selectAll('.bar')
+            .data(this.data)
+            .join((/**
+         * @param {?} enter
+         * @return {?}
+         */
+        enter => enter
+            .append('rect')
+            .attr('class', 'bar')
+            .attr('width', 0)
+            .attr('height', (/**
+         * @return {?}
+         */
+        () => {
+            return this.height - this.barPadding;
+        }))
+            .attr('fill', (/**
+         * @param {?} d
+         * @return {?}
+         */
+        d => {
+            if (this.isSingleData) {
+                return `url(${this._location.path()}#gradient-horizontal-${this.colorRange(d.label).substr(1)})`;
+            }
+            else {
+                return this.colorRange(d.label);
+            }
+        }))
+            .attr('y', (/**
+         * @return {?}
+         */
+        () => {
+            return this.barPadding / 2;
+        }))
+            .attr('x', (/**
+         * @param {?} d
+         * @param {?} i
+         * @return {?}
+         */
+        (d, i) => {
+            return this.data.slice(0, i).reduce((/**
+             * @param {?} acc
+             * @param {?} item
+             * @return {?}
+             */
+            (acc, item) => {
+                // console.log(acc, item, acc + this.xAxisScale(item.value) + this.barMargin);
+                return +acc + +this.xAxisScale(item.value);
+            }), 1);
+        }))
+            .attr('pointer-events', 'none')
+            .call((/**
+         * @param {?} enter
+         * @return {?}
+         */
+        enter => {
+            return (enter
+                .transition()
+                // .duration(1000)
+                .delay((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i * 250))
+                .ease(easeLinear)
+                .attr('width', (/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => {
+                // debugger;
+                if (i === this.data.length - lastBarZeroCount - 1 && isLastBarZero) {
+                    return this.xAxisScale(d.value);
+                }
+                else if (i !== this.data.length - 1) {
+                    /** @type {?} */
+                    let width = this.xAxisScale(d.value) - +this.barMargin;
+                    width = Math.sign(width) === -1 ? 0 : width; // handle negative values
+                    return width;
+                }
+                else {
+                    return this.xAxisScale(d.value);
+                }
+            }))
+                .transition()
+                .attr('pointer-events', 'auto'));
+        }))), (/**
+         * @param {?} update
+         * @return {?}
+         */
+        update => update
+            .attr('pointer-events', 'none')
+            .transition()
+            .duration(1000)
+            .attr('width', (/**
+         * @param {?} d
+         * @param {?} i
+         * @return {?}
+         */
+        (d, i) => {
+            if (i === this.data.length - 1) {
+                return this.xAxisScale(d.value);
+            }
+            else {
+                return this.xAxisScale(d.value) - this.barMargin;
+            }
+        }))
+            .attr('x', (/**
+         * @param {?} d
+         * @param {?} i
+         * @return {?}
+         */
+        (d, i) => {
+            return this.data.slice(0, i).reduce((/**
+             * @param {?} acc
+             * @param {?} item
+             * @return {?}
+             */
+            (acc, item) => {
+                return acc + +this.xAxisScale(item.value);
+            }), 0);
+        }))
+            .transition()
+            .attr('pointer-events', 'auto')), (/**
+         * @param {?} exit
+         * @return {?}
+         */
+        exit => exit
+            .transition()
+            .attr('pointer-events', 'none')
+            .remove()))
+            .on('mouseover', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => this.barMouseOver(event$1, data, index, nodes)))
+            .on('mouseout', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => this.barMouseOut()))
+            .on('click', (/**
+         * @param {?} data
+         * @param {?} index
+         * @param {?} nodes
+         * @return {?}
+         */
+        (data, index, nodes) => this.barMouseClick(event$1, data, index, nodes)));
+        if (!this.hideLegend) {
+            this.chart
+                .select('.legend')
+                .selectAll('.legend-item')
+                .data(this.data)
+                .join((/**
+             * @param {?} enter
+             * @return {?}
+             */
+            enter => {
+                /** @type {?} */
+                const li = enter
+                    .append('li')
+                    .attr('class', 'legend-item')
+                    .classed('align-items-start', this.isCompare);
+                li.insert('span')
+                    .attr('class', 'legend-key')
+                    .style('background-color', (/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => this.colorRange(d.label)))
+                    .classed('mt-1', this.isCompare);
+                li.insert('span')
+                    .attr('class', 'legend-description')
+                    .classed('d-flex', this.isCompare)
+                    .classed('flex-column', this.isCompare);
+                li.select('.legend-description')
+                    .insert('span')
+                    .attr('class', 'legend-label')
+                    .html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => {
+                    switch (this.legendLabelFormatType) {
+                        case 'number':
+                            return this.legendLabelFormat(d.label);
+                        case 'time':
+                            /** @type {?} */
+                            const parsedTime = isoParse(d.label);
+                            return this.legendLabelFormat(parsedTime);
+                        default:
+                            return d.label;
+                    }
+                }));
+                if (this.isCompare) {
+                    li.select('.legend-description')
+                        .insert('div')
+                        .attr('class', 'legend-change');
+                    li.select('.legend-change').html((/**
+                     * @param {?} d
+                     * @return {?}
+                     */
+                    d => {
+                        return `<div class="metric-block-indicator ${d.compareChangeDirection} ${d.compareChangeInverse ? 'inverse' : ''} mt-1"><span>${this.tooltipCompareChangeFormat(d.compareChangeValue)}</span></div>`;
+                    }));
+                }
+                return li;
+            }), (/**
+             * @param {?} update
+             * @return {?}
+             */
+            update => {
+                update.select('.legend-label').html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                d => {
+                    switch (this.legendLabelFormatType) {
+                        case 'number':
+                            return this.legendLabelFormat(d.label);
+                        case 'time':
+                            /** @type {?} */
+                            const parsedTime = isoParse(d.label);
+                            return this.legendLabelFormat(parsedTime);
+                        default:
+                            return d.label;
+                    }
+                }));
+                return update;
+            }), (/**
+             * @param {?} exit
+             * @return {?}
+             */
+            exit => exit.remove()))
+                .on('mouseover', (/**
+             * @param {?} data
+             * @param {?} index
+             * @param {?} nodes
+             * @return {?}
+             */
+            (data, index, nodes) => this.legendMouseOver(event$1, data, index, nodes)))
+                .on('mouseout', (/**
+             * @return {?}
+             */
+            () => this.legendMouseOut()))
+                .on('click', (/**
+             * @param {?} data
+             * @param {?} index
+             * @param {?} nodes
+             * @return {?}
+             */
+            (data, index, nodes) => this.legendMouseClick(event$1, data, index, nodes)));
+        }
+    }
+}
+PbdsDatavizSingleStackedBarComponent.decorators = [
+    { type: Component, args: [{
+                selector: 'pbds-dataviz-single-stacked-bar',
+                template: ``,
+                changeDetection: ChangeDetectionStrategy.OnPush
+            }] }
+];
+/** @nocollapse */
+PbdsDatavizSingleStackedBarComponent.ctorParameters = () => [
+    { type: PbdsDatavizService },
+    { type: ElementRef },
+    { type: ViewportScroller },
+    { type: Location }
+];
+PbdsDatavizSingleStackedBarComponent.propDecorators = {
+    chartClass: [{ type: HostBinding, args: ['class.pbds-chart',] }],
+    singleStackedBarClass: [{ type: HostBinding, args: ['class.pbds-chart-single-stacked-bar',] }],
+    data: [{ type: Input }],
+    width: [{ type: Input }],
+    height: [{ type: Input }],
+    nullValueText: [{ type: Input }],
+    percentage: [{ type: Input }],
+    marginTop: [{ type: Input }],
+    marginRight: [{ type: Input }],
+    marginBottom: [{ type: Input }],
+    marginLeft: [{ type: Input }],
+    barMargin: [{ type: Input }],
+    hideXAxis: [{ type: Input }],
+    xAxisTicks: [{ type: Input }],
+    xAxisTitle: [{ type: Input }],
+    xAxisFormatType: [{ type: Input }],
+    xAxisFormatString: [{ type: Input }],
+    xAxisTickLabelSuffix: [{ type: Input }],
+    hideXGrid: [{ type: Input }],
+    hideLegend: [{ type: Input }],
+    hideLegendTooltip: [{ type: Input }],
+    legendWidth: [{ type: Input }],
+    legendPosition: [{ type: Input }],
+    legendLabelFormatType: [{ type: Input }],
+    legendLabelFormatString: [{ type: Input }],
+    hideTooltip: [{ type: Input }],
+    tooltipLabelFormatType: [{ type: Input }],
+    tooltipLabelFormatString: [{ type: Input }],
+    tooltipDateFormatString: [{ type: Input }],
+    tooltipValueFormatType: [{ type: Input }],
+    tooltipValueFormatString: [{ type: Input }],
+    tooltipValueSuffix: [{ type: Input }],
+    tooltipPercentFormatString: [{ type: Input }],
+    compareChangeFormatString: [{ type: Input }],
+    monochrome: [{ type: Input }],
+    theme: [{ type: Input }],
+    hovered: [{ type: Output }],
+    clicked: [{ type: Output }]
+};
+if (false) {
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.chartClass;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.singleStackedBarClass;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.data;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.width;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.height;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.nullValueText;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.percentage;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.marginTop;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.marginRight;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.marginBottom;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.marginLeft;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.barMargin;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.hideXAxis;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.xAxisTicks;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.xAxisTitle;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.xAxisFormatType;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.xAxisFormatString;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.xAxisTickLabelSuffix;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.hideXGrid;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.hideLegend;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.hideLegendTooltip;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.legendWidth;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.legendPosition;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.legendLabelFormatType;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.legendLabelFormatString;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.hideTooltip;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.tooltipLabelFormatType;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.tooltipLabelFormatString;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.tooltipDateFormatString;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.tooltipValueFormatType;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.tooltipValueFormatString;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.tooltipValueSuffix;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.tooltipPercentFormatString;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.compareChangeFormatString;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.monochrome;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.theme;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.hovered;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.clicked;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.isSingleData;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.isCompare;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.chart;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.svg;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.margin;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.colorRange;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.barPadding;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.xAxisCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.xAxis;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.xAxisScale;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.xAxisTickSize;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.xAxisTickSizeOuter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.xAxisFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.xAxisTitleMargin;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.hideXAxisDomain;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.hideXAxisZero;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.hideXAxisTicks;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.xGrid;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.xGridCall;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.legendLabelFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.tooltip;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.tooltipLabelFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.tooltipValueFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.tooltipDateFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.tooltipPercentFormat;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.tooltipCompareChangeFormat;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.barMouseOver;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.barMouseOut;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.barMouseClick;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.tooltipShow;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.tooltipHide;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.legendMouseOver;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.legendMouseOut;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarComponent.prototype.legendMouseClick;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype.xAxisFormatter;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype._dataviz;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype._element;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype._scroll;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDatavizSingleStackedBarComponent.prototype._location;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -5302,7 +10383,10 @@ PbdsDatavizModule.decorators = [
                     PbdsDatavizMetricBlockComponent,
                     DatavizBubbleMapComponent,
                     PbdsDatavizMetricIndicatorComponent,
-                    PbdsDatavizHeatmapComponent
+                    PbdsDatavizHeatmapComponent,
+                    PbdsDatavizChoroplethMapComponent,
+                    PbdsDatavizGroupedBarComponent,
+                    PbdsDatavizSingleStackedBarComponent
                 ],
                 imports: [CommonModule],
                 exports: [
@@ -5315,10 +10399,177 @@ PbdsDatavizModule.decorators = [
                     PbdsDatavizMetricBlockComponent,
                     DatavizBubbleMapComponent,
                     PbdsDatavizMetricIndicatorComponent,
-                    PbdsDatavizHeatmapComponent
+                    PbdsDatavizHeatmapComponent,
+                    PbdsDatavizChoroplethMapComponent,
+                    PbdsDatavizGroupedBarComponent,
+                    PbdsDatavizSingleStackedBarComponent
                 ]
             },] }
 ];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function PbdsDatavizPie() { }
+if (false) {
+    /** @type {?} */
+    PbdsDatavizPie.prototype.label;
+    /** @type {?} */
+    PbdsDatavizPie.prototype.value;
+}
+/**
+ * @record
+ */
+function PbdsDatavizBar() { }
+if (false) {
+    /** @type {?} */
+    PbdsDatavizBar.prototype.label;
+    /** @type {?} */
+    PbdsDatavizBar.prototype.value;
+}
+/**
+ * @record
+ */
+function PbdsDatavizGauge() { }
+if (false) {
+    /** @type {?} */
+    PbdsDatavizGauge.prototype.minvalue;
+    /** @type {?} */
+    PbdsDatavizGauge.prototype.maxvalue;
+    /** @type {?} */
+    PbdsDatavizGauge.prototype.value;
+}
+/**
+ * @record
+ */
+function PbdsDatavizSparkline() { }
+if (false) {
+    /** @type {?} */
+    PbdsDatavizSparkline.prototype.length;
+    /* Skipping unhandled member: [index: number]: number;*/
+}
+/**
+ * @record
+ */
+function PbdsDatavizLine() { }
+if (false) {
+    /** @type {?} */
+    PbdsDatavizLine.prototype.dates;
+    /** @type {?} */
+    PbdsDatavizLine.prototype.series;
+}
+/**
+ * @record
+ */
+function PbdsDatavizLineSeries() { }
+if (false) {
+    /** @type {?} */
+    PbdsDatavizLineSeries.prototype.label;
+    /** @type {?} */
+    PbdsDatavizLineSeries.prototype.values;
+}
+/**
+ * @record
+ */
+function PbdsDatavizStackedBar() { }
+if (false) {
+    /** @type {?} */
+    PbdsDatavizStackedBar.prototype.key;
+    /* Skipping unhandled member: [propName: string]: any;*/
+}
+/**
+ * @record
+ */
+function PbdsDatavizMapData() { }
+if (false) {
+    /** @type {?} */
+    PbdsDatavizMapData.prototype.label;
+    /** @type {?} */
+    PbdsDatavizMapData.prototype.longitude;
+    /** @type {?} */
+    PbdsDatavizMapData.prototype.latitude;
+    /** @type {?} */
+    PbdsDatavizMapData.prototype.value;
+    /* Skipping unhandled member: [propName: string]: any;*/
+}
+/**
+ * @record
+ */
+function PbdsDatavizChoroplethMapData() { }
+if (false) {
+    /** @type {?} */
+    PbdsDatavizChoroplethMapData.prototype.id;
+    /** @type {?} */
+    PbdsDatavizChoroplethMapData.prototype.value;
+    /** @type {?|undefined} */
+    PbdsDatavizChoroplethMapData.prototype.label;
+    /* Skipping unhandled member: [propName: string]: any;*/
+}
+/**
+ * @record
+ */
+function PbdsDatavizHeatmap() { }
+if (false) {
+    /** @type {?} */
+    PbdsDatavizHeatmap.prototype.yLabel;
+    /** @type {?} */
+    PbdsDatavizHeatmap.prototype.xLabel;
+    /** @type {?} */
+    PbdsDatavizHeatmap.prototype.value;
+}
+/**
+ * @record
+ */
+function PbdsDatavizGroupedBar() { }
+if (false) {
+    /** @type {?} */
+    PbdsDatavizGroupedBar.prototype.key;
+    /* Skipping unhandled member: [propName: string]: any;*/
+}
+/**
+ * @record
+ */
+function PbdsDatavizSingleStackedBar() { }
+if (false) {
+    /** @type {?} */
+    PbdsDatavizSingleStackedBar.prototype.label;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBar.prototype.value;
+    /** @type {?|undefined} */
+    PbdsDatavizSingleStackedBar.prototype.startDate;
+    /** @type {?|undefined} */
+    PbdsDatavizSingleStackedBar.prototype.endDate;
+}
+/**
+ * @record
+ */
+function PbdsDatavizSingleStackedBarCompare() { }
+if (false) {
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarCompare.prototype.label;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarCompare.prototype.value;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarCompare.prototype.startDate;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarCompare.prototype.endDate;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarCompare.prototype.compareValue;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarCompare.prototype.compareStartDate;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarCompare.prototype.compareEndDate;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarCompare.prototype.compareChangeValue;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarCompare.prototype.compareChangeDirection;
+    /** @type {?} */
+    PbdsDatavizSingleStackedBarCompare.prototype.compareChangeInverse;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -5353,6 +10604,15 @@ PbdsHeaderShadowDirective.propDecorators = {
     shadow: [{ type: HostBinding, args: ['class.pbds-header-shadow',] }],
     onWindowScroll: [{ type: HostListener, args: ['window:scroll', [],] }]
 };
+if (false) {
+    /** @type {?} */
+    PbdsHeaderShadowDirective.prototype.shadow;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsHeaderShadowDirective.prototype._scroll;
+}
 
 /**
  * @fileoverview added by tsickle
@@ -5368,5 +10628,15 @@ PbdsHeaderShadowModule.decorators = [
             },] }
 ];
 
-export { DatavizBubbleMapComponent, PbdsDatavizBarComponent, PbdsDatavizGaugeComponent, PbdsDatavizHeatmapComponent, PbdsDatavizLineComponent, PbdsDatavizMetricBlockComponent, PbdsDatavizMetricIndicatorComponent, PbdsDatavizModule, PbdsDatavizPieComponent, PbdsDatavizService, PbdsDatavizSparklineComponent, PbdsDatavizStackedBarComponent, PbdsHeaderShadowDirective, PbdsHeaderShadowModule };
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+export { DatavizBubbleMapComponent, PbdsDatavizBarComponent, PbdsDatavizChoroplethMapComponent, PbdsDatavizGaugeComponent, PbdsDatavizGroupedBarComponent, PbdsDatavizHeatmapComponent, PbdsDatavizLineComponent, PbdsDatavizMetricBlockComponent, PbdsDatavizMetricIndicatorComponent, PbdsDatavizModule, PbdsDatavizPieComponent, PbdsDatavizService, PbdsDatavizSingleStackedBarComponent, PbdsDatavizSparklineComponent, PbdsDatavizStackedBarComponent, PbdsHeaderShadowDirective, PbdsHeaderShadowModule };
 //# sourceMappingURL=pb-design-system.js.map
