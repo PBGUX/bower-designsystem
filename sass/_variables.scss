@@ -1,12 +1,11 @@
 // Variables
-//
-// NOTE: This file has been modified to include ONLY what we have changed in the DS
-//
-//
-// Variables should follow the `$component-state-property-size` formula for
-// consistent naming. Ex: $nav-link-disabled-color and $modal-content-box-shadow-xs.
 
-// Color system
+// *
+// IMPORTANT 6.0 NOTE
+// ------------------------------------------------------
+// THESE COLOR VARIABLES ARE NO LONGER USED
+// PLEASE USE THE CSS VARIABLES DEFINED IN _COLORS.SCSS
+// *
 
 $white: #fff !default;
 $gray-50: #f8f8f8;

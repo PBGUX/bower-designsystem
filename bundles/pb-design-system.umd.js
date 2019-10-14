@@ -457,7 +457,11 @@
             function () {
                 /** @type {?} */
                 var paths = _this.svg.selectAll('path').data(_this.pie(_this.data));
-                paths.exit().remove();
+                paths
+                    .exit()
+                    .transition()
+                    .attr('pointer-events', 'none')
+                    .remove();
                 //update existing items
                 paths
                     .each((/**
@@ -465,9 +469,12 @@
                  * @return {?}
                  */
                 function (d) { return (d.outerRadius = _this.outerRadius); }))
+                    .attr('pointer-events', 'none')
                     .transition()
                     .duration(500)
-                    .attrTween('d', _this.arcTween);
+                    .attrTween('d', _this.arcTween)
+                    .transition()
+                    .attr('pointer-events', 'auto');
                 // paths on enter
                 /** @type {?} */
                 var enterPaths = paths
@@ -1264,7 +1271,12 @@
                     // rebind data to groups
                     group = _this.svg.selectAll('.bar-group').data(_this.data);
                     // remove bars
-                    group.exit().remove();
+                    // add bars on enter
+                    group
+                        .exit()
+                        .transition()
+                        .attr('pointer-events', 'none')
+                        .remove();
                     // update gray bars
                     group
                         .select('.gray-bar')
@@ -1279,6 +1291,7 @@
                     // update the existing bars
                     group
                         .select('.bar')
+                        .attr('pointer-events', 'none')
                         .transition()
                         .duration(1000)
                         .attr('x', (/**
@@ -1296,7 +1309,9 @@
                      * @param {?} d
                      * @return {?}
                      */
-                    function (d) { return _this.yAxisScale(d.value); }));
+                    function (d) { return _this.yAxisScale(d.value); }))
+                        .transition()
+                        .attr('pointer-events', 'auto');
                     // add group on enter
                     groupEnter = group
                         .enter()
@@ -1315,7 +1330,6 @@
                     function (d) { return _this.xAxisScale(d.label); }))
                         .attr('width', _this.xAxisScale.bandwidth())
                         .transition()
-                        // .delay(1000)
                         .attr('height', _this.height)
                         .attr('width', _this.xAxisScale.bandwidth());
                     // add bars on enter
@@ -1336,9 +1350,9 @@
                         .attr('width', _this.xAxisScale.bandwidth() / 2)
                         .attr('y', _this.height)
                         .attr('height', 0)
+                        .attr('pointer-events', 'none')
                         .transition()
                         .duration(1000)
-                        // .delay(1000)
                         .attr('y', (/**
                      * @param {?} d
                      * @return {?}
@@ -1353,7 +1367,9 @@
                      * @param {?} d
                      * @return {?}
                      */
-                    function (d) { return _this.colorRange(d.label); }));
+                    function (d) { return _this.colorRange(d.label); }))
+                        .transition()
+                        .attr('pointer-events', 'auto');
                     groupEnter
                         .select('.bar')
                         .on('mouseover', (/**
@@ -1382,7 +1398,11 @@
                     // rebind data to groups
                     group = _this.svg.selectAll('.bar-group').data(_this.data);
                     // remove bars
-                    group.exit().remove();
+                    group
+                        .exit()
+                        .transition()
+                        .attr('pointer-events', 'none')
+                        .remove();
                     // update the existing bars
                     group
                         .select('.bar')
@@ -1392,6 +1412,7 @@
                      */
                     function (d) { return _this.xAxisScale(d.label) + _this.xAxisScale.bandwidth() / 5.5; }))
                         .attr('width', _this.xAxisScale.bandwidth() / 1.5)
+                        .attr('pointer-events', 'none')
                         .transition()
                         .duration(1000)
                         .attr('y', (/**
@@ -1403,7 +1424,9 @@
                      * @param {?} d
                      * @return {?}
                      */
-                    function (d) { return _this.height - _this.yAxisScale(d.value); }));
+                    function (d) { return _this.height - _this.yAxisScale(d.value); }))
+                        .transition()
+                        .attr('pointer-events', 'auto');
                     // add group on enter
                     groupEnter = group
                         .enter()
@@ -1427,6 +1450,7 @@
                         .attr('width', _this.xAxisScale.bandwidth() / 1.5)
                         .attr('y', _this.height)
                         .attr('height', 0)
+                        .attr('pointer-events', 'none')
                         .transition()
                         .duration(1000)
                         .attr('y', (/**
@@ -1443,7 +1467,9 @@
                      * @param {?} d
                      * @return {?}
                      */
-                    function (d) { return _this.colorRange(d.label); }));
+                    function (d) { return _this.colorRange(d.label); }))
+                        .transition()
+                        .attr('pointer-events', 'auto');
                     groupEnter
                         .select('.bar')
                         .on('mouseover', (/**
@@ -4355,23 +4381,23 @@
                     .nice();
                 _this.xAxis
                     .transition()
-                    .duration(1000)
+                    .duration(0) // 1000
                     .call(_this.xAxisCall);
                 _this.yAxis
                     .transition()
-                    .duration(1000)
+                    .duration(0) // 1000
                     .call(_this.yAxisCall);
                 // update the grids
                 if (!_this.hideXGrid) {
                     _this.xGrid
                         .transition()
-                        .duration(1000)
+                        .duration(0) // 1000
                         .call(_this.xGridCall);
                 }
                 if (!_this.hideYGrid) {
                     _this.yGrid
                         .transition()
-                        .duration(1000)
+                        .duration(0) // 1000
                         .call(_this.yGridCall);
                 }
                 // add gray bars
@@ -4401,7 +4427,7 @@
                     function (update) {
                         return update
                             .transition()
-                            .duration(1000)
+                            .duration(0) // 1000
                             .attr('x', (/**
                          * @param {?} d
                          * @return {?}
@@ -4501,7 +4527,7 @@
                         }
                         enter
                             .transition()
-                            .duration(1000)
+                            .duration(0) // 1000
                             .attr('width', width)
                             .attr('height', (/**
                          * @param {?} d
@@ -4530,7 +4556,7 @@
                         }
                         update
                             .transition()
-                            .duration(1000)
+                            .duration(0) // 1000
                             .attr('width', _this.xAxisScale.bandwidth() / 4)
                             .attr('x', (/**
                          * @param {?} d
@@ -4581,18 +4607,26 @@
                  */
                 function (update) {
                     return update
+                        .attr('pointer-events', 'none')
                         .attr('x', (/**
                      * @param {?} d
                      * @return {?}
                      */
                     function (d) { return _this.xAxisScale(d.key); }))
                         .attr('width', _this.xAxisScale.bandwidth())
-                        .attr('height', _this.height);
+                        .attr('height', _this.height)
+                        .transition()
+                        .attr('pointer-events', 'auto');
                 }), (/**
                  * @param {?} exit
                  * @return {?}
                  */
-                function (exit) { return exit.remove(); }))
+                function (exit) {
+                    return exit
+                        .transition()
+                        .attr('pointer-events', 'none')
+                        .remove();
+                }))
                     .on('mouseover', (/**
                  * @param {?} data
                  * @param {?} index
@@ -5693,6 +5727,7 @@
             this.description = null;
             this.centered = false;
             this.centeredText = false;
+            this.vertical = false;
             this.hideValueMargin = false;
             this.isPercentUnit = false;
             this.isUnit = false;
@@ -5706,6 +5741,7 @@
                     'metric-block',
                     this.centered ? 'metric-block-centered' : '',
                     this.centeredText ? 'metric-block-centered-text' : '',
+                    this.vertical ? 'metric-block-vertical' : '',
                     this.class
                 ].join(' ');
             },
@@ -5732,7 +5768,7 @@
         PbdsDatavizMetricBlockComponent.decorators = [
             { type: core.Component, args: [{
                         selector: 'pbds-dataviz-metric-block',
-                        template: "\n    <div class=\"metric-block-inner\">\n      <div *ngIf=\"heading\" class=\"metric-block-heading\">{{ heading }}</div>\n      <div class=\"metric-block-data-block\">\n        <div class=\"metric-block-contents\">\n          <div class=\"metric-block-value\" [ngClass]=\"{ 'mr-0': hideValueMargin }\">\n            {{ value\n            }}<span [ngClass]=\"{ 'metric-block-unit': isUnit, 'metric-block-percentage': isPercentUnit }\">{{\n              unit\n            }}</span>\n          </div>\n\n          <div *ngIf=\"description\" class=\"metric-block-description\">{{ description }}</div>\n          <div>\n            <ng-content select=\"pbds-dataviz-metric-indicator\"></ng-content>\n          </div>\n        </div>\n        <ng-content select=\"pbds-dataviz-sparkline\"></ng-content>\n      </div>\n    </div>\n  "
+                        template: "\n    <div class=\"metric-block-inner\">\n      <div *ngIf=\"heading\" class=\"metric-block-heading\">{{ heading }}</div>\n      <div class=\"metric-block-data-block\">\n        <div class=\"metric-block-contents\">\n          <div class=\"metric-block-value\" [ngClass]=\"{ 'mr-0': hideValueMargin }\">\n            {{ value\n            }}<span [ngClass]=\"{ 'metric-block-unit': isUnit, 'metric-block-percentage': isPercentUnit }\">{{\n              unit\n            }}</span>\n          </div>\n\n          <div>\n            <ng-content select=\"pbds-dataviz-metric-indicator\"></ng-content>\n          </div>\n          <div *ngIf=\"description\" class=\"metric-block-description\">{{ description }}</div>\n        </div>\n        <ng-content select=\"pbds-dataviz-sparkline\"></ng-content>\n      </div>\n    </div>\n  "
                     }] }
         ];
         PbdsDatavizMetricBlockComponent.propDecorators = {
@@ -5743,6 +5779,7 @@
             description: [{ type: core.Input }],
             centered: [{ type: core.Input }],
             centeredText: [{ type: core.Input }],
+            vertical: [{ type: core.Input }],
             hostClasses: [{ type: core.HostBinding, args: ['class',] }],
             indicatorRef: [{ type: core.ContentChild, args: [PbdsDatavizMetricIndicatorComponent, { static: true },] }]
         };
@@ -5763,6 +5800,8 @@
         PbdsDatavizMetricBlockComponent.prototype.centered;
         /** @type {?} */
         PbdsDatavizMetricBlockComponent.prototype.centeredText;
+        /** @type {?} */
+        PbdsDatavizMetricBlockComponent.prototype.vertical;
         /** @type {?} */
         PbdsDatavizMetricBlockComponent.prototype.hideValueMargin;
         /** @type {?} */
@@ -5863,12 +5902,19 @@
                      * @param {?} d
                      * @return {?}
                      */
-                    function (d) { return (!_this.dot ? Math.sqrt(_this.bubbleRadius(d.value)) : _this.dotSize + "px"); }));
+                    function (d) { return (!_this.dot ? Math.sqrt(_this.bubbleRadius(d.value)) : _this.dotSize + "px"); }))
+                        .transition()
+                        .attr('pointer-events', 'auto');
                 }), (/**
                  * @param {?} exit
                  * @return {?}
                  */
-                function (exit) { return exit.remove(); }));
+                function (exit) {
+                    return exit
+                        .transition()
+                        .attr('pointer-events', 'none')
+                        .remove();
+                }));
                 if (!_this.hideTooltip) {
                     _this.bubbleContainer
                         .selectAll('circle')
@@ -5934,6 +5980,7 @@
                          */
                         function (update) {
                             return update
+                                .attr('pointer-events', 'none')
                                 .transition()
                                 .duration(1000)
                                 .text((/**
@@ -5956,12 +6003,19 @@
                              * @return {?}
                              */
                             function (d) { return _this.projection([d.longitude, d.latitude])[1]; }))
-                                .attr('dy', '.4em');
+                                .attr('dy', '.4em')
+                                .transition()
+                                .attr('pointer-events', 'auto');
                         }), (/**
                          * @param {?} exit
                          * @return {?}
                          */
-                        function (exit) { return exit.remove(); }));
+                        function (exit) {
+                            return exit
+                                .transition()
+                                .attr('pointer-events', 'none')
+                                .remove();
+                        }));
                     }
                 }
             });
@@ -6508,6 +6562,7 @@
                          * @return {?}
                          */
                         function (d) { return d.value === undefined || d.value === null; }))
+                            .attr('pointer-events', 'none')
                             .transition()
                             .duration(1000)
                             .attr('x', (/**
@@ -6526,14 +6581,21 @@
                          * @param {?} d
                          * @return {?}
                          */
-                        function (d) { return _this.colorRange(d.value); }));
+                        function (d) { return _this.colorRange(d.value); }))
+                            .transition()
+                            .attr('pointer-events', 'auto');
                         return update;
                     }));
                 }), (/**
                  * @param {?} exit
                  * @return {?}
                  */
-                function (exit) { return exit.remove(); }))
+                function (exit) {
+                    return exit
+                        .transition()
+                        .attr('pointer-events', 'none')
+                        .remove();
+                }))
                     .on('mouseover', (/**
                  * @param {?} data
                  * @param {?} index
@@ -8747,8 +8809,9 @@
                  */
                 function (enter) {
                     return enter
+                        .attr('pointer-events', 'none')
                         .transition()
-                        .duration(500)
+                        .duration(0) // 500
                         .attr('height', (/**
                      * @param {?} d
                      * @return {?}
@@ -8758,7 +8821,9 @@
                      * @param {?} d
                      * @return {?}
                      */
-                    function (d) { return _this.yAxisScale(d.value); }));
+                    function (d) { return _this.yAxisScale(d.value); }))
+                        .transition()
+                        .attr('pointer-events', 'auto');
                 }));
             }), (/**
              * @param {?} update
@@ -8766,6 +8831,7 @@
              */
             function (update) {
                 return update
+                    .attr('pointer-events', 'none')
                     .transition()
                     .duration(1000)
                     .attr('x', (/**
@@ -8783,7 +8849,9 @@
                  * @param {?} d
                  * @return {?}
                  */
-                function (d) { return _this.yAxisScale(d.value); }));
+                function (d) { return _this.yAxisScale(d.value); }))
+                    .transition()
+                    .attr('pointer-events', 'auto');
             }), (/**
              * @param {?} exit
              * @return {?}
@@ -8791,7 +8859,8 @@
             function (exit) {
                 return exit
                     .transition()
-                    .duration(100)
+                    .duration(0) // 100
+                    .attr('pointer-events', 'none')
                     .attr('height', 0)
                     .attr('y', _this.height);
             }))
@@ -9003,13 +9072,16 @@
                  */
                 function (enter) {
                     return enter
+                        .attr('pointer-events', 'none')
                         .transition()
-                        .duration(500)
+                        .duration(0) // 500
                         .attr('width', (/**
                      * @param {?} d
                      * @return {?}
                      */
-                    function (d) { return _this.xAxisScale(d.value); }));
+                    function (d) { return _this.xAxisScale(d.value); }))
+                        .transition()
+                        .attr('pointer-events', 'auto');
                 }));
             }), (/**
              * @param {?} update
@@ -9017,6 +9089,7 @@
              */
             function (update) {
                 return update
+                    .attr('pointer-events', 'none')
                     .transition()
                     .duration(1000)
                     .attr('width', (/**
@@ -9029,7 +9102,9 @@
                  * @param {?} d
                  * @return {?}
                  */
-                function (d) { return _this.barScale(d.label); }));
+                function (d) { return _this.barScale(d.label); }))
+                    .transition()
+                    .attr('pointer-events', 'auto');
             }), (/**
              * @param {?} exit
              * @return {?}
@@ -9037,7 +9112,8 @@
             function (exit) {
                 return exit
                     .transition()
-                    .duration(100)
+                    .duration(0) // 100
+                    .attr('pointer-events', 'none')
                     .attr('width', 0);
             }))
                 .on('mouseover', (/**
@@ -10159,14 +10235,9 @@
                 function (enter) {
                     return (enter
                         .transition()
-                        // .duration(1000)
-                        .delay((/**
-                     * @param {?} d
-                     * @param {?} i
-                     * @return {?}
-                     */
-                    function (d, i) { return i * 250; }))
-                        .ease(d3.easeLinear)
+                        // .duration(0)
+                        // .delay((d, i) => i * 250) // uncomment
+                        // .ease(d3_easeLinear) // uncomment
                         .attr('width', (/**
                      * @param {?} d
                      * @param {?} i

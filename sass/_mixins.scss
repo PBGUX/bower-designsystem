@@ -19,7 +19,17 @@
 }
 
 @mixin gradient-angled($color-start, $color-center, $color-end) {
-  background-image: linear-gradient(90deg, $color-start 0%, $color-center 50%, $color-end 100%);
+  background-image: linear-gradient(135deg, $color-start 0%, $color-center 50%, $color-end 100%);
+}
+
+//see https://codepen.io/smlombardi/full/mddVGNq
+@mixin gradient-over-image($image) {
+  background-image: linear-gradient(135deg, var(--grad_start) 0%, var(--grad_end) 50%, var(--grad_end) 100%),
+    linear-gradient(#bbb, #bbb), url($image);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-blend-mode: multiply;
 }
 
 // Contextual backgrounds

@@ -1,6 +1,6 @@
 import { Injectable, ɵɵdefineInjectable, EventEmitter, Component, ChangeDetectionStrategy, ElementRef, HostBinding, Input, Output, ContentChild, NgModule, Directive, HostListener } from '@angular/core';
 import { ViewportScroller, Location, CommonModule } from '@angular/common';
-import { isoParse, event as event$1, interpolate, mouse, format, timeFormat, scaleOrdinal, pie, arc, select, min, max, scaleBand, axisBottom, scaleLinear, axisLeft, extent, bisectLeft, isoFormat, line, curveCatmullRom, area, scaleTime, stack, stackOrderNone, geoAlbers, geoAlbersUsa, geoMercator, geoPath, scaleThreshold, scaleQuantile, scaleQuantize, range, values, sum, easeLinear } from 'd3';
+import { isoParse, event as event$1, interpolate, mouse, format, timeFormat, scaleOrdinal, pie, arc, select, min, max, scaleBand, axisBottom, scaleLinear, axisLeft, extent, bisectLeft, isoFormat, line, curveCatmullRom, area, scaleTime, stack, stackOrderNone, geoAlbers, geoAlbersUsa, geoMercator, geoPath, scaleThreshold, scaleQuantile, scaleQuantize, range, values, sum } from 'd3';
 import { feature, mesh } from 'topojson';
 
 /**
@@ -254,8 +254,12 @@ class PbdsDatavizPieComponent {
          */
         () => {
             /** @type {?} */
-            let paths = this.svg.selectAll('path').data(this.pie(this.data));
-            paths.exit().remove();
+            const paths = this.svg.selectAll('path').data(this.pie(this.data));
+            paths
+                .exit()
+                .transition()
+                .attr('pointer-events', 'none')
+                .remove();
             //update existing items
             paths
                 .each((/**
@@ -263,12 +267,15 @@ class PbdsDatavizPieComponent {
              * @return {?}
              */
             (d) => (d.outerRadius = this.outerRadius)))
+                .attr('pointer-events', 'none')
                 .transition()
                 .duration(500)
-                .attrTween('d', this.arcTween);
+                .attrTween('d', this.arcTween)
+                .transition()
+                .attr('pointer-events', 'auto');
             // paths on enter
             /** @type {?} */
-            let enterPaths = paths
+            const enterPaths = paths
                 .enter()
                 .append('path')
                 .each((/**
@@ -299,7 +306,7 @@ class PbdsDatavizPieComponent {
                     .style('stroke-alignment', 'inner');
             }
             /** @type {?} */
-            let legendItem = this.chart
+            const legendItem = this.chart
                 .select('.legend')
                 .selectAll('.legend-item')
                 .data(this.data);
@@ -326,7 +333,7 @@ class PbdsDatavizPieComponent {
             (d) => this.legendValueFormat(d.value)));
             // legend items on enter
             /** @type {?} */
-            let enterLegendItem = legendItem
+            const enterLegendItem = legendItem
                 .enter()
                 .append('li')
                 // .attr('tabindex', 0)
@@ -488,9 +495,9 @@ class PbdsDatavizPieComponent {
          */
         (event, data, index, nodes) => {
             /** @type {?} */
-            let slices = this.chart.selectAll('.slice');
+            const slices = this.chart.selectAll('.slice');
             /** @type {?} */
-            let slice = slices.filter((/**
+            const slice = slices.filter((/**
              * @param {?} d
              * @param {?} i
              * @return {?}
@@ -521,7 +528,7 @@ class PbdsDatavizPieComponent {
              */
             (d) => {
                 /** @type {?} */
-                let i = interpolate(d.outerRadius, this.outerRadius + this.arcZoom);
+                const i = interpolate(d.outerRadius, this.outerRadius + this.arcZoom);
                 return (/**
                  * @param {?} t
                  * @return {?}
@@ -544,9 +551,9 @@ class PbdsDatavizPieComponent {
          */
         (data, index, value) => {
             /** @type {?} */
-            let slices = this.chart.selectAll('.slice');
+            const slices = this.chart.selectAll('.slice');
             /** @type {?} */
-            let slice = slices.filter((/**
+            const slice = slices.filter((/**
              * @param {?} d
              * @param {?} i
              * @return {?}
@@ -572,7 +579,7 @@ class PbdsDatavizPieComponent {
              */
             (d) => {
                 /** @type {?} */
-                let i = interpolate(d.outerRadius, this.outerRadius);
+                const i = interpolate(d.outerRadius, this.outerRadius);
                 return (/**
                  * @param {?} t
                  * @return {?}
@@ -604,7 +611,7 @@ class PbdsDatavizPieComponent {
         (node, data) => {
             this.tooltipSetPosition(node);
             /** @type {?} */
-            let percentage = (data.endAngle - data.startAngle) / (2 * Math.PI);
+            const percentage = (data.endAngle - data.startAngle) / (2 * Math.PI);
             /** @type {?} */
             let label;
             switch (this.tooltipLabelFormatType) {
@@ -641,7 +648,7 @@ class PbdsDatavizPieComponent {
          */
         node => {
             /** @type {?} */
-            let coordinates = mouse(node);
+            const coordinates = mouse(node);
             this.tooltip.style('left', `${coordinates[0] + 16}px`);
             this.tooltip.style('top', `${coordinates[1] + 16}px`);
         });
@@ -1059,7 +1066,12 @@ class PbdsDatavizBarComponent {
                 // rebind data to groups
                 group = this.svg.selectAll('.bar-group').data(this.data);
                 // remove bars
-                group.exit().remove();
+                // add bars on enter
+                group
+                    .exit()
+                    .transition()
+                    .attr('pointer-events', 'none')
+                    .remove();
                 // update gray bars
                 group
                     .select('.gray-bar')
@@ -1074,6 +1086,7 @@ class PbdsDatavizBarComponent {
                 // update the existing bars
                 group
                     .select('.bar')
+                    .attr('pointer-events', 'none')
                     .transition()
                     .duration(1000)
                     .attr('x', (/**
@@ -1091,7 +1104,9 @@ class PbdsDatavizBarComponent {
                  * @param {?} d
                  * @return {?}
                  */
-                d => this.yAxisScale(d.value)));
+                d => this.yAxisScale(d.value)))
+                    .transition()
+                    .attr('pointer-events', 'auto');
                 // add group on enter
                 groupEnter = group
                     .enter()
@@ -1110,7 +1125,6 @@ class PbdsDatavizBarComponent {
                 d => this.xAxisScale(d.label)))
                     .attr('width', this.xAxisScale.bandwidth())
                     .transition()
-                    // .delay(1000)
                     .attr('height', this.height)
                     .attr('width', this.xAxisScale.bandwidth());
                 // add bars on enter
@@ -1131,9 +1145,9 @@ class PbdsDatavizBarComponent {
                     .attr('width', this.xAxisScale.bandwidth() / 2)
                     .attr('y', this.height)
                     .attr('height', 0)
+                    .attr('pointer-events', 'none')
                     .transition()
                     .duration(1000)
-                    // .delay(1000)
                     .attr('y', (/**
                  * @param {?} d
                  * @return {?}
@@ -1148,7 +1162,9 @@ class PbdsDatavizBarComponent {
                  * @param {?} d
                  * @return {?}
                  */
-                d => this.colorRange(d.label)));
+                d => this.colorRange(d.label)))
+                    .transition()
+                    .attr('pointer-events', 'auto');
                 groupEnter
                     .select('.bar')
                     .on('mouseover', (/**
@@ -1177,7 +1193,11 @@ class PbdsDatavizBarComponent {
                 // rebind data to groups
                 group = this.svg.selectAll('.bar-group').data(this.data);
                 // remove bars
-                group.exit().remove();
+                group
+                    .exit()
+                    .transition()
+                    .attr('pointer-events', 'none')
+                    .remove();
                 // update the existing bars
                 group
                     .select('.bar')
@@ -1187,6 +1207,7 @@ class PbdsDatavizBarComponent {
                  */
                 d => this.xAxisScale(d.label) + this.xAxisScale.bandwidth() / 5.5))
                     .attr('width', this.xAxisScale.bandwidth() / 1.5)
+                    .attr('pointer-events', 'none')
                     .transition()
                     .duration(1000)
                     .attr('y', (/**
@@ -1198,7 +1219,9 @@ class PbdsDatavizBarComponent {
                  * @param {?} d
                  * @return {?}
                  */
-                d => this.height - this.yAxisScale(d.value)));
+                d => this.height - this.yAxisScale(d.value)))
+                    .transition()
+                    .attr('pointer-events', 'auto');
                 // add group on enter
                 groupEnter = group
                     .enter()
@@ -1222,6 +1245,7 @@ class PbdsDatavizBarComponent {
                     .attr('width', this.xAxisScale.bandwidth() / 1.5)
                     .attr('y', this.height)
                     .attr('height', 0)
+                    .attr('pointer-events', 'none')
                     .transition()
                     .duration(1000)
                     .attr('y', (/**
@@ -1238,7 +1262,9 @@ class PbdsDatavizBarComponent {
                  * @param {?} d
                  * @return {?}
                  */
-                d => this.colorRange(d.label)));
+                d => this.colorRange(d.label)))
+                    .transition()
+                    .attr('pointer-events', 'auto');
                 groupEnter
                     .select('.bar')
                     .on('mouseover', (/**
@@ -2314,7 +2340,7 @@ class PbdsDatavizLineComponent {
                     .call(this.yGridCall);
             }
             /** @type {?} */
-            let group = this.svg.selectAll('.line-group').data(this.data.series);
+            const group = this.svg.selectAll('.line-group').data(this.data.series);
             // remove lines
             group.exit().remove();
             // update existing
@@ -2436,7 +2462,7 @@ class PbdsDatavizLineComponent {
             }
             if (!this.hideLegend) {
                 /** @type {?} */
-                let legendItem = this.chart
+                const legendItem = this.chart
                     .select('.legend')
                     .selectAll('.legend-item')
                     .data(this.data.series);
@@ -2460,7 +2486,7 @@ class PbdsDatavizLineComponent {
                 }));
                 // legend items on enter
                 /** @type {?} */
-                let enterLegendItem = legendItem
+                const enterLegendItem = legendItem
                     .enter()
                     .append('li')
                     .attr('class', 'legend-item');
@@ -2513,7 +2539,7 @@ class PbdsDatavizLineComponent {
             }
             if (!this.hideTooltip) {
                 /** @type {?} */
-                let tooltipItem = this.tooltip
+                const tooltipItem = this.tooltip
                     .select('.tooltip-table')
                     .selectAll('tr')
                     .data(this.data.series);
@@ -2528,7 +2554,7 @@ class PbdsDatavizLineComponent {
                 }));
                 // items on enter
                 /** @type {?} */
-                let entertooltipItem = tooltipItem
+                const entertooltipItem = tooltipItem
                     .enter()
                     .append('tr')
                     .attr('class', 'tooltip-item');
@@ -4141,23 +4167,23 @@ class PbdsDatavizStackedBarComponent {
                 .nice();
             this.xAxis
                 .transition()
-                .duration(1000)
+                .duration(0) // 1000
                 .call(this.xAxisCall);
             this.yAxis
                 .transition()
-                .duration(1000)
+                .duration(0) // 1000
                 .call(this.yAxisCall);
             // update the grids
             if (!this.hideXGrid) {
                 this.xGrid
                     .transition()
-                    .duration(1000)
+                    .duration(0) // 1000
                     .call(this.xGridCall);
             }
             if (!this.hideYGrid) {
                 this.yGrid
                     .transition()
-                    .duration(1000)
+                    .duration(0) // 1000
                     .call(this.yGridCall);
             }
             // add gray bars
@@ -4184,7 +4210,7 @@ class PbdsDatavizStackedBarComponent {
                  */
                 update => update
                     .transition()
-                    .duration(1000)
+                    .duration(0) // 1000
                     .attr('x', (/**
                  * @param {?} d
                  * @return {?}
@@ -4280,7 +4306,7 @@ class PbdsDatavizStackedBarComponent {
                 }
                 enter
                     .transition()
-                    .duration(1000)
+                    .duration(0) // 1000
                     .attr('width', width)
                     .attr('height', (/**
                  * @param {?} d
@@ -4307,7 +4333,7 @@ class PbdsDatavizStackedBarComponent {
                 }
                 update
                     .transition()
-                    .duration(1000)
+                    .duration(0) // 1000
                     .attr('width', this.xAxisScale.bandwidth() / 4)
                     .attr('x', (/**
                  * @param {?} d
@@ -4354,17 +4380,23 @@ class PbdsDatavizStackedBarComponent {
              * @return {?}
              */
             update => update
+                .attr('pointer-events', 'none')
                 .attr('x', (/**
              * @param {?} d
              * @return {?}
              */
             d => this.xAxisScale(d.key)))
                 .attr('width', this.xAxisScale.bandwidth())
-                .attr('height', this.height)), (/**
+                .attr('height', this.height)
+                .transition()
+                .attr('pointer-events', 'auto')), (/**
              * @param {?} exit
              * @return {?}
              */
-            exit => exit.remove()))
+            exit => exit
+                .transition()
+                .attr('pointer-events', 'none')
+                .remove()))
                 .on('mouseover', (/**
              * @param {?} data
              * @param {?} index
@@ -5459,6 +5491,7 @@ class PbdsDatavizMetricBlockComponent {
         this.description = null;
         this.centered = false;
         this.centeredText = false;
+        this.vertical = false;
         this.hideValueMargin = false;
         this.isPercentUnit = false;
         this.isUnit = false;
@@ -5471,6 +5504,7 @@ class PbdsDatavizMetricBlockComponent {
             'metric-block',
             this.centered ? 'metric-block-centered' : '',
             this.centeredText ? 'metric-block-centered-text' : '',
+            this.vertical ? 'metric-block-vertical' : '',
             this.class
         ].join(' ');
     }
@@ -5504,10 +5538,10 @@ PbdsDatavizMetricBlockComponent.decorators = [
             }}</span>
           </div>
 
-          <div *ngIf="description" class="metric-block-description">{{ description }}</div>
           <div>
             <ng-content select="pbds-dataviz-metric-indicator"></ng-content>
           </div>
+          <div *ngIf="description" class="metric-block-description">{{ description }}</div>
         </div>
         <ng-content select="pbds-dataviz-sparkline"></ng-content>
       </div>
@@ -5523,6 +5557,7 @@ PbdsDatavizMetricBlockComponent.propDecorators = {
     description: [{ type: Input }],
     centered: [{ type: Input }],
     centeredText: [{ type: Input }],
+    vertical: [{ type: Input }],
     hostClasses: [{ type: HostBinding, args: ['class',] }],
     indicatorRef: [{ type: ContentChild, args: [PbdsDatavizMetricIndicatorComponent, { static: true },] }]
 };
@@ -5541,6 +5576,8 @@ if (false) {
     PbdsDatavizMetricBlockComponent.prototype.centered;
     /** @type {?} */
     PbdsDatavizMetricBlockComponent.prototype.centeredText;
+    /** @type {?} */
+    PbdsDatavizMetricBlockComponent.prototype.vertical;
     /** @type {?} */
     PbdsDatavizMetricBlockComponent.prototype.hideValueMargin;
     /** @type {?} */
@@ -5641,11 +5678,16 @@ class DatavizBubbleMapComponent {
              * @param {?} d
              * @return {?}
              */
-            d => (!this.dot ? Math.sqrt(this.bubbleRadius(d.value)) : `${this.dotSize}px`)))), (/**
+            d => (!this.dot ? Math.sqrt(this.bubbleRadius(d.value)) : `${this.dotSize}px`)))
+                .transition()
+                .attr('pointer-events', 'auto')), (/**
              * @param {?} exit
              * @return {?}
              */
-            exit => exit.remove()));
+            exit => exit
+                .transition()
+                .attr('pointer-events', 'none')
+                .remove()));
             if (!this.hideTooltip) {
                 this.bubbleContainer
                     .selectAll('circle')
@@ -5708,6 +5750,7 @@ class DatavizBubbleMapComponent {
                      * @return {?}
                      */
                     update => update
+                        .attr('pointer-events', 'none')
                         .transition()
                         .duration(1000)
                         .text((/**
@@ -5730,11 +5773,16 @@ class DatavizBubbleMapComponent {
                      * @return {?}
                      */
                     d => this.projection([d.longitude, d.latitude])[1]))
-                        .attr('dy', '.4em')), (/**
+                        .attr('dy', '.4em')
+                        .transition()
+                        .attr('pointer-events', 'auto')), (/**
                      * @param {?} exit
                      * @return {?}
                      */
-                    exit => exit.remove()));
+                    exit => exit
+                        .transition()
+                        .attr('pointer-events', 'none')
+                        .remove()));
                 }
             }
         });
@@ -5798,9 +5846,9 @@ class DatavizBubbleMapComponent {
          */
         (data, node) => {
             /** @type {?} */
-            let dimensions = node.getBoundingClientRect();
+            const dimensions = node.getBoundingClientRect();
             /** @type {?} */
-            let scroll = this._scroll.getScrollPosition();
+            const scroll = this._scroll.getScrollPosition();
             this.tooltip.select('.tooltip-header').html((/**
              * @param {?} d
              * @return {?}
@@ -5816,9 +5864,9 @@ class DatavizBubbleMapComponent {
                 d => (this.tooltipValueFormat ? `${this.tooltipValueFormat(data.value)}` : `${data.value}`)));
             }
             /** @type {?} */
-            let tooltipOffsetWidth = +this.tooltip.node().offsetWidth / 2;
+            const tooltipOffsetWidth = +this.tooltip.node().offsetWidth / 2;
             /** @type {?} */
-            let tooltipOffsetHeight = +this.tooltip.node().offsetHeight + 8;
+            const tooltipOffsetHeight = +this.tooltip.node().offsetHeight + 8;
             this.tooltip.style('top', `${+scroll[1] + +dimensions.top - tooltipOffsetHeight}px`); //
             this.tooltip.style('left', `${+scroll[0] + +dimensions.left - tooltipOffsetWidth + +dimensions.width / 2}px`);
             this.tooltip.style('opacity', 1);
@@ -6271,6 +6319,7 @@ class PbdsDatavizHeatmapComponent {
                  * @return {?}
                  */
                 d => d.value === undefined || d.value === null))
+                    .attr('pointer-events', 'none')
                     .transition()
                     .duration(1000)
                     .attr('x', (/**
@@ -6289,13 +6338,18 @@ class PbdsDatavizHeatmapComponent {
                  * @param {?} d
                  * @return {?}
                  */
-                d => this.colorRange(d.value)));
+                d => this.colorRange(d.value)))
+                    .transition()
+                    .attr('pointer-events', 'auto');
                 return update;
             }))), (/**
              * @param {?} exit
              * @return {?}
              */
-            exit => exit.remove()))
+            exit => exit
+                .transition()
+                .attr('pointer-events', 'none')
+                .remove()))
                 .on('mouseover', (/**
              * @param {?} data
              * @param {?} index
@@ -8473,8 +8527,9 @@ class PbdsDatavizGroupedBarComponent {
          */
         enter => {
             return enter
+                .attr('pointer-events', 'none')
                 .transition()
-                .duration(500)
+                .duration(0) // 500
                 .attr('height', (/**
              * @param {?} d
              * @return {?}
@@ -8484,12 +8539,15 @@ class PbdsDatavizGroupedBarComponent {
              * @param {?} d
              * @return {?}
              */
-            d => this.yAxisScale(d.value)));
+            d => this.yAxisScale(d.value)))
+                .transition()
+                .attr('pointer-events', 'auto');
         }))), (/**
          * @param {?} update
          * @return {?}
          */
         update => update
+            .attr('pointer-events', 'none')
             .transition()
             .duration(1000)
             .attr('x', (/**
@@ -8507,13 +8565,16 @@ class PbdsDatavizGroupedBarComponent {
          * @param {?} d
          * @return {?}
          */
-        d => this.yAxisScale(d.value)))), (/**
+        d => this.yAxisScale(d.value)))
+            .transition()
+            .attr('pointer-events', 'auto')), (/**
          * @param {?} exit
          * @return {?}
          */
         exit => exit
             .transition()
-            .duration(100)
+            .duration(0) // 100
+            .attr('pointer-events', 'none')
             .attr('height', 0)
             .attr('y', this.height)))
             .on('mouseover', (/**
@@ -8711,18 +8772,22 @@ class PbdsDatavizGroupedBarComponent {
          */
         enter => {
             return enter
+                .attr('pointer-events', 'none')
                 .transition()
-                .duration(500)
+                .duration(0) // 500
                 .attr('width', (/**
              * @param {?} d
              * @return {?}
              */
-            d => this.xAxisScale(d.value)));
+            d => this.xAxisScale(d.value)))
+                .transition()
+                .attr('pointer-events', 'auto');
         }))), (/**
          * @param {?} update
          * @return {?}
          */
         update => update
+            .attr('pointer-events', 'none')
             .transition()
             .duration(1000)
             .attr('width', (/**
@@ -8735,13 +8800,16 @@ class PbdsDatavizGroupedBarComponent {
          * @param {?} d
          * @return {?}
          */
-        d => this.barScale(d.label)))), (/**
+        d => this.barScale(d.label)))
+            .transition()
+            .attr('pointer-events', 'auto')), (/**
          * @param {?} exit
          * @return {?}
          */
         exit => exit
             .transition()
-            .duration(100)
+            .duration(0) // 100
+            .attr('pointer-events', 'none')
             .attr('width', 0)))
             .on('mouseover', (/**
          * @param {?} data
@@ -9852,14 +9920,9 @@ class PbdsDatavizSingleStackedBarComponent {
         enter => {
             return (enter
                 .transition()
-                // .duration(1000)
-                .delay((/**
-             * @param {?} d
-             * @param {?} i
-             * @return {?}
-             */
-            (d, i) => i * 250))
-                .ease(easeLinear)
+                // .duration(0)
+                // .delay((d, i) => i * 250) // uncomment
+                // .ease(d3_easeLinear) // uncomment
                 .attr('width', (/**
              * @param {?} d
              * @param {?} i
