@@ -224,7 +224,7 @@
                         '#e6c49c',
                         '#9b9b9b'
                     ],
-                    mono: ['#001D56', '#003296', '#4B74C5', '#89A1D0', '#A3BCEE', '#C9D7F3'] // blue
+                    mono: ['#000E7B', '#2C4DCC', '#5678FF', '#B1C1FF', '#C9DBFF', '#D4D7ED'] // blue
                 },
                 twilight: {
                     full: [
@@ -241,7 +241,7 @@
                         '#e6c49c',
                         '#9b9b9b'
                     ],
-                    mono: ['#0F6894', '#3697C7', '#45BAF5', '#98D1ED', '#B5E6FF', '#D8E9F2'] // light blue
+                    mono: ['#05395C', '#0A5B92', '#0072B8', '#5DA9DC', '#A5D4F3', '#D1EDFF'] // light blue
                 },
                 ocean: {
                     full: [
@@ -258,7 +258,7 @@
                         '#ccb8ce',
                         '#9b9b9b'
                     ],
-                    mono: ['#394B4D', '#3A6B6E', '#14767D', '#99BFC2', '#C0ECF0', '#CAE1E3'] // blue-green
+                    mono: ['#394B4D', '#3A6B6E', '#14767D', '#99BFC2', '#C9E6E8', '#DEECED'] // blue-green
                 },
                 sunset: {
                     full: [
@@ -275,7 +275,7 @@
                         '#8b98c8',
                         '#9b9b9b'
                     ],
-                    mono: ['#34254A', '#46248F', '#6235C4', '#9A79E2', '#C4A8FF', '#DACCED'] // purple
+                    mono: ['#31254A', '#50248F', '#7945C4', '#9A79E2', '#C4A8FF', '#D9C7FF'] // purple
                 }
             };
             this.getColors = (/**
