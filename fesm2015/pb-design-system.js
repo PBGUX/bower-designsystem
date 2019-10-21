@@ -1,6 +1,6 @@
 import { Injectable, ɵɵdefineInjectable, EventEmitter, Component, ChangeDetectionStrategy, ElementRef, HostBinding, Input, Output, ContentChild, NgModule, Directive, HostListener } from '@angular/core';
 import { ViewportScroller, Location, CommonModule } from '@angular/common';
-import { isoParse, event as event$1, interpolate, mouse, format, timeFormat, scaleOrdinal, pie, arc, select, min, max, scaleBand, axisBottom, scaleLinear, axisLeft, extent, bisectLeft, isoFormat, line, curveCatmullRom, area, scaleTime, stack, stackOrderNone, geoAlbers, geoAlbersUsa, geoMercator, geoPath, scaleThreshold, scaleQuantile, scaleQuantize, range, values, sum } from 'd3';
+import { isoParse, event as event$1, interpolate, mouse, format, timeFormat, scaleOrdinal, pie, arc, select, min, max, scaleBand, axisBottom, scaleLinear, axisLeft, extent, bisectLeft, isoFormat, line, curveCatmullRom, area, scaleTime, stack, stackOrderNone, geoAlbers, geoAlbersUsa, geoMercator, geoPath, scaleThreshold, scaleQuantile, scaleQuantize, range, values, sum, easeLinear } from 'd3';
 import { feature, mesh } from 'topojson';
 
 /**
@@ -2257,6 +2257,8 @@ class PbdsDatavizLineComponent {
         this.yAxisTicks = 5;
         this.yAxisMinBuffer = 0.01;
         this.yAxisMaxBuffer = 0.01;
+        this.hideXGrid = true;
+        this.hideYGrid = true;
         this.hideLegend = false;
         this.legendWidth = 105 + 28; // hardcoded legend width + left margin, do not document until feedback
         // hardcoded legend width + left margin, do not document until feedback
@@ -2865,8 +2867,6 @@ class PbdsDatavizLineComponent {
         this.hideYAxis = false;
         this.hideXAxisZero = false;
         this.hideYAxisZero = false;
-        this.hideXGrid = false;
-        this.hideYGrid = false;
         this.hideXAxisDomain = false;
         this.hideYAxisDomain = false;
         this.hideTooltip = false;
@@ -2880,10 +2880,8 @@ class PbdsDatavizLineComponent {
             // set type defaults
             switch (this.type) {
                 case 'medium':
-                    this.hideXGrid = true;
                     this.hideXAxisTicks = true;
                     this.hideYAxisTicks = true;
-                    this.hideYGrid = true;
                     break;
                 case 'high':
                     this.lineWidth = 2;
@@ -2891,6 +2889,8 @@ class PbdsDatavizLineComponent {
                     this.linePoints = false;
                     this.hideXAxisTicks = true;
                     this.hideYAxisTicks = true;
+                    this.hideXGrid = false;
+                    this.hideYGrid = false;
                     break;
             }
         }
@@ -3143,6 +3143,8 @@ PbdsDatavizLineComponent.propDecorators = {
     yAxisTicks: [{ type: Input }],
     yAxisMinBuffer: [{ type: Input }],
     yAxisMaxBuffer: [{ type: Input }],
+    hideXGrid: [{ type: Input }],
+    hideYGrid: [{ type: Input }],
     hideLegend: [{ type: Input }],
     legendWidth: [{ type: Input }],
     legendPosition: [{ type: Input }],
@@ -3190,6 +3192,10 @@ if (false) {
     PbdsDatavizLineComponent.prototype.yAxisMinBuffer;
     /** @type {?} */
     PbdsDatavizLineComponent.prototype.yAxisMaxBuffer;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.hideXGrid;
+    /** @type {?} */
+    PbdsDatavizLineComponent.prototype.hideYGrid;
     /** @type {?} */
     PbdsDatavizLineComponent.prototype.hideLegend;
     /** @type {?} */
@@ -3393,16 +3399,6 @@ if (false) {
      * @private
      */
     PbdsDatavizLineComponent.prototype.hideYAxisZero;
-    /**
-     * @type {?}
-     * @private
-     */
-    PbdsDatavizLineComponent.prototype.hideXGrid;
-    /**
-     * @type {?}
-     * @private
-     */
-    PbdsDatavizLineComponent.prototype.hideYGrid;
     /**
      * @type {?}
      * @private
@@ -4080,7 +4076,7 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class PbdsDatavizStackedBarComponent {
+class PbdsDatavizBarStackedComponent {
     /**
      * @param {?} _dataviz
      * @param {?} _element
@@ -5053,20 +5049,20 @@ class PbdsDatavizStackedBarComponent {
         }
     }
 }
-PbdsDatavizStackedBarComponent.decorators = [
+PbdsDatavizBarStackedComponent.decorators = [
     { type: Component, args: [{
-                selector: 'pbds-dataviz-stacked-bar',
+                selector: 'pbds-dataviz-bar-stacked',
                 template: ``,
                 changeDetection: ChangeDetectionStrategy.OnPush
             }] }
 ];
 /** @nocollapse */
-PbdsDatavizStackedBarComponent.ctorParameters = () => [
+PbdsDatavizBarStackedComponent.ctorParameters = () => [
     { type: PbdsDatavizService },
     { type: ElementRef },
     { type: ViewportScroller }
 ];
-PbdsDatavizStackedBarComponent.propDecorators = {
+PbdsDatavizBarStackedComponent.propDecorators = {
     chartClass: [{ type: HostBinding, args: ['class.pbds-chart',] }],
     stackedBarClass: [{ type: HostBinding, args: ['class.pbds-chart-stacked-bar',] }],
     data: [{ type: Input }],
@@ -5103,335 +5099,335 @@ PbdsDatavizStackedBarComponent.propDecorators = {
 };
 if (false) {
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.chartClass;
+    PbdsDatavizBarStackedComponent.prototype.chartClass;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.stackedBarClass;
+    PbdsDatavizBarStackedComponent.prototype.stackedBarClass;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.data;
+    PbdsDatavizBarStackedComponent.prototype.data;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.width;
+    PbdsDatavizBarStackedComponent.prototype.width;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.height;
+    PbdsDatavizBarStackedComponent.prototype.height;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.type;
+    PbdsDatavizBarStackedComponent.prototype.type;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.marginTop;
+    PbdsDatavizBarStackedComponent.prototype.marginTop;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.marginRight;
+    PbdsDatavizBarStackedComponent.prototype.marginRight;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.marginBottom;
+    PbdsDatavizBarStackedComponent.prototype.marginBottom;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.marginLeft;
+    PbdsDatavizBarStackedComponent.prototype.marginLeft;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.hideXAxis;
+    PbdsDatavizBarStackedComponent.prototype.hideXAxis;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.xAxisFormatType;
+    PbdsDatavizBarStackedComponent.prototype.xAxisFormatType;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.xAxisFormatString;
+    PbdsDatavizBarStackedComponent.prototype.xAxisFormatString;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.yAxisFormatType;
+    PbdsDatavizBarStackedComponent.prototype.yAxisFormatType;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.yAxisFormatString;
+    PbdsDatavizBarStackedComponent.prototype.yAxisFormatString;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.yAxisTicks;
+    PbdsDatavizBarStackedComponent.prototype.yAxisTicks;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.yAxisMaxBuffer;
+    PbdsDatavizBarStackedComponent.prototype.yAxisMaxBuffer;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.hideLegend;
+    PbdsDatavizBarStackedComponent.prototype.hideLegend;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.legendWidth;
+    PbdsDatavizBarStackedComponent.prototype.legendWidth;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.legendPosition;
+    PbdsDatavizBarStackedComponent.prototype.legendPosition;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.legendLabelFormatType;
+    PbdsDatavizBarStackedComponent.prototype.legendLabelFormatType;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.legendLabelFormatString;
+    PbdsDatavizBarStackedComponent.prototype.legendLabelFormatString;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.tooltipHeadingFormatType;
+    PbdsDatavizBarStackedComponent.prototype.tooltipHeadingFormatType;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.tooltipHeadingFormatString;
+    PbdsDatavizBarStackedComponent.prototype.tooltipHeadingFormatString;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.tooltipHeadingValueFormatType;
+    PbdsDatavizBarStackedComponent.prototype.tooltipHeadingValueFormatType;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.tooltipHeadingValueFormatString;
+    PbdsDatavizBarStackedComponent.prototype.tooltipHeadingValueFormatString;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.tooltipLabelFormatType;
+    PbdsDatavizBarStackedComponent.prototype.tooltipLabelFormatType;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.tooltipLabelFormatString;
+    PbdsDatavizBarStackedComponent.prototype.tooltipLabelFormatString;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.tooltipValueFormatType;
+    PbdsDatavizBarStackedComponent.prototype.tooltipValueFormatType;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.tooltipValueFormatString;
+    PbdsDatavizBarStackedComponent.prototype.tooltipValueFormatString;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.theme;
+    PbdsDatavizBarStackedComponent.prototype.theme;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.hovered;
+    PbdsDatavizBarStackedComponent.prototype.hovered;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.clicked;
+    PbdsDatavizBarStackedComponent.prototype.clicked;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.dataStack;
+    PbdsDatavizBarStackedComponent.prototype.dataStack;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.dataKeys;
+    PbdsDatavizBarStackedComponent.prototype.dataKeys;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.chart;
+    PbdsDatavizBarStackedComponent.prototype.chart;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.svg;
+    PbdsDatavizBarStackedComponent.prototype.svg;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.grayBars;
+    PbdsDatavizBarStackedComponent.prototype.grayBars;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.mouseBars;
+    PbdsDatavizBarStackedComponent.prototype.mouseBars;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.bars;
+    PbdsDatavizBarStackedComponent.prototype.bars;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.margin;
+    PbdsDatavizBarStackedComponent.prototype.margin;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.colorRange;
+    PbdsDatavizBarStackedComponent.prototype.colorRange;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.hideGrayBars;
+    PbdsDatavizBarStackedComponent.prototype.hideGrayBars;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.xAxisScale;
+    PbdsDatavizBarStackedComponent.prototype.xAxisScale;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.xAxisCall;
+    PbdsDatavizBarStackedComponent.prototype.xAxisCall;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.xAxis;
+    PbdsDatavizBarStackedComponent.prototype.xAxis;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.xAxisFormat;
+    PbdsDatavizBarStackedComponent.prototype.xAxisFormat;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.xAxisTickSize;
+    PbdsDatavizBarStackedComponent.prototype.xAxisTickSize;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.xAxisTickSizeOuter;
+    PbdsDatavizBarStackedComponent.prototype.xAxisTickSizeOuter;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.hideXAxisDomain;
+    PbdsDatavizBarStackedComponent.prototype.hideXAxisDomain;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.hideXAxisZero;
+    PbdsDatavizBarStackedComponent.prototype.hideXAxisZero;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.hideXAxisTicks;
+    PbdsDatavizBarStackedComponent.prototype.hideXAxisTicks;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.hideXGrid;
+    PbdsDatavizBarStackedComponent.prototype.hideXGrid;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.hideYGrid;
+    PbdsDatavizBarStackedComponent.prototype.hideYGrid;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.yAxisMax;
+    PbdsDatavizBarStackedComponent.prototype.yAxisMax;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.yAxisScale;
+    PbdsDatavizBarStackedComponent.prototype.yAxisScale;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.yAxisCall;
+    PbdsDatavizBarStackedComponent.prototype.yAxisCall;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.yAxis;
+    PbdsDatavizBarStackedComponent.prototype.yAxis;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.yAxisFormat;
+    PbdsDatavizBarStackedComponent.prototype.yAxisFormat;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.yAxisTickSize;
+    PbdsDatavizBarStackedComponent.prototype.yAxisTickSize;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.yAxisTickSizeOuter;
+    PbdsDatavizBarStackedComponent.prototype.yAxisTickSizeOuter;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.xGrid;
+    PbdsDatavizBarStackedComponent.prototype.xGrid;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.xGridCall;
+    PbdsDatavizBarStackedComponent.prototype.xGridCall;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.yGrid;
+    PbdsDatavizBarStackedComponent.prototype.yGrid;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.yGridCall;
+    PbdsDatavizBarStackedComponent.prototype.yGridCall;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.hideYAxis;
+    PbdsDatavizBarStackedComponent.prototype.hideYAxis;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.hideYAxisZero;
+    PbdsDatavizBarStackedComponent.prototype.hideYAxisZero;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.hideYAxisDomain;
+    PbdsDatavizBarStackedComponent.prototype.hideYAxisDomain;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.hideYAxisTicks;
+    PbdsDatavizBarStackedComponent.prototype.hideYAxisTicks;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.legendLabelFormat;
+    PbdsDatavizBarStackedComponent.prototype.legendLabelFormat;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.tooltip;
+    PbdsDatavizBarStackedComponent.prototype.tooltip;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.hideTooltip;
+    PbdsDatavizBarStackedComponent.prototype.hideTooltip;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.tooltipHeadingFormat;
+    PbdsDatavizBarStackedComponent.prototype.tooltipHeadingFormat;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.tooltipHeadingValueFormat;
+    PbdsDatavizBarStackedComponent.prototype.tooltipHeadingValueFormat;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.tooltipValueFormat;
+    PbdsDatavizBarStackedComponent.prototype.tooltipValueFormat;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.tooltipLabelFormat;
+    PbdsDatavizBarStackedComponent.prototype.tooltipLabelFormat;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.updateChart;
+    PbdsDatavizBarStackedComponent.prototype.updateChart;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.barMouseOver;
+    PbdsDatavizBarStackedComponent.prototype.barMouseOver;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.barMouseOut;
+    PbdsDatavizBarStackedComponent.prototype.barMouseOut;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.barMouseClick;
+    PbdsDatavizBarStackedComponent.prototype.barMouseClick;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.legendMouseOver;
+    PbdsDatavizBarStackedComponent.prototype.legendMouseOver;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.legendMouseOut;
+    PbdsDatavizBarStackedComponent.prototype.legendMouseOut;
     /** @type {?} */
-    PbdsDatavizStackedBarComponent.prototype.legendMouseClick;
+    PbdsDatavizBarStackedComponent.prototype.legendMouseClick;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.xAxisFormatter;
+    PbdsDatavizBarStackedComponent.prototype.xAxisFormatter;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.tooltipShow;
+    PbdsDatavizBarStackedComponent.prototype.tooltipShow;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.tooltipHide;
+    PbdsDatavizBarStackedComponent.prototype.tooltipHide;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype.yAxisFormatter;
+    PbdsDatavizBarStackedComponent.prototype.yAxisFormatter;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype._dataviz;
+    PbdsDatavizBarStackedComponent.prototype._dataviz;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype._element;
+    PbdsDatavizBarStackedComponent.prototype._element;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizStackedBarComponent.prototype._scroll;
+    PbdsDatavizBarStackedComponent.prototype._scroll;
 }
 
 /**
@@ -5981,11 +5977,13 @@ class DatavizBubbleMapComponent {
         // create chart svg
         this.svg = this.chart
             .append('svg')
-            .attr('width', +this.width)
+            .attr('width', +this.width + this.margin.left + this.margin.right)
             .attr('height', +this.height + this.margin.top + this.margin.bottom)
             .attr('class', 'img-fluid')
             .attr('preserveAspectRatio', 'xMinYMin meet')
-            .attr('viewBox', `-${this.margin.left} -${this.margin.top} ${+this.width} ${+this.height + this.margin.top + this.margin.bottom}`)
+            .attr('viewBox', `-${this.margin.left} -${this.margin.top} ${+this.width + this.margin.left + this.margin.right} ${+this.height +
+            this.margin.top +
+            this.margin.bottom}`)
             .append('g')
             .attr('class', 'container');
         // map
@@ -7792,7 +7790,7 @@ if (false) {
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class PbdsDatavizGroupedBarComponent {
+class PbdsDatavizBarGroupedComponent {
     /**
      * @param {?} _dataviz
      * @param {?} _element
@@ -8234,7 +8232,7 @@ class PbdsDatavizGroupedBarComponent {
             this.barScale = scaleBand()
                 .domain(Object.keys(this.data[0]).slice(1))
                 .rangeRound([0, this.xAxisScale.bandwidth()])
-                .paddingInner(0.1)
+                .paddingInner(0.2)
                 .paddingOuter(0.5);
             this.updateChartVertical();
         }
@@ -8320,7 +8318,7 @@ class PbdsDatavizGroupedBarComponent {
             this.barScale = scaleBand()
                 .domain(Object.keys(this.data[0]).slice(1))
                 .rangeRound([this.yAxisScale.bandwidth(), 0])
-                .paddingInner(0.1)
+                .paddingInner(0.2)
                 .paddingOuter(0.5);
             this.updateChartHorizontal();
         }
@@ -8937,23 +8935,23 @@ class PbdsDatavizGroupedBarComponent {
         }
     }
 }
-PbdsDatavizGroupedBarComponent.decorators = [
+PbdsDatavizBarGroupedComponent.decorators = [
     { type: Component, args: [{
-                selector: 'pbds-dataviz-grouped-bar',
+                selector: 'pbds-dataviz-bar-grouped',
                 template: ``,
                 changeDetection: ChangeDetectionStrategy.OnPush
             }] }
 ];
 /** @nocollapse */
-PbdsDatavizGroupedBarComponent.ctorParameters = () => [
+PbdsDatavizBarGroupedComponent.ctorParameters = () => [
     { type: PbdsDatavizService },
     { type: ElementRef },
     { type: ViewportScroller },
     { type: Location }
 ];
-PbdsDatavizGroupedBarComponent.propDecorators = {
+PbdsDatavizBarGroupedComponent.propDecorators = {
     chartClass: [{ type: HostBinding, args: ['class.pbds-chart',] }],
-    groupedBarClass: [{ type: HostBinding, args: ['class.pbds-chart-grouped-bar',] }],
+    groupedBarClass: [{ type: HostBinding, args: ['class.pbds-chart-bar-grouped',] }],
     data: [{ type: Input }],
     width: [{ type: Input }],
     height: [{ type: Input }],
@@ -8989,302 +8987,302 @@ PbdsDatavizGroupedBarComponent.propDecorators = {
 };
 if (false) {
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.chartClass;
+    PbdsDatavizBarGroupedComponent.prototype.chartClass;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.groupedBarClass;
+    PbdsDatavizBarGroupedComponent.prototype.groupedBarClass;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.data;
+    PbdsDatavizBarGroupedComponent.prototype.data;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.width;
+    PbdsDatavizBarGroupedComponent.prototype.width;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.height;
+    PbdsDatavizBarGroupedComponent.prototype.height;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.vertical;
+    PbdsDatavizBarGroupedComponent.prototype.vertical;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.hideXAxis;
+    PbdsDatavizBarGroupedComponent.prototype.hideXAxis;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.xAxisMaxBuffer;
+    PbdsDatavizBarGroupedComponent.prototype.xAxisMaxBuffer;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.xAxisFormatType;
+    PbdsDatavizBarGroupedComponent.prototype.xAxisFormatType;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.xAxisFormatString;
+    PbdsDatavizBarGroupedComponent.prototype.xAxisFormatString;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.xAxisTicks;
+    PbdsDatavizBarGroupedComponent.prototype.xAxisTicks;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.hideYAxis;
+    PbdsDatavizBarGroupedComponent.prototype.hideYAxis;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.yAxisMaxBuffer;
+    PbdsDatavizBarGroupedComponent.prototype.yAxisMaxBuffer;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.yAxisFormatType;
+    PbdsDatavizBarGroupedComponent.prototype.yAxisFormatType;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.yAxisFormatString;
+    PbdsDatavizBarGroupedComponent.prototype.yAxisFormatString;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.yAxisTicks;
+    PbdsDatavizBarGroupedComponent.prototype.yAxisTicks;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.marginTop;
+    PbdsDatavizBarGroupedComponent.prototype.marginTop;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.marginRight;
+    PbdsDatavizBarGroupedComponent.prototype.marginRight;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.marginBottom;
+    PbdsDatavizBarGroupedComponent.prototype.marginBottom;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.marginLeft;
+    PbdsDatavizBarGroupedComponent.prototype.marginLeft;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.hideLegend;
+    PbdsDatavizBarGroupedComponent.prototype.hideLegend;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.legendWidth;
+    PbdsDatavizBarGroupedComponent.prototype.legendWidth;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.legendPosition;
+    PbdsDatavizBarGroupedComponent.prototype.legendPosition;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.legendLabelFormatType;
+    PbdsDatavizBarGroupedComponent.prototype.legendLabelFormatType;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.legendLabelFormatString;
+    PbdsDatavizBarGroupedComponent.prototype.legendLabelFormatString;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.hideTooltip;
+    PbdsDatavizBarGroupedComponent.prototype.hideTooltip;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.tooltipLabelFormatType;
+    PbdsDatavizBarGroupedComponent.prototype.tooltipLabelFormatType;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.tooltipLabelFormatString;
+    PbdsDatavizBarGroupedComponent.prototype.tooltipLabelFormatString;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.tooltipValueFormatType;
+    PbdsDatavizBarGroupedComponent.prototype.tooltipValueFormatType;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.tooltipValueFormatString;
+    PbdsDatavizBarGroupedComponent.prototype.tooltipValueFormatString;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.showGrid;
+    PbdsDatavizBarGroupedComponent.prototype.showGrid;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.theme;
+    PbdsDatavizBarGroupedComponent.prototype.theme;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.hovered;
+    PbdsDatavizBarGroupedComponent.prototype.hovered;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.clicked;
+    PbdsDatavizBarGroupedComponent.prototype.clicked;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.barScale;
+    PbdsDatavizBarGroupedComponent.prototype.barScale;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.chart;
+    PbdsDatavizBarGroupedComponent.prototype.chart;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.svg;
+    PbdsDatavizBarGroupedComponent.prototype.svg;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.margin;
+    PbdsDatavizBarGroupedComponent.prototype.margin;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.colorRange;
+    PbdsDatavizBarGroupedComponent.prototype.colorRange;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.xAxisMax;
+    PbdsDatavizBarGroupedComponent.prototype.xAxisMax;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.xAxisScale;
+    PbdsDatavizBarGroupedComponent.prototype.xAxisScale;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.xAxisCall;
+    PbdsDatavizBarGroupedComponent.prototype.xAxisCall;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.xAxis;
+    PbdsDatavizBarGroupedComponent.prototype.xAxis;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.xAxisTickSize;
+    PbdsDatavizBarGroupedComponent.prototype.xAxisTickSize;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.xAxisTickSizeOuter;
+    PbdsDatavizBarGroupedComponent.prototype.xAxisTickSizeOuter;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.xAxisFormat;
+    PbdsDatavizBarGroupedComponent.prototype.xAxisFormat;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.hideXAxisDomain;
+    PbdsDatavizBarGroupedComponent.prototype.hideXAxisDomain;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.hideXAxisZero;
+    PbdsDatavizBarGroupedComponent.prototype.hideXAxisZero;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.hideXAxisTicks;
+    PbdsDatavizBarGroupedComponent.prototype.hideXAxisTicks;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.xGrid;
+    PbdsDatavizBarGroupedComponent.prototype.xGrid;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.xGridCall;
+    PbdsDatavizBarGroupedComponent.prototype.xGridCall;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.yAxisMax;
+    PbdsDatavizBarGroupedComponent.prototype.yAxisMax;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.yAxisScale;
+    PbdsDatavizBarGroupedComponent.prototype.yAxisScale;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.yAxisCall;
+    PbdsDatavizBarGroupedComponent.prototype.yAxisCall;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.yAxis;
+    PbdsDatavizBarGroupedComponent.prototype.yAxis;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.yAxisFormat;
+    PbdsDatavizBarGroupedComponent.prototype.yAxisFormat;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.yAxisTickSize;
+    PbdsDatavizBarGroupedComponent.prototype.yAxisTickSize;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.yAxisTickSizeOuter;
+    PbdsDatavizBarGroupedComponent.prototype.yAxisTickSizeOuter;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.hideYAxisZero;
+    PbdsDatavizBarGroupedComponent.prototype.hideYAxisZero;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.hideYAxisDomain;
+    PbdsDatavizBarGroupedComponent.prototype.hideYAxisDomain;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.hideYAxisTicks;
+    PbdsDatavizBarGroupedComponent.prototype.hideYAxisTicks;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.yGrid;
+    PbdsDatavizBarGroupedComponent.prototype.yGrid;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.yGridCall;
+    PbdsDatavizBarGroupedComponent.prototype.yGridCall;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.legendLabelFormat;
+    PbdsDatavizBarGroupedComponent.prototype.legendLabelFormat;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.hideGrayBars;
+    PbdsDatavizBarGroupedComponent.prototype.hideGrayBars;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.tooltip;
+    PbdsDatavizBarGroupedComponent.prototype.tooltip;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.tooltipValueFormat;
+    PbdsDatavizBarGroupedComponent.prototype.tooltipValueFormat;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.tooltipLabelFormat;
+    PbdsDatavizBarGroupedComponent.prototype.tooltipLabelFormat;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.barMouseOver;
+    PbdsDatavizBarGroupedComponent.prototype.barMouseOver;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.barMouseOut;
+    PbdsDatavizBarGroupedComponent.prototype.barMouseOut;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.barMouseClick;
+    PbdsDatavizBarGroupedComponent.prototype.barMouseClick;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.legendMouseOver;
+    PbdsDatavizBarGroupedComponent.prototype.legendMouseOver;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.legendMouseOut;
+    PbdsDatavizBarGroupedComponent.prototype.legendMouseOut;
     /** @type {?} */
-    PbdsDatavizGroupedBarComponent.prototype.legendMouseClick;
+    PbdsDatavizBarGroupedComponent.prototype.legendMouseClick;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.tooltipShow;
+    PbdsDatavizBarGroupedComponent.prototype.tooltipShow;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.tooltipHide;
+    PbdsDatavizBarGroupedComponent.prototype.tooltipHide;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.xAxisFormatter;
+    PbdsDatavizBarGroupedComponent.prototype.xAxisFormatter;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype.yAxisFormatter;
+    PbdsDatavizBarGroupedComponent.prototype.yAxisFormatter;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype._dataviz;
+    PbdsDatavizBarGroupedComponent.prototype._dataviz;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype._element;
+    PbdsDatavizBarGroupedComponent.prototype._element;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype._scroll;
+    PbdsDatavizBarGroupedComponent.prototype._scroll;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizGroupedBarComponent.prototype._location;
+    PbdsDatavizBarGroupedComponent.prototype._location;
 }
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
-class PbdsDatavizSingleStackedBarComponent {
+class PbdsDatavizBarSingleHorizontalComponent {
     /**
      * @param {?} _dataviz
      * @param {?} _element
@@ -9921,8 +9919,13 @@ class PbdsDatavizSingleStackedBarComponent {
             return (enter
                 .transition()
                 // .duration(0)
-                // .delay((d, i) => i * 250) // uncomment
-                // .ease(d3_easeLinear) // uncomment
+                .delay((/**
+             * @param {?} d
+             * @param {?} i
+             * @return {?}
+             */
+            (d, i) => i * 250))
+                .ease(easeLinear)
                 .attr('width', (/**
              * @param {?} d
              * @param {?} i
@@ -10118,23 +10121,23 @@ class PbdsDatavizSingleStackedBarComponent {
         }
     }
 }
-PbdsDatavizSingleStackedBarComponent.decorators = [
+PbdsDatavizBarSingleHorizontalComponent.decorators = [
     { type: Component, args: [{
-                selector: 'pbds-dataviz-single-stacked-bar',
+                selector: 'pbds-dataviz-bar-single-horizontal',
                 template: ``,
                 changeDetection: ChangeDetectionStrategy.OnPush
             }] }
 ];
 /** @nocollapse */
-PbdsDatavizSingleStackedBarComponent.ctorParameters = () => [
+PbdsDatavizBarSingleHorizontalComponent.ctorParameters = () => [
     { type: PbdsDatavizService },
     { type: ElementRef },
     { type: ViewportScroller },
     { type: Location }
 ];
-PbdsDatavizSingleStackedBarComponent.propDecorators = {
+PbdsDatavizBarSingleHorizontalComponent.propDecorators = {
     chartClass: [{ type: HostBinding, args: ['class.pbds-chart',] }],
-    singleStackedBarClass: [{ type: HostBinding, args: ['class.pbds-chart-single-stacked-bar',] }],
+    singleStackedBarClass: [{ type: HostBinding, args: ['class.pbds-chart-bar-single-horizontal',] }],
     data: [{ type: Input }],
     width: [{ type: Input }],
     height: [{ type: Input }],
@@ -10174,258 +10177,258 @@ PbdsDatavizSingleStackedBarComponent.propDecorators = {
 };
 if (false) {
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.chartClass;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.chartClass;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.singleStackedBarClass;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.singleStackedBarClass;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.data;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.data;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.width;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.width;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.height;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.height;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.nullValueText;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.nullValueText;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.percentage;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.percentage;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.marginTop;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.marginTop;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.marginRight;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.marginRight;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.marginBottom;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.marginBottom;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.marginLeft;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.marginLeft;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.barMargin;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.barMargin;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.hideXAxis;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.hideXAxis;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.xAxisTicks;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.xAxisTicks;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.xAxisTitle;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.xAxisTitle;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.xAxisFormatType;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.xAxisFormatType;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.xAxisFormatString;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.xAxisFormatString;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.xAxisTickLabelSuffix;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.xAxisTickLabelSuffix;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.hideXGrid;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.hideXGrid;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.hideLegend;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.hideLegend;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.hideLegendTooltip;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.hideLegendTooltip;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.legendWidth;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.legendWidth;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.legendPosition;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.legendPosition;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.legendLabelFormatType;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.legendLabelFormatType;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.legendLabelFormatString;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.legendLabelFormatString;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.hideTooltip;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.hideTooltip;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.tooltipLabelFormatType;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.tooltipLabelFormatType;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.tooltipLabelFormatString;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.tooltipLabelFormatString;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.tooltipDateFormatString;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.tooltipDateFormatString;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.tooltipValueFormatType;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.tooltipValueFormatType;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.tooltipValueFormatString;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.tooltipValueFormatString;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.tooltipValueSuffix;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.tooltipValueSuffix;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.tooltipPercentFormatString;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.tooltipPercentFormatString;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.compareChangeFormatString;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.compareChangeFormatString;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.monochrome;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.monochrome;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.theme;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.theme;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.hovered;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.hovered;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.clicked;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.clicked;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.isSingleData;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.isSingleData;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.isCompare;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.isCompare;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.chart;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.chart;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.svg;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.svg;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.margin;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.margin;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.colorRange;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.colorRange;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.barPadding;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.barPadding;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.xAxisCall;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.xAxisCall;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.xAxis;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.xAxis;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.xAxisScale;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.xAxisScale;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.xAxisTickSize;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.xAxisTickSize;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.xAxisTickSizeOuter;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.xAxisTickSizeOuter;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.xAxisFormat;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.xAxisFormat;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.xAxisTitleMargin;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.xAxisTitleMargin;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.hideXAxisDomain;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.hideXAxisDomain;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.hideXAxisZero;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.hideXAxisZero;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.hideXAxisTicks;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.hideXAxisTicks;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.xGrid;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.xGrid;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.xGridCall;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.xGridCall;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.legendLabelFormat;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.legendLabelFormat;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.tooltip;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.tooltip;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.tooltipLabelFormat;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.tooltipLabelFormat;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.tooltipValueFormat;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.tooltipValueFormat;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.tooltipDateFormat;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.tooltipDateFormat;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.tooltipPercentFormat;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.tooltipPercentFormat;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.tooltipCompareChangeFormat;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.tooltipCompareChangeFormat;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.barMouseOver;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.barMouseOver;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.barMouseOut;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.barMouseOut;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.barMouseClick;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.barMouseClick;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.tooltipShow;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.tooltipShow;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.tooltipHide;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.tooltipHide;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.legendMouseOver;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.legendMouseOver;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.legendMouseOut;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.legendMouseOut;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarComponent.prototype.legendMouseClick;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.legendMouseClick;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype.xAxisFormatter;
+    PbdsDatavizBarSingleHorizontalComponent.prototype.xAxisFormatter;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype._dataviz;
+    PbdsDatavizBarSingleHorizontalComponent.prototype._dataviz;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype._element;
+    PbdsDatavizBarSingleHorizontalComponent.prototype._element;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype._scroll;
+    PbdsDatavizBarSingleHorizontalComponent.prototype._scroll;
     /**
      * @type {?}
      * @private
      */
-    PbdsDatavizSingleStackedBarComponent.prototype._location;
+    PbdsDatavizBarSingleHorizontalComponent.prototype._location;
 }
 
 /**
@@ -10442,14 +10445,14 @@ PbdsDatavizModule.decorators = [
                     PbdsDatavizLineComponent,
                     PbdsDatavizGaugeComponent,
                     PbdsDatavizSparklineComponent,
-                    PbdsDatavizStackedBarComponent,
+                    PbdsDatavizBarStackedComponent,
                     PbdsDatavizMetricBlockComponent,
                     DatavizBubbleMapComponent,
                     PbdsDatavizMetricIndicatorComponent,
                     PbdsDatavizHeatmapComponent,
                     PbdsDatavizChoroplethMapComponent,
-                    PbdsDatavizGroupedBarComponent,
-                    PbdsDatavizSingleStackedBarComponent
+                    PbdsDatavizBarGroupedComponent,
+                    PbdsDatavizBarSingleHorizontalComponent
                 ],
                 imports: [CommonModule],
                 exports: [
@@ -10458,14 +10461,14 @@ PbdsDatavizModule.decorators = [
                     PbdsDatavizLineComponent,
                     PbdsDatavizGaugeComponent,
                     PbdsDatavizSparklineComponent,
-                    PbdsDatavizStackedBarComponent,
+                    PbdsDatavizBarStackedComponent,
                     PbdsDatavizMetricBlockComponent,
                     DatavizBubbleMapComponent,
                     PbdsDatavizMetricIndicatorComponent,
                     PbdsDatavizHeatmapComponent,
                     PbdsDatavizChoroplethMapComponent,
-                    PbdsDatavizGroupedBarComponent,
-                    PbdsDatavizSingleStackedBarComponent
+                    PbdsDatavizBarGroupedComponent,
+                    PbdsDatavizBarSingleHorizontalComponent
                 ]
             },] }
 ];
@@ -10538,10 +10541,10 @@ if (false) {
 /**
  * @record
  */
-function PbdsDatavizStackedBar() { }
+function PbdsDatavizBarStacked() { }
 if (false) {
     /** @type {?} */
-    PbdsDatavizStackedBar.prototype.key;
+    PbdsDatavizBarStacked.prototype.key;
     /* Skipping unhandled member: [propName: string]: any;*/
 }
 /**
@@ -10587,51 +10590,51 @@ if (false) {
 /**
  * @record
  */
-function PbdsDatavizGroupedBar() { }
+function PbdsDatavizBarGrouped() { }
 if (false) {
     /** @type {?} */
-    PbdsDatavizGroupedBar.prototype.key;
+    PbdsDatavizBarGrouped.prototype.key;
     /* Skipping unhandled member: [propName: string]: any;*/
 }
 /**
  * @record
  */
-function PbdsDatavizSingleStackedBar() { }
+function PbdsDatavizBarSingleHorizontal() { }
 if (false) {
     /** @type {?} */
-    PbdsDatavizSingleStackedBar.prototype.label;
+    PbdsDatavizBarSingleHorizontal.prototype.label;
     /** @type {?} */
-    PbdsDatavizSingleStackedBar.prototype.value;
+    PbdsDatavizBarSingleHorizontal.prototype.value;
     /** @type {?|undefined} */
-    PbdsDatavizSingleStackedBar.prototype.startDate;
+    PbdsDatavizBarSingleHorizontal.prototype.startDate;
     /** @type {?|undefined} */
-    PbdsDatavizSingleStackedBar.prototype.endDate;
+    PbdsDatavizBarSingleHorizontal.prototype.endDate;
 }
 /**
  * @record
  */
-function PbdsDatavizSingleStackedBarCompare() { }
+function PbdsDatavizBarSingleHorizontalCompare() { }
 if (false) {
     /** @type {?} */
-    PbdsDatavizSingleStackedBarCompare.prototype.label;
+    PbdsDatavizBarSingleHorizontalCompare.prototype.label;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarCompare.prototype.value;
+    PbdsDatavizBarSingleHorizontalCompare.prototype.value;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarCompare.prototype.startDate;
+    PbdsDatavizBarSingleHorizontalCompare.prototype.startDate;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarCompare.prototype.endDate;
+    PbdsDatavizBarSingleHorizontalCompare.prototype.endDate;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarCompare.prototype.compareValue;
+    PbdsDatavizBarSingleHorizontalCompare.prototype.compareValue;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarCompare.prototype.compareStartDate;
+    PbdsDatavizBarSingleHorizontalCompare.prototype.compareStartDate;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarCompare.prototype.compareEndDate;
+    PbdsDatavizBarSingleHorizontalCompare.prototype.compareEndDate;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarCompare.prototype.compareChangeValue;
+    PbdsDatavizBarSingleHorizontalCompare.prototype.compareChangeValue;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarCompare.prototype.compareChangeDirection;
+    PbdsDatavizBarSingleHorizontalCompare.prototype.compareChangeDirection;
     /** @type {?} */
-    PbdsDatavizSingleStackedBarCompare.prototype.compareChangeInverse;
+    PbdsDatavizBarSingleHorizontalCompare.prototype.compareChangeInverse;
 }
 
 /**
@@ -10701,5 +10704,5 @@ PbdsHeaderShadowModule.decorators = [
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { DatavizBubbleMapComponent, PbdsDatavizBarComponent, PbdsDatavizChoroplethMapComponent, PbdsDatavizGaugeComponent, PbdsDatavizGroupedBarComponent, PbdsDatavizHeatmapComponent, PbdsDatavizLineComponent, PbdsDatavizMetricBlockComponent, PbdsDatavizMetricIndicatorComponent, PbdsDatavizModule, PbdsDatavizPieComponent, PbdsDatavizService, PbdsDatavizSingleStackedBarComponent, PbdsDatavizSparklineComponent, PbdsDatavizStackedBarComponent, PbdsHeaderShadowDirective, PbdsHeaderShadowModule };
+export { DatavizBubbleMapComponent, PbdsDatavizBarComponent, PbdsDatavizBarGroupedComponent, PbdsDatavizBarSingleHorizontalComponent, PbdsDatavizBarStackedComponent, PbdsDatavizChoroplethMapComponent, PbdsDatavizGaugeComponent, PbdsDatavizHeatmapComponent, PbdsDatavizLineComponent, PbdsDatavizMetricBlockComponent, PbdsDatavizMetricIndicatorComponent, PbdsDatavizModule, PbdsDatavizPieComponent, PbdsDatavizService, PbdsDatavizSparklineComponent, PbdsHeaderShadowDirective, PbdsHeaderShadowModule };
 //# sourceMappingURL=pb-design-system.js.map

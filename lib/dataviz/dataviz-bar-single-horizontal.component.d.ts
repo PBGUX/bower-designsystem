@@ -1,15 +1,15 @@
 import { OnInit, ElementRef, OnChanges, SimpleChanges, EventEmitter, OnDestroy } from '@angular/core';
 import { ViewportScroller, Location } from '@angular/common';
 import { PbdsDatavizService } from './dataviz.service';
-import { PbdsDatavizSingleStackedBar, PbdsDatavizSingleStackedBarCompare } from './dataviz.interfaces';
-export declare class PbdsDatavizSingleStackedBarComponent implements OnInit, OnDestroy, OnChanges {
+import { PbdsDatavizBarSingleHorizontal, PbdsDatavizBarSingleHorizontalCompare } from './dataviz.interfaces';
+export declare class PbdsDatavizBarSingleHorizontalComponent implements OnInit, OnDestroy, OnChanges {
     private _dataviz;
     private _element;
     private _scroll;
     private _location;
     chartClass: boolean;
     singleStackedBarClass: boolean;
-    data: Array<PbdsDatavizSingleStackedBar | PbdsDatavizSingleStackedBarCompare>;
+    data: Array<PbdsDatavizBarSingleHorizontal | PbdsDatavizBarSingleHorizontalCompare>;
     width: number;
     height: number;
     nullValueText: string;

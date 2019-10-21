@@ -23,7 +23,7 @@ export interface PbdsDatavizLineSeries {
     label: string;
     values: Array<number>;
 }
-export interface PbdsDatavizStackedBar {
+export interface PbdsDatavizBarStacked {
     key: string;
     [propName: string]: any;
 }
@@ -45,17 +45,17 @@ export interface PbdsDatavizHeatmap {
     xLabel: string;
     value: number;
 }
-export interface PbdsDatavizGroupedBar {
+export interface PbdsDatavizBarGrouped {
     key: string;
     [propName: string]: any;
 }
-export interface PbdsDatavizSingleStackedBar {
+export interface PbdsDatavizBarSingleHorizontal {
     label: string;
     value: number;
     startDate?: string;
     endDate?: string;
 }
-export interface PbdsDatavizSingleStackedBarCompare {
+export interface PbdsDatavizBarSingleHorizontalCompare {
     label: string;
     value: number;
     startDate: string;
