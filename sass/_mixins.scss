@@ -16,14 +16,29 @@
   }
 }
 
+// create border classes at breakpoints, like with margins  etc.
+// $edges: top, right, bottom, left !default;
+
+// @each $breakpoint in map-keys($grid-breakpoints) {
+//   @include media-breakpoint-up($breakpoint) {
+//     $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+//     @each $value in $edges {
+//       .border#{$infix}-#{$value} {
+//         border-#{$value}: 1px solid var(--border_color) !important;
+//       }
+//     }
+//   }
+// }
+
 @mixin table-headers {
   color: var(--text);
   font-family: $font-family-base;
   background-color: transparent;
   text-transform: uppercase;
-  font-weight: normal;
-  font-size: $font-size-sm;
-  letter-spacing: 0.07em;
+  font-weight: bold;
+  font-size: 11px;
+  letter-spacing: 0.08em;
 }
 
 @mixin gradient($color-start, $color-center, $color-end) {

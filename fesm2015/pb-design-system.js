@@ -1,7 +1,10 @@
-import { Injectable, ɵɵdefineInjectable, EventEmitter, Component, ChangeDetectionStrategy, ElementRef, HostBinding, Input, Output, ContentChild, NgModule, Directive, HostListener } from '@angular/core';
-import { ViewportScroller, Location, CommonModule } from '@angular/common';
+import { Injectable, ɵɵdefineInjectable, EventEmitter, Component, ChangeDetectionStrategy, ElementRef, HostBinding, Input, Output, ContentChild, NgModule, Directive, HostListener, Inject, LOCALE_ID, ɵɵinject, ViewChild } from '@angular/core';
+import { ViewportScroller, Location, CommonModule, registerLocaleData, getLocaleDayNames, FormStyle, TranslationWidth, getLocaleMonthNames, getLocaleFirstDayOfWeek, getLocaleDateFormat, FormatWidth, formatDate } from '@angular/common';
 import { isoParse, event as event$1, interpolate, mouse, format, timeFormat, scaleOrdinal, pie, arc, select, min, max, scaleBand, axisBottom, scaleLinear, axisLeft, extent, bisectLeft, isoFormat, line, curveCatmullRom, area, scaleTime, stack, stackOrderNone, geoAlbers, geoAlbersUsa, geoMercator, geoPath, scaleThreshold, scaleQuantile, scaleQuantize, range, values, sum, easeLinear } from 'd3';
 import { feature, mesh } from 'topojson';
+import { FormsModule } from '@angular/forms';
+import { NgbDatepickerI18n, NgbDate, NgbCalendar, NgbDatepickerModule, NgbPopoverModule, NgbDropdownModule } from '@ng-bootstrap/ng-bootstrap';
+import { MatRadioModule } from '@angular/material/radio';
 
 /**
  * @fileoverview added by tsickle
@@ -12,31 +15,31 @@ class PbdsDatavizService {
         this.colors = {
             classic: {
                 full: [
-                    '#e23da8',
+                    '#E23DA8',
+                    '#1BB9FF',
+                    '#FF8B00',
+                    '#A319B1',
+                    '#00B140',
+                    '#0384D4',
                     '#314183',
-                    '#1bb9ff',
-                    '#ff8b00',
-                    '#0384d4',
-                    '#00b140',
-                    '#a319b1',
-                    '#ffc500',
+                    '#EDB700',
                     '#8b98c8',
                     '#ccb8ce',
                     '#e6c49c',
                     '#9b9b9b'
                 ],
-                mono: ['#000E7B', '#2C4DCC', '#5678FF', '#B1C1FF', '#C9DBFF', '#D4D7ED'] // blue
+                mono: ['#001D56', '#003296', '#4B74C5', '#89A1D0', '#A3BCEE', '#C9D7F3'] // blue
             },
             twilight: {
                 full: [
-                    '#0384d4',
+                    '#A319B1',
+                    '#00B140',
+                    '#FF8B00',
+                    '#1BB9FF',
+                    '#E23DA8',
+                    '#0384D4',
                     '#314183',
-                    '#1bb9ff',
-                    '#ff8b00',
-                    '#e23da8',
-                    '#00b140',
-                    '#a319b1',
-                    '#ffc500',
+                    '#EDB700',
                     '#8b98c8',
                     '#ccb8ce',
                     '#e6c49c',
@@ -46,14 +49,14 @@ class PbdsDatavizService {
             },
             ocean: {
                 full: [
-                    '#00b140',
-                    '#0384d4',
+                    '#0384D4',
+                    '#E23DA8',
+                    '#1BB9FF',
                     '#314183',
-                    '#1bb9ff',
-                    '#e23da8',
-                    '#ffc500',
-                    '#a319b1',
-                    '#ff8b00',
+                    '#FFC500',
+                    '#A319B1',
+                    '#FF8B00',
+                    '#14767D',
                     '#8b98c8',
                     '#e6c49c',
                     '#ccb8ce',
@@ -63,16 +66,16 @@ class PbdsDatavizService {
             },
             sunset: {
                 full: [
-                    '#512e8b',
-                    '#ff8b00',
-                    '#1bb9ff',
-                    '#e23da8',
-                    '#ffc500',
-                    '#00b140',
+                    '#CE2060',
+                    '#FF8B00',
+                    '#1BB9FF',
+                    '#FFC500',
+                    '#00B140',
+                    '#50248F',
                     '#0384d4',
-                    '#ccb8ce',
+                    '#CCB8CE',
                     '#314183',
-                    '#e6c49c',
+                    '#E6C49C',
                     '#8b98c8',
                     '#9b9b9b'
                 ],
@@ -6827,6 +6830,13 @@ class PbdsDatavizHeatmapComponent {
         this.updateChart();
     }
     /**
+     * @return {?}
+     */
+    ngOnDestroy() {
+        if (this.tooltip)
+            this.tooltip.remove();
+    }
+    /**
      * @param {?} changes
      * @return {?}
      */
@@ -10698,11 +10708,561 @@ PbdsHeaderShadowModule.decorators = [
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
+class PbdsDaterangeService {
+    /**
+     * @param {?} localeId
+     */
+    constructor(localeId) {
+        this.localeId = localeId;
+        this.locale = this.localeId.toLowerCase();
+    }
+    /**
+     * @param {?} locale
+     * @return {?}
+     */
+    setLocale(locale) {
+        this.locale = `${locale.language}-${locale.country}`.toLowerCase();
+        // set the angular LOCALE_ID dynamically for ng-bootstrap datepicker
+        registerLocaleData(locale.locale, this.locale);
+    }
+    /**
+     * @return {?}
+     */
+    getCurrentLocale() {
+        return this.locale;
+    }
+}
+PbdsDaterangeService.decorators = [
+    { type: Injectable, args: [{
+                providedIn: 'root'
+            },] }
+];
+/** @nocollapse */
+PbdsDaterangeService.ctorParameters = () => [
+    { type: String, decorators: [{ type: Inject, args: [LOCALE_ID,] }] }
+];
+/** @nocollapse */ PbdsDaterangeService.ngInjectableDef = ɵɵdefineInjectable({ factory: function PbdsDaterangeService_Factory() { return new PbdsDaterangeService(ɵɵinject(LOCALE_ID)); }, token: PbdsDaterangeService, providedIn: "root" });
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDaterangeService.prototype.locale;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDaterangeService.prototype.localeId;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+// Define custom service providing the months and weekdays translations
+class CustomDatepickerI18n extends NgbDatepickerI18n {
+    /**
+     * @param {?} daterangeService
+     */
+    constructor(daterangeService) {
+        super();
+        this.daterangeService = daterangeService;
+    }
+    /**
+     * @param {?} weekday
+     * @return {?}
+     */
+    getWeekdayShortName(weekday) {
+        // for ng-bootstrap, sunday number of 7 converted to 0
+        weekday = weekday === 7 ? 0 : weekday;
+        // console.log(
+        //   'weekday: ',
+        //   this.daterangeService.getCurrentLocale(),
+        //   weekday,
+        //   getLocaleDayNames(this.daterangeService.getCurrentLocale(), FormStyle.Standalone, TranslationWidth.Abbreviated)[weekday]
+        // );
+        return getLocaleDayNames(this.daterangeService.getCurrentLocale(), FormStyle.Standalone, TranslationWidth.Abbreviated)[weekday];
+    }
+    /**
+     * @param {?} month
+     * @return {?}
+     */
+    getMonthShortName(month) {
+        return getLocaleMonthNames(this.daterangeService.getCurrentLocale(), FormStyle.Standalone, TranslationWidth.Wide)[month - 1];
+    }
+    /**
+     * @param {?} month
+     * @return {?}
+     */
+    getMonthFullName(month) {
+        return getLocaleMonthNames(this.daterangeService.getCurrentLocale(), FormStyle.Standalone, TranslationWidth.Wide)[month - 1];
+    }
+    /**
+     * @param {?} date
+     * @return {?}
+     */
+    getDayAriaLabel(date) {
+        return `${date.day}-${date.month}-${date.year}`;
+    }
+}
+CustomDatepickerI18n.decorators = [
+    { type: Injectable }
+];
+/** @nocollapse */
+CustomDatepickerI18n.ctorParameters = () => [
+    { type: PbdsDaterangeService }
+];
+if (false) {
+    /** @type {?} */
+    CustomDatepickerI18n.prototype.daterangeService;
+}
+class PbdsDaterangePopoverComponent {
+    /**
+     * @param {?} calendar
+     * @param {?} daterangeService
+     */
+    constructor(calendar, daterangeService) {
+        this.calendar = calendar;
+        this.daterangeService = daterangeService;
+        this.presets = [
+            {
+                label: 'All Dates',
+                value: null
+            },
+            {
+                label: 'Last 7 Days',
+                value: 7
+            },
+            {
+                label: 'Last 30 Days',
+                value: 30
+            },
+            {
+                label: 'Year to Date',
+                value: 365
+            }
+        ];
+        this.presetSelected = null;
+        this.filterSelected = 0;
+        this.showCustomPreset = true;
+        this.applyText = 'Apply';
+        this.cancelText = 'Cancel';
+        this.customRangeText = 'Custom Range';
+        this.toText = 'to';
+        this.minDate = this.calendar.getPrev(this.calendar.getToday(), 'y');
+        this.maxDate = this.calendar.getToday();
+        this.fromDate = null;
+        this.toDate = null;
+        this.change = new EventEmitter();
+        this.firstDayOfWeek = getLocaleFirstDayOfWeek(this.daterangeService.getCurrentLocale());
+        this.dateRange = '';
+        this.isDatepickerVisible = false;
+        this.presetSelect = (/**
+         * @param {?} $event
+         * @return {?}
+         */
+        $event => {
+            if ($event.value === 'custom') {
+                this.presetSelected = 'custom';
+                return false;
+            }
+            if ($event.value) {
+                this.toDate = this.calendar.getToday();
+                this.fromDate = this.calendar.getPrev(this.toDate, 'd', $event.value);
+                this.presetSelected = $event.value;
+            }
+            else {
+                this.fromDate = null;
+                this.toDate = null;
+                this.presetSelected = null;
+            }
+            this.isDatepickerVisible = false;
+        });
+        this.isHovered = (/**
+         * @param {?} date
+         * @return {?}
+         */
+        (date) => this.fromDate && !this.toDate && this.hoveredDate && date.after(this.fromDate) && date.before(this.hoveredDate));
+        this.isInside = (/**
+         * @param {?} date
+         * @return {?}
+         */
+        (date) => date.after(this.fromDate) && date.before(this.toDate));
+        this.isRange = (/**
+         * @param {?} date
+         * @return {?}
+         */
+        (date) => date.equals(this.fromDate) || date.equals(this.toDate) || this.isInside(date) || this.isHovered(date));
+    }
+    /**
+     * @return {?}
+     */
+    ngOnInit() {
+        // china should start on a Monday, Angular locale returns incorrect 0
+        this.firstDayOfWeek =
+            this.daterangeService.getCurrentLocale() === 'zh-cn' ? this.firstDayOfWeek + 1 : this.firstDayOfWeek;
+        if (this.presetSelected === 'custom') {
+            this.showDatepicker();
+        }
+    }
+    /**
+     * @param {?} changes
+     * @return {?}
+     */
+    ngOnChanges(changes) {
+        if (changes.filters && this.filters) {
+            this.selectedFilter = this.filters[this.filterSelected];
+        }
+        if (changes.presets) {
+            if (!this.filters && this.presetSelected) {
+                this.presetClick(this.presets.find((/**
+                 * @param {?} p
+                 * @return {?}
+                 */
+                p => p.value === this.presetSelected)));
+            }
+            else if (this.presetSelected) {
+                this.presetSelect({ value: this.presetSelected });
+                this.apply();
+            }
+        }
+        if (changes.toText && changes.toText.firstChange === false) {
+            this.setInputLabel();
+        }
+        this.setInputLabel();
+    }
+    /**
+     * @return {?}
+     */
+    apply() {
+        this.setInputLabel();
+        this.change.emit({
+            fromDate: this.fromDate,
+            toDate: this.toDate,
+            formattedDate: this.isDatepickerVisible
+                ? `${this.getFormattedDate(this.fromDate)} ${this.toText} ${this.getFormattedDate(this.toDate)}`
+                : this.dateRange,
+            filter: this.filters ? this.selectedFilter.field : null,
+            value: this.presetSelected
+        });
+        this.datepickerPopup.close();
+    }
+    /**
+     * @return {?}
+     */
+    cancel() {
+        this.datepickerPopup.close();
+    }
+    /**
+     * @param {?} date
+     * @return {?}
+     */
+    onDateSelection(date) {
+        if (!this.fromDate && !this.toDate) {
+            this.fromDate = date;
+        }
+        else if (this.fromDate && !this.toDate && date.after(this.fromDate)) {
+            this.toDate = date;
+        }
+        else {
+            this.toDate = null;
+            this.fromDate = date;
+        }
+        // this.presetSelected = null;
+    }
+    /**
+     * @param {?} preset
+     * @return {?}
+     */
+    presetClick(preset) {
+        // console.log('PRESET CLICK: ', preset);
+        if (preset) {
+            if (preset.value === 'custom') {
+                return false;
+            }
+            if (preset.value) {
+                this.toDate = this.calendar.getToday();
+                this.fromDate = this.calendar.getPrev(this.toDate, 'd', preset.value);
+                this.presetSelected = preset.value;
+            }
+            else {
+                this.fromDate = null;
+                this.toDate = null;
+                this.presetSelected = null;
+            }
+            this.isDatepickerVisible = false;
+            this.apply();
+        }
+    }
+    /**
+     * @private
+     * @param {?} date
+     * @return {?}
+     */
+    getFormattedDate(date) {
+        if (date) {
+            /** @type {?} */
+            const locale = this.daterangeService.getCurrentLocale();
+            /** @type {?} */
+            const dateFormat = getLocaleDateFormat(locale, FormatWidth.Short);
+            /** @type {?} */
+            const formattedDate = formatDate(`${date.month}/${date.day}/${date.year}`, dateFormat, locale);
+            return formattedDate;
+        }
+    }
+    /**
+     * @return {?}
+     */
+    showDatepicker() {
+        this.isDatepickerVisible = true;
+        this.presetSelect({ value: 'custom' });
+    }
+    /**
+     * @param {?} filter
+     * @param {?} index
+     * @return {?}
+     */
+    onFilterChange(filter, index) {
+        this.selectedFilter = this.filters[index];
+    }
+    /**
+     * @param {?} value
+     * @return {?}
+     */
+    setPreset(value) {
+        this.presetSelected = value;
+        this.presetSelect({ value: this.presetSelected });
+        this.apply();
+    }
+    /**
+     * @param {?} index
+     * @return {?}
+     */
+    setFilter(index) {
+        if (this.filters !== undefined) {
+            this.selectedFilter = this.filters[index];
+        }
+    }
+    /**
+     * @param {?} value
+     * @return {?}
+     */
+    setDateRange(value) {
+        this.fromDate = new NgbDate(value.fromDate.year, value.fromDate.month, value.fromDate.day);
+        this.toDate = new NgbDate(value.toDate.year, value.toDate.month, value.toDate.day);
+        this.isDatepickerVisible = value.value === 'custom';
+        this.presetSelected = value.value;
+        if (this.filters) {
+            this.filterSelected = this.filters.findIndex((/**
+             * @param {?} f
+             * @return {?}
+             */
+            f => f.field === value.filter));
+            this.selectedFilter = this.filters[this.filterSelected];
+        }
+        this.apply();
+    }
+    /**
+     * @private
+     * @return {?}
+     */
+    setInputLabel() {
+        if (this.presets) {
+            /** @type {?} */
+            const selected = this.presets.find((/**
+             * @param {?} p
+             * @return {?}
+             */
+            p => p.value === this.presetSelected));
+            if (selected) {
+                if (this.fromDate === null || this.toDate === null) {
+                    this.dateRange = selected.label;
+                }
+                else if (this.presetSelected === null || (this.presetSelected !== null && this.presetSelected !== 'custom')) {
+                    this.dateRange = selected.label;
+                }
+                else {
+                    this.dateRange = `${this.getFormattedDate(this.fromDate)} ${this.toText} ${this.getFormattedDate(this.toDate)}`;
+                }
+            }
+            else if (this.presetSelected === 'custom' && this.fromDate && this.toDate) {
+                this.dateRange = `${this.getFormattedDate(this.fromDate)} ${this.toText} ${this.getFormattedDate(this.toDate)}`;
+            }
+        }
+    }
+}
+PbdsDaterangePopoverComponent.decorators = [
+    { type: Component, args: [{
+                selector: 'pbds-daterange-popover',
+                template: "<div class=\"input-group pbds-daterange-popover\">\n  <input\n    type=\"text\"\n    class=\"form-control\"\n    aria-describedby=\"daterange-button\"\n    [value]=\"dateRange\"\n    readonly=\"readonly\"\n    tabindex=\"-1\"\n  />\n\n  <div class=\"input-group-append\">\n    <button\n      class=\"btn btn-secondary\"\n      type=\"button\"\n      id=\"daterange-button\"\n      #datepickerPopup=\"ngbPopover\"\n      [ngbPopover]=\"daterangeContent\"\n      popoverClass=\"daterange-popover\"\n      autoClose=\"outside\"\n      placement=\"bottom-right auto\"\n      aria-label=\"Open Daterange Picker\"\n    >\n      <i class=\"pbi-icon-mini pbi-calendar\" aria-hidden=\"true\"></i>\n    </button>\n  </div>\n\n  <ng-template #daterangeContent>\n    <div>\n      <div class=\"d-block d-md-flex\">\n        <div *ngIf=\"isDatepickerVisible\">\n          <ngb-datepicker\n            #datepicker\n            [displayMonths]=\"'2'\"\n            [minDate]=\"minDate\"\n            [maxDate]=\"maxDate\"\n            navigation=\"select\"\n            outsideDays=\"hidden\"\n            [firstDayOfWeek]=\"firstDayOfWeek\"\n            [showWeekdays]=\"true\"\n            [dayTemplate]=\"t\"\n            (select)=\"onDateSelection($event)\"\n          >\n          </ngb-datepicker>\n          <!--  -->\n\n          <ng-template #t let-date let-focused=\"focused\">\n            <span\n              class=\"custom-day\"\n              [class.focused]=\"focused\"\n              [class.range]=\"isRange(date)\"\n              [class.faded]=\"isHovered(date) || isInside(date)\"\n              (mouseenter)=\"hoveredDate = date\"\n              (mouseleave)=\"hoveredDate = null\"\n            >\n              {{ date.day }}\n            </span>\n          </ng-template>\n        </div>\n\n        <div\n          class=\"d-flex flex-column justify-content-lg-between mt-md-0\"\n          [ngClass]=\"{ 'ml-md-4': isDatepickerVisible }\"\n        >\n          <!-- filters -->\n          <div *ngIf=\"filters\" class=\"mb-3\" ngbDropdown>\n            <button class=\"btn btn-sm btn-secondary btn-block\" id=\"dateFilter\" ngbDropdownToggle>\n              {{ selectedFilter.label }}\n            </button>\n            <div ngbDropdownMenu aria-labelledby=\"dateFilter\">\n              <button\n                class=\"dropdown-item\"\n                type=\"button\"\n                *ngFor=\"let filter of filters; let index = index\"\n                (click)=\"onFilterChange(filter, index)\"\n              >\n                {{ filter.label }}\n              </button>\n            </div>\n          </div>\n\n          <!-- presets radio buttons-->\n          <div *ngIf=\"presets && filters\" class=\"flex-grow-1\">\n            <mat-radio-group\n              aria-label=\"Select an option\"\n              class=\"stacked-radio-group\"\n              name=\"presets\"\n              [(ngModel)]=\"presetSelected\"\n              (change)=\"presetSelect($event)\"\n            >\n              <mat-radio-button *ngFor=\"let preset of presets\" [value]=\"preset.value\">{{\n                preset.label\n              }}</mat-radio-button>\n\n              <mat-radio-button *ngIf=\"showCustomPreset\" [value]=\"'custom'\" (change)=\"showDatepicker()\">{{\n                customRangeText\n              }}</mat-radio-button>\n            </mat-radio-group>\n          </div>\n\n          <!-- presets buttons-->\n          <div *ngIf=\"presets && !filters\" class=\"flex-grow-1\">\n            <button\n              type=\"button\"\n              class=\"btn btn-secondary btn-block btn-sm text-nowrap\"\n              *ngFor=\"let preset of presets\"\n              (click)=\"presetClick(preset)\"\n            >\n              {{ preset.label }}\n            </button>\n\n            <button\n              type=\"button\"\n              class=\"btn btn-secondary btn-block btn-sm text-nowrap\"\n              *ngIf=\"showCustomPreset\"\n              (click)=\"showDatepicker()\"\n            >\n              {{ customRangeText }}\n            </button>\n          </div>\n\n          <!-- buttons -->\n          <div *ngIf=\"filters || isDatepickerVisible\" class=\"d-flex justify-content-between mt-3\">\n            <button class=\"btn btn-primary btn-sm mr-1\" type=\"button\" (click)=\"apply()\">{{ applyText }}</button>\n            <button class=\"btn btn-secondary btn-sm ml-1\" type=\"button\" (click)=\"cancel()\">\n              {{ cancelText }}\n            </button>\n          </div>\n        </div>\n      </div>\n    </div>\n  </ng-template>\n</div>\n",
+                providers: [{ provide: NgbDatepickerI18n, useClass: CustomDatepickerI18n }]
+            }] }
+];
+/** @nocollapse */
+PbdsDaterangePopoverComponent.ctorParameters = () => [
+    { type: NgbCalendar },
+    { type: PbdsDaterangeService }
+];
+PbdsDaterangePopoverComponent.propDecorators = {
+    datepickerPopup: [{ type: ViewChild, args: ['datepickerPopup', { static: true },] }],
+    presets: [{ type: Input }],
+    presetSelected: [{ type: Input }],
+    filters: [{ type: Input }],
+    filterSelected: [{ type: Input }],
+    showCustomPreset: [{ type: Input }],
+    applyText: [{ type: Input }],
+    cancelText: [{ type: Input }],
+    customRangeText: [{ type: Input }],
+    toText: [{ type: Input }],
+    minDate: [{ type: Input }],
+    maxDate: [{ type: Input }],
+    fromDate: [{ type: Input }],
+    toDate: [{ type: Input }],
+    change: [{ type: Output }]
+};
+if (false) {
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDaterangePopoverComponent.prototype.datepickerPopup;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.presets;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.presetSelected;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.filters;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.filterSelected;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.showCustomPreset;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.applyText;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.cancelText;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.customRangeText;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.toText;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.minDate;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.maxDate;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.fromDate;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.toDate;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDaterangePopoverComponent.prototype.change;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.firstDayOfWeek;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.hoveredDate;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.dateRange;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.isDatepickerVisible;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.selectedFilter;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.presetSelect;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.isHovered;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.isInside;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.isRange;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDaterangePopoverComponent.prototype.calendar;
+    /**
+     * @type {?}
+     * @private
+     */
+    PbdsDaterangePopoverComponent.prototype.daterangeService;
+}
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+class PbdsDaterangePopoverModule {
+}
+PbdsDaterangePopoverModule.decorators = [
+    { type: NgModule, args: [{
+                declarations: [PbdsDaterangePopoverComponent],
+                imports: [CommonModule, FormsModule, MatRadioModule, NgbDatepickerModule, NgbPopoverModule, NgbDropdownModule],
+                exports: [PbdsDaterangePopoverComponent]
+            },] }
+];
+
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+/**
+ * @record
+ */
+function PbdsDaterangePreset() { }
+if (false) {
+    /** @type {?} */
+    PbdsDaterangePreset.prototype.label;
+    /** @type {?} */
+    PbdsDaterangePreset.prototype.value;
+}
+/**
+ * @record
+ */
+function PbdsDaterangeFilter() { }
+if (false) {
+    /** @type {?} */
+    PbdsDaterangeFilter.prototype.field;
+    /** @type {?} */
+    PbdsDaterangeFilter.prototype.label;
+}
+/**
+ * @record
+ */
+function PbdsDaterangeChange() { }
+if (false) {
+    /** @type {?} */
+    PbdsDaterangeChange.prototype.fromDate;
+    /** @type {?} */
+    PbdsDaterangeChange.prototype.toDate;
+    /** @type {?} */
+    PbdsDaterangeChange.prototype.formattedDate;
+    /** @type {?} */
+    PbdsDaterangeChange.prototype.filter;
+    /** @type {?} */
+    PbdsDaterangeChange.prototype.value;
+}
+/**
+ * @record
+ */
+function PbdsDaterangeLocale() { }
+if (false) {
+    /** @type {?} */
+    PbdsDaterangeLocale.prototype.language;
+    /** @type {?} */
+    PbdsDaterangeLocale.prototype.country;
+    /** @type {?} */
+    PbdsDaterangeLocale.prototype.locale;
+}
 
 /**
  * @fileoverview added by tsickle
  * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
  */
 
-export { DatavizBubbleMapComponent, PbdsDatavizBarComponent, PbdsDatavizBarGroupedComponent, PbdsDatavizBarSingleHorizontalComponent, PbdsDatavizBarStackedComponent, PbdsDatavizChoroplethMapComponent, PbdsDatavizGaugeComponent, PbdsDatavizHeatmapComponent, PbdsDatavizLineComponent, PbdsDatavizMetricBlockComponent, PbdsDatavizMetricIndicatorComponent, PbdsDatavizModule, PbdsDatavizPieComponent, PbdsDatavizService, PbdsDatavizSparklineComponent, PbdsHeaderShadowDirective, PbdsHeaderShadowModule };
+/**
+ * @fileoverview added by tsickle
+ * @suppress {checkTypes,extraRequire,missingOverride,missingReturn,unusedPrivateMembers,uselessCode} checked by tsc
+ */
+
+export { CustomDatepickerI18n, DatavizBubbleMapComponent, PbdsDatavizBarComponent, PbdsDatavizBarGroupedComponent, PbdsDatavizBarSingleHorizontalComponent, PbdsDatavizBarStackedComponent, PbdsDatavizChoroplethMapComponent, PbdsDatavizGaugeComponent, PbdsDatavizHeatmapComponent, PbdsDatavizLineComponent, PbdsDatavizMetricBlockComponent, PbdsDatavizMetricIndicatorComponent, PbdsDatavizModule, PbdsDatavizPieComponent, PbdsDatavizService, PbdsDatavizSparklineComponent, PbdsDaterangePopoverComponent, PbdsDaterangePopoverModule, PbdsDaterangeService, PbdsHeaderShadowDirective, PbdsHeaderShadowModule };
 //# sourceMappingURL=pb-design-system.js.map

@@ -16,3 +16,7 @@ export * from './lib/dataviz/dataviz-pie.component';
 export * from './lib/dataviz/dataviz-sparkline.component';
 export * from './lib/header-shadow/header-shadow.module';
 export * from './lib/header-shadow/header-shadow.directive';
+export * from './lib/daterange-popover/daterange-popover.module';
+export * from './lib/daterange-popover/daterange-popover.interfaces';
+export * from './lib/daterange-popover/daterange-popover.service';
+export * from './lib/daterange-popover/daterange-popover.component';
