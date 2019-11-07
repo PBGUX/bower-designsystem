@@ -81,7 +81,7 @@ $colors: map-merge(
   $colors
 );
 
-// NOTE:  we need to keep the default theme here because we import Boostrap and it breaks without it
+// NOTE:  we need to keep the default theme here because we import Bootstrap and it breaks without it
 $theme-colors: () !default;
 $theme-colors: map-merge(
   (

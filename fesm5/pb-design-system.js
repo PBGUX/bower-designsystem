@@ -409,7 +409,7 @@ var PbdsDatavizPieComponent = /** @class */ (function () {
              * @return {?}
              */
             function (data, index, nodes) {
-                _this.clicked.emit(data);
+                _this.clicked.emit({ event: event$1, data: data });
             }));
             enterPaths
                 .on('mouseover', (/**
@@ -9902,6 +9902,8 @@ var PbdsDatavizBarSingleHorizontalComponent = /** @class */ (function () {
      */
     function () {
         var _this = this;
+        this.isSingleData = this.data.length === 1 ? true : false;
+        this.isCompare = Object.keys(this.data[0]).includes('compareValue');
         /** @type {?} */
         var sumValues = sum(this.data, (/**
          * @param {?} d
@@ -10095,7 +10097,11 @@ var PbdsDatavizBarSingleHorizontalComponent = /** @class */ (function () {
              * @return {?}
              */
             function (d, i) {
-                if (i === _this.data.length - 1) {
+                // debugger;
+                if (d.value === null || d.value === 0) {
+                    return _this.xAxisScale(0);
+                }
+                else if (i === _this.data.length - 1) {
                     return _this.xAxisScale(d.value);
                 }
                 else {
@@ -10196,11 +10202,28 @@ var PbdsDatavizBarSingleHorizontalComponent = /** @class */ (function () {
                             return d.label;
                     }
                 }));
+                li.select('.legend-description')
+                    .insert('div')
+                    .attr('class', 'legend-change')
+                    .classed('d-none', !_this.isCompare);
+                li.select('.legend-change').html((/**
+                 * @param {?} d
+                 * @return {?}
+                 */
+                function (d) {
+                    return "<div class=\"metric-block-indicator " + d.compareChangeDirection + " " + (d.compareChangeInverse ? 'inverse' : '') + " mt-1\"><span>" + _this.tooltipCompareChangeFormat(d.compareChangeValue) + "</span></div>";
+                }));
+                return li;
+            }), (/**
+             * @param {?} update
+             * @return {?}
+             */
+            function (update) {
+                update.classed('align-items-start', _this.isCompare);
+                update.select('.legend-key').classed('mt-1', _this.isCompare);
+                update.select('.legend-change').classed('d-none', !_this.isCompare);
                 if (_this.isCompare) {
-                    li.select('.legend-description')
-                        .insert('div')
-                        .attr('class', 'legend-change');
-                    li.select('.legend-change').html((/**
+                    update.select('.legend-change').html((/**
                      * @param {?} d
                      * @return {?}
                      */
@@ -10208,12 +10231,6 @@ var PbdsDatavizBarSingleHorizontalComponent = /** @class */ (function () {
                         return "<div class=\"metric-block-indicator " + d.compareChangeDirection + " " + (d.compareChangeInverse ? 'inverse' : '') + " mt-1\"><span>" + _this.tooltipCompareChangeFormat(d.compareChangeValue) + "</span></div>";
                     }));
                 }
-                return li;
-            }), (/**
-             * @param {?} update
-             * @return {?}
-             */
-            function (update) {
                 update.select('.legend-label').html((/**
                  * @param {?} d
                  * @return {?}
@@ -11000,11 +11017,11 @@ var PbdsDaterangePopoverComponent = /** @class */ (function () {
         this.applyText = 'Apply';
         this.cancelText = 'Cancel';
         this.customRangeText = 'Custom Range';
-        this.toText = 'to';
         this.minDate = this.calendar.getPrev(this.calendar.getToday(), 'y');
         this.maxDate = this.calendar.getToday();
         this.fromDate = null;
         this.toDate = null;
+        this.inputFormat = '{fromDate} to {toDate}';
         this.change = new EventEmitter();
         this.firstDayOfWeek = getLocaleFirstDayOfWeek(this.daterangeService.getCurrentLocale());
         this.dateRange = '';
@@ -11090,9 +11107,9 @@ var PbdsDaterangePopoverComponent = /** @class */ (function () {
                 this.apply();
             }
         }
-        if (changes.toText && changes.toText.firstChange === false) {
-            this.setInputLabel();
-        }
+        // if (changes.toText && changes.toText.firstChange === false) {
+        //   this.setInputLabel();
+        // }
         this.setInputLabel();
     };
     /**
@@ -11106,9 +11123,7 @@ var PbdsDaterangePopoverComponent = /** @class */ (function () {
         this.change.emit({
             fromDate: this.fromDate,
             toDate: this.toDate,
-            formattedDate: this.isDatepickerVisible
-                ? this.getFormattedDate(this.fromDate) + " " + this.toText + " " + this.getFormattedDate(this.toDate)
-                : this.dateRange,
+            formattedDate: this.isDatepickerVisible ? this.dateFormat() : this.dateRange,
             filter: this.filters ? this.selectedFilter.field : null,
             value: this.presetSelected
         });
@@ -11290,18 +11305,31 @@ var PbdsDaterangePopoverComponent = /** @class */ (function () {
                     this.dateRange = selected.label;
                 }
                 else {
-                    this.dateRange = this.getFormattedDate(this.fromDate) + " " + this.toText + " " + this.getFormattedDate(this.toDate);
+                    this.dateRange = this.dateFormat();
                 }
             }
             else if (this.presetSelected === 'custom' && this.fromDate && this.toDate) {
-                this.dateRange = this.getFormattedDate(this.fromDate) + " " + this.toText + " " + this.getFormattedDate(this.toDate);
+                this.dateRange = this.dateFormat();
             }
         }
+    };
+    /**
+     * @private
+     * @return {?}
+     */
+    PbdsDaterangePopoverComponent.prototype.dateFormat = /**
+     * @private
+     * @return {?}
+     */
+    function () {
+        return this.inputFormat
+            .replace('{fromDate}', this.getFormattedDate(this.fromDate))
+            .replace('{toDate}', this.getFormattedDate(this.toDate));
     };
     PbdsDaterangePopoverComponent.decorators = [
         { type: Component, args: [{
                     selector: 'pbds-daterange-popover',
-                    template: "<div class=\"input-group pbds-daterange-popover\">\n  <input\n    type=\"text\"\n    class=\"form-control\"\n    aria-describedby=\"daterange-button\"\n    [value]=\"dateRange\"\n    readonly=\"readonly\"\n    tabindex=\"-1\"\n  />\n\n  <div class=\"input-group-append\">\n    <button\n      class=\"btn btn-secondary\"\n      type=\"button\"\n      id=\"daterange-button\"\n      #datepickerPopup=\"ngbPopover\"\n      [ngbPopover]=\"daterangeContent\"\n      popoverClass=\"daterange-popover\"\n      autoClose=\"outside\"\n      placement=\"bottom-right auto\"\n      aria-label=\"Open Daterange Picker\"\n    >\n      <i class=\"pbi-icon-mini pbi-calendar\" aria-hidden=\"true\"></i>\n    </button>\n  </div>\n\n  <ng-template #daterangeContent>\n    <div>\n      <div class=\"d-block d-md-flex\">\n        <div *ngIf=\"isDatepickerVisible\">\n          <ngb-datepicker\n            #datepicker\n            [displayMonths]=\"'2'\"\n            [minDate]=\"minDate\"\n            [maxDate]=\"maxDate\"\n            navigation=\"select\"\n            outsideDays=\"hidden\"\n            [firstDayOfWeek]=\"firstDayOfWeek\"\n            [showWeekdays]=\"true\"\n            [dayTemplate]=\"t\"\n            (select)=\"onDateSelection($event)\"\n          >\n          </ngb-datepicker>\n          <!--  -->\n\n          <ng-template #t let-date let-focused=\"focused\">\n            <span\n              class=\"custom-day\"\n              [class.focused]=\"focused\"\n              [class.range]=\"isRange(date)\"\n              [class.faded]=\"isHovered(date) || isInside(date)\"\n              (mouseenter)=\"hoveredDate = date\"\n              (mouseleave)=\"hoveredDate = null\"\n            >\n              {{ date.day }}\n            </span>\n          </ng-template>\n        </div>\n\n        <div\n          class=\"d-flex flex-column justify-content-lg-between mt-md-0\"\n          [ngClass]=\"{ 'ml-md-4': isDatepickerVisible }\"\n        >\n          <!-- filters -->\n          <div *ngIf=\"filters\" class=\"mb-3\" ngbDropdown>\n            <button class=\"btn btn-sm btn-secondary btn-block\" id=\"dateFilter\" ngbDropdownToggle>\n              {{ selectedFilter.label }}\n            </button>\n            <div ngbDropdownMenu aria-labelledby=\"dateFilter\">\n              <button\n                class=\"dropdown-item\"\n                type=\"button\"\n                *ngFor=\"let filter of filters; let index = index\"\n                (click)=\"onFilterChange(filter, index)\"\n              >\n                {{ filter.label }}\n              </button>\n            </div>\n          </div>\n\n          <!-- presets radio buttons-->\n          <div *ngIf=\"presets && filters\" class=\"flex-grow-1\">\n            <mat-radio-group\n              aria-label=\"Select an option\"\n              class=\"stacked-radio-group\"\n              name=\"presets\"\n              [(ngModel)]=\"presetSelected\"\n              (change)=\"presetSelect($event)\"\n            >\n              <mat-radio-button *ngFor=\"let preset of presets\" [value]=\"preset.value\">{{\n                preset.label\n              }}</mat-radio-button>\n\n              <mat-radio-button *ngIf=\"showCustomPreset\" [value]=\"'custom'\" (change)=\"showDatepicker()\">{{\n                customRangeText\n              }}</mat-radio-button>\n            </mat-radio-group>\n          </div>\n\n          <!-- presets buttons-->\n          <div *ngIf=\"presets && !filters\" class=\"flex-grow-1\">\n            <button\n              type=\"button\"\n              class=\"btn btn-secondary btn-block btn-sm text-nowrap\"\n              *ngFor=\"let preset of presets\"\n              (click)=\"presetClick(preset)\"\n            >\n              {{ preset.label }}\n            </button>\n\n            <button\n              type=\"button\"\n              class=\"btn btn-secondary btn-block btn-sm text-nowrap\"\n              *ngIf=\"showCustomPreset\"\n              (click)=\"showDatepicker()\"\n            >\n              {{ customRangeText }}\n            </button>\n          </div>\n\n          <!-- buttons -->\n          <div *ngIf=\"filters || isDatepickerVisible\" class=\"d-flex justify-content-between mt-3\">\n            <button class=\"btn btn-primary btn-sm mr-1\" type=\"button\" (click)=\"apply()\">{{ applyText }}</button>\n            <button class=\"btn btn-secondary btn-sm ml-1\" type=\"button\" (click)=\"cancel()\">\n              {{ cancelText }}\n            </button>\n          </div>\n        </div>\n      </div>\n    </div>\n  </ng-template>\n</div>\n",
+                    template: "<div class=\"input-group pbds-daterange-popover\">\n  <input\n    type=\"text\"\n    class=\"form-control\"\n    aria-describedby=\"daterange-button\"\n    [value]=\"dateRange\"\n    readonly=\"readonly\"\n    tabindex=\"-1\"\n  />\n\n  <div class=\"input-group-append\">\n    <button\n      class=\"btn btn-secondary\"\n      type=\"button\"\n      id=\"daterange-button\"\n      #datepickerPopup=\"ngbPopover\"\n      [ngbPopover]=\"daterangeContent\"\n      popoverClass=\"daterange-popover\"\n      autoClose=\"outside\"\n      container=\"body\"\n      placement=\"bottom-right auto\"\n      aria-label=\"Open Daterange Picker\"\n    >\n      <i class=\"pbi-icon-mini pbi-calendar\" aria-hidden=\"true\"></i>\n    </button>\n  </div>\n\n  <ng-template #daterangeContent>\n    <div>\n      <div class=\"d-block d-md-flex\">\n        <div *ngIf=\"isDatepickerVisible\">\n          <ngb-datepicker\n            #datepicker\n            [displayMonths]=\"'2'\"\n            [minDate]=\"minDate\"\n            [maxDate]=\"maxDate\"\n            navigation=\"select\"\n            outsideDays=\"hidden\"\n            [firstDayOfWeek]=\"firstDayOfWeek\"\n            [showWeekdays]=\"true\"\n            [dayTemplate]=\"t\"\n            (select)=\"onDateSelection($event)\"\n          >\n          </ngb-datepicker>\n          <!--  -->\n\n          <ng-template #t let-date let-focused=\"focused\">\n            <span\n              class=\"custom-day\"\n              [class.focused]=\"focused\"\n              [class.range]=\"isRange(date)\"\n              [class.faded]=\"isHovered(date) || isInside(date)\"\n              (mouseenter)=\"hoveredDate = date\"\n              (mouseleave)=\"hoveredDate = null\"\n            >\n              {{ date.day }}\n            </span>\n          </ng-template>\n        </div>\n\n        <div\n          class=\"d-flex flex-column justify-content-lg-between mt-md-0\"\n          [ngClass]=\"{ 'ml-md-4': isDatepickerVisible }\"\n        >\n          <!-- filters -->\n          <div *ngIf=\"filters\" class=\"mb-3\" ngbDropdown>\n            <button class=\"btn btn-sm btn-secondary btn-block\" id=\"dateFilter\" ngbDropdownToggle>\n              {{ selectedFilter.label }}\n            </button>\n            <div ngbDropdownMenu aria-labelledby=\"dateFilter\">\n              <button\n                class=\"dropdown-item\"\n                type=\"button\"\n                *ngFor=\"let filter of filters; let index = index\"\n                (click)=\"onFilterChange(filter, index)\"\n              >\n                {{ filter.label }}\n              </button>\n            </div>\n          </div>\n\n          <!-- presets radio buttons-->\n          <div *ngIf=\"presets && filters\" class=\"flex-grow-1\">\n            <mat-radio-group\n              aria-label=\"Select an option\"\n              class=\"stacked-radio-group\"\n              name=\"presets\"\n              [(ngModel)]=\"presetSelected\"\n              (change)=\"presetSelect($event)\"\n            >\n              <mat-radio-button *ngFor=\"let preset of presets\" [value]=\"preset.value\">{{\n                preset.label\n              }}</mat-radio-button>\n\n              <mat-radio-button *ngIf=\"showCustomPreset\" [value]=\"'custom'\" (change)=\"showDatepicker()\">{{\n                customRangeText\n              }}</mat-radio-button>\n            </mat-radio-group>\n          </div>\n\n          <!-- presets buttons-->\n          <div *ngIf=\"presets && !filters\" class=\"flex-grow-1\">\n            <button\n              type=\"button\"\n              class=\"btn btn-secondary btn-block btn-sm text-nowrap\"\n              *ngFor=\"let preset of presets\"\n              (click)=\"presetClick(preset)\"\n            >\n              {{ preset.label }}\n            </button>\n\n            <button\n              type=\"button\"\n              class=\"btn btn-secondary btn-block btn-sm text-nowrap\"\n              *ngIf=\"showCustomPreset\"\n              (click)=\"showDatepicker()\"\n            >\n              {{ customRangeText }}\n            </button>\n          </div>\n\n          <!-- buttons -->\n          <div *ngIf=\"filters || isDatepickerVisible\" class=\"d-flex justify-content-between mt-3\">\n            <button class=\"btn btn-primary btn-sm mr-1\" type=\"button\" (click)=\"apply()\">{{ applyText }}</button>\n            <button class=\"btn btn-secondary btn-sm ml-1\" type=\"button\" (click)=\"cancel()\">\n              {{ cancelText }}\n            </button>\n          </div>\n        </div>\n      </div>\n    </div>\n  </ng-template>\n</div>\n",
                     providers: [{ provide: NgbDatepickerI18n, useClass: CustomDatepickerI18n }]
                 }] }
     ];
@@ -11320,11 +11348,11 @@ var PbdsDaterangePopoverComponent = /** @class */ (function () {
         applyText: [{ type: Input }],
         cancelText: [{ type: Input }],
         customRangeText: [{ type: Input }],
-        toText: [{ type: Input }],
         minDate: [{ type: Input }],
         maxDate: [{ type: Input }],
         fromDate: [{ type: Input }],
         toDate: [{ type: Input }],
+        inputFormat: [{ type: Input }],
         change: [{ type: Output }]
     };
     return PbdsDaterangePopoverComponent;
@@ -11352,8 +11380,6 @@ if (false) {
     /** @type {?} */
     PbdsDaterangePopoverComponent.prototype.customRangeText;
     /** @type {?} */
-    PbdsDaterangePopoverComponent.prototype.toText;
-    /** @type {?} */
     PbdsDaterangePopoverComponent.prototype.minDate;
     /** @type {?} */
     PbdsDaterangePopoverComponent.prototype.maxDate;
@@ -11361,6 +11387,8 @@ if (false) {
     PbdsDaterangePopoverComponent.prototype.fromDate;
     /** @type {?} */
     PbdsDaterangePopoverComponent.prototype.toDate;
+    /** @type {?} */
+    PbdsDaterangePopoverComponent.prototype.inputFormat;
     /**
      * @type {?}
      * @private

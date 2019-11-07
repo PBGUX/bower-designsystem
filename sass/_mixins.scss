@@ -16,6 +16,16 @@
   }
 }
 
+@mixin disabled {
+  border-color: #ddd;
+  background-color: #e1e1e1;
+  opacity: 1;
+  pointer-events: none;
+  cursor: not-allowed;
+  color: #c0c0c0;
+  -webkit-text-fill-color: #c0c0c0;
+}
+
 // create border classes at breakpoints, like with margins  etc.
 // $edges: top, right, bottom, left !default;
 

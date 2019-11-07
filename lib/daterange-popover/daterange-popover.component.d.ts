@@ -22,11 +22,11 @@ export declare class PbdsDaterangePopoverComponent implements OnInit, OnChanges 
     applyText: string;
     cancelText: string;
     customRangeText: string;
-    toText: string;
     minDate: NgbDate;
     maxDate: NgbDate;
     fromDate: NgbDate | null;
     toDate: NgbDate | null;
+    inputFormat: string;
     private change;
     firstDayOfWeek: import("@angular/common").WeekDay;
     hoveredDate: NgbDate;
@@ -51,4 +51,5 @@ export declare class PbdsDaterangePopoverComponent implements OnInit, OnChanges 
     setFilter(index: number): void;
     setDateRange(value: any): void;
     private setInputLabel;
+    private dateFormat;
 }
