@@ -1,8 +1,8 @@
-import { OnInit, OnChanges, ElementRef, SimpleChanges, EventEmitter } from '@angular/core';
+import { OnInit, OnChanges, OnDestroy, ElementRef, SimpleChanges, EventEmitter } from '@angular/core';
 import { ViewportScroller } from '@angular/common';
 import { PbdsDatavizHeatmap } from './dataviz.interfaces';
 import { PbdsDatavizService } from './dataviz.service';
-export declare class PbdsDatavizHeatmapComponent implements OnInit, OnChanges {
+export declare class PbdsDatavizHeatmapComponent implements OnInit, OnChanges, OnDestroy {
     private _dataviz;
     private _element;
     private _scroll;
@@ -68,6 +68,7 @@ export declare class PbdsDatavizHeatmapComponent implements OnInit, OnChanges {
     private tooltipValueFormat;
     constructor(_dataviz: PbdsDatavizService, _element: ElementRef, _scroll: ViewportScroller);
     ngOnInit(): void;
+    ngOnDestroy(): void;
     ngOnChanges(changes: SimpleChanges): void;
     updateChart: () => void;
     blockMouseOver: (event: any, data: any, index: any, nodes: any) => void;

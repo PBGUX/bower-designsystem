@@ -1,14 +1,14 @@
 import { OnInit, OnChanges, EventEmitter, ElementRef, OnDestroy, SimpleChanges } from '@angular/core';
 import { ViewportScroller } from '@angular/common';
 import { PbdsDatavizService } from './dataviz.service';
-import { PbdsDatavizStackedBar } from './dataviz.interfaces';
-export declare class PbdsDatavizStackedBarComponent implements OnInit, OnDestroy, OnChanges {
+import { PbdsDatavizBarStacked } from './dataviz.interfaces';
+export declare class PbdsDatavizBarStackedComponent implements OnInit, OnDestroy, OnChanges {
     private _dataviz;
     private _element;
     private _scroll;
     chartClass: boolean;
     stackedBarClass: boolean;
-    data: Array<PbdsDatavizStackedBar>;
+    data: Array<PbdsDatavizBarStacked>;
     width: number;
     height: number;
     type: 'low' | 'medium' | 'high' | 'debug';

@@ -20,6 +20,8 @@ export declare class PbdsDatavizLineComponent implements OnInit, OnDestroy, OnCh
     yAxisTicks: number;
     yAxisMinBuffer: number;
     yAxisMaxBuffer: number;
+    hideXGrid: boolean;
+    hideYGrid: boolean;
     hideLegend: boolean;
     legendWidth: number;
     legendPosition: 'right' | 'bottom';
@@ -72,8 +74,6 @@ export declare class PbdsDatavizLineComponent implements OnInit, OnDestroy, OnCh
     private hideYAxisDomain;
     private hideXAxisZero;
     private hideYAxisZero;
-    private hideXGrid;
-    private hideYGrid;
     private hideXAxisTicks;
     private hideYAxisTicks;
     private legendLabelFormat;

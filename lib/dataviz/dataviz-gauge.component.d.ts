@@ -22,7 +22,6 @@ export declare class PbdsDatavizGaugeComponent implements OnInit, OnChanges {
     private startAngle;
     private endAngle;
     private radius;
-    private backgroundColor;
     private arc;
     private labelFormat;
     private oldValue;

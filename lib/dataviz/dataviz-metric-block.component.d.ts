@@ -6,11 +6,12 @@ export declare class PbdsDatavizMetricBlockComponent implements OnInit {
     unit: string;
     description: string;
     centered: boolean;
+    centeredText: boolean;
+    vertical: boolean;
     hideValueMargin: boolean;
     isPercentUnit: boolean;
     isUnit: boolean;
     readonly hostClasses: string;
     indicatorRef: ElementRef;
-    constructor();
     ngOnInit(): void;
 }
